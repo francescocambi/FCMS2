@@ -1,0 +1,143 @@
+/* @import url(http://fonts.googleapis.com/css?family=Open+Sans:400,700,300); */
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400);
+
+
+#head {
+	width: 75%; /* 1000 */
+	height: 90px;
+	background: url('../images/logo_head.png');
+	background-size: cover;
+	margin: auto;
+}
+
+#lang {
+	margin-top: 15px;
+	margin-right: 2%;
+	float: right;
+	background: rgba(255,255,255,0.75);
+	/*background: url('images/lang.png');*/
+	/*opacity: 0.9;*/
+	border-radius: 15px;
+	padding-top: 7px;
+	padding-bottom: 2px;
+	padding-left: 13px;
+	padding-right: 5px;
+}
+
+.languageflag {
+	border: none;
+	margin-right: 10px;
+	height: 20px;
+	width: 30px;
+}
+
+#menu {
+	width: 75%;
+	height: 39px;
+	margin: auto;
+	margin-top: 2px;
+	background: rgba(255,255,255,0.45);
+}
+
+#menu ul {
+	padding: 0px;
+	margin: 0px;
+}
+
+#menu li {
+	position: relative;
+	float: left;
+	list-style: none;
+	margin: 0px;
+	padding: 0px;
+}
+#menu li a {
+	min-width: 70px;
+	height: 39px;
+	line-height: 39px;
+	display: block;
+	padding: 0px 15px;
+	text-decoration: none;
+	text-align: center;
+	color: white;
+	font-weight: normal;
+	font-size: 9pt;
+}
+#menu .selected {
+	background: rgba(255,255,255,0.85);
+	color: black;
+}
+#menu li:hover a {
+	color: black;
+	background: rgba(255,255,255,0.85);
+}
+#menu li a:hover {
+	text-decoration: underline;
+}
+#menu ul ul {
+	position: absolute;
+	top: 39px;
+	visibility: hidden;
+	text-decoration: none;
+	background: rgba(255,255,255,0.75);
+}
+#menu ul li:hover ul {
+	visibility: visible;
+}
+#menu ul li ul li:hover {
+	background: rgba(255,255,255,0.85);
+	text-decoration: underline;
+}
+
+.extended_wrapper {
+	/* background: url('../images/extended_bg.png') repeat-y; */
+	/* background-size: 100%; */
+	background: rgb(1,113,186);
+	min-width: 700px;
+	width: 100%
+	margin: 0px;
+	margin-top: 5px;
+}
+
+.extended_content {
+	padding: 10px;
+	margin: auto;
+	width: 75%;
+	color: white;
+}
+
+.content {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	width: 75%;
+	min-width: 700px;
+	background: rgba(255,255,255,0.75);
+	margin: auto;
+	margin-top: 5px;
+	padding: 10px;
+	text-align: justify;
+	text-justify: inter-word;
+}
+.content h1 {
+	text-align: center;
+}
+
+.column {
+	-webkit-column-count: 2; /* Chrome, Safari, Opera */
+    -moz-column-count: 2; /* Firefox */
+    column-count: 2;
+}
+
+body {
+	background: url('../images/body_bg.jpg');
+	background-attachment: fixed;
+	background-size: 100%;
+	font-family: 'Source Sans Pro', sans-serif;
+	margin: 0px;
+	padding: 0px;
+}
+
+h1, h2 {
+	font-weight: lighter;
+}
