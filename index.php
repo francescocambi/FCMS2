@@ -1,15 +1,7 @@
 <?php
 //require_once('php/InitialLoader.php');
 error_reporting(E_ERROR);
-function __autoload($class)
-{
-    $parts = explode('\\', $class);
-	$path = "php";
-	foreach ($parts as $part)
-		$path .= "/".$part;
-	$path .= ".php";
-	require_once($path);
-}
+require_once("vendor/autoload.php");
 $pagedao = new dao\PageDao();
 // Rileva la pagina da visualizzare analizzando la querystring nell'url
 if (isset($_GET['id'])) {
@@ -18,7 +10,8 @@ if (isset($_GET['id'])) {
 	// $page = $pagedao->getByName($_GET['name']);
 } else if (isset($_GET['url']) && $_GET['url'] != "") {
 	$page = $pagedao->getByURL($_GET['url']);
-} else {
+}
+if ($page == null) {
 	$page = $pagedao->getByName("home");
 }
 // Se la pagina non è pubblica deve rilevare l'utente connesso
@@ -58,14 +51,14 @@ else
 		
 	<body style="<?php echo $cssstring; ?>">
 		
-		<div id="head">
+		<div id="head_wrapper"><div id="head">
 			<div id="lang">
 				<?php
 					$languageBar = new FlagLanguageBar();
 					echo $languageBar->getHTML($languagedao->getAll());
 				?>
 			</div>
-		</div>
+		</div></div>
 		
 		<div id="menu">
 			<?php 

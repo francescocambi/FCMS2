@@ -11,7 +11,7 @@ function print_menu($selected) {
 	);
 	
 	$html .= "<div class=\"pure-menu pure-menu-open\">\n";
-	$html .= "<img src=\"/resources/uploads/logo.png\" style=\"border: none; width: 200px; height: 58px; margin-bottom: -5px;\">\n";
+	$html .= "<img src=\"logo.png\" style=\"border: none; width: 200px; height: 58px; margin-bottom: -5px;\">\n";
 	$html .= "<ul>\n";
 	
 	foreach ($MENU as $key => $item) {

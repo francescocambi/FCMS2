@@ -1,0 +1,16 @@
+{
+    "require": {
+        "phpunit/phpunit": ">=4.2",
+        "phpunit/dbunit": ">=1.2",
+        "phpunit/phpunit-story": "*",
+        "phpunit/php-invoker": "*",
+        "ext-xdebug" : ">=2.0.5",
+        "propel/propel": "~2.0@dev"
+    },
+    "autoload": {
+        "psr-0": {"": "php"}
+    },
+    "config": {
+        "bin-dir": "bin/"
+    }
+}

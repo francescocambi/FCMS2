@@ -12,16 +12,16 @@ class FunctionalityBlock extends Block {
 	}
 	
 	public function hasLanguage(Language $lang) {
-		foreach ($this->internationalCaptions as $item)
-			if ($item->getLanguage()->equals($lang))
+		foreach ($i as $this->internationalCaptions)
+			if ($i->getLanguage()->equals($lang))
 				return true;
 	}
 	
 	public function getHTML(Language $lang) {
-
-        foreach ($this->internationalCaptions as $i) {
+		
+		foreach ($internationalCaptions as $i) {
 			if ($lang->equals($i->getLanguage()))
-				$blockCode = $i->getCaptionsArrayPhp()." ".$this->blockCode;
+				$blockCode = $i->getCaptionsArrayPhp()." ".$blockCode;
 		}
 		
 		return eval($blockCode);

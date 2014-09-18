@@ -19,12 +19,14 @@ namespace test;
 
 class ContentBlockTest extends \PHPUnit_Framework_TestCase {
 
-    private $instance = null;
-    /**
-     * @before
-     */
-    public function initialize() {
-        $this->instance = new \ContentBlock(0, "blocco", "blocco", "<h1>Contenuto</h1>", null, "url",0,2,0,0.3,false,true,"contain");
+    protected $contentblockinst = null;
+
+    public function setUp() {
+        $this->contentblockinst = new \ContentBlock(0, "blocco", "blocco", "<h1>Contenuto</h1>", null, "url",1,2,1,0.3,false,true,"contain");
+    }
+
+    public function testConstruct() {
+        $this->assertNotNull($this->contentblockinst);
     }
 
     public function testGetHTML() {
@@ -32,8 +34,8 @@ class ContentBlockTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testGetBackgroundCSS() {
-        $css = $this->instance->getBackgroundCSS();
-        $this->assertEquals("background: url('url') rgba(0,2,0,0.3) repeat-y; background-size: contain;", $css);
+        $css = $this->contentblockinst->getBackgroundCSS();
+        $this->assertEquals("background: url('url') rgba(1, 2, 1, 0.3) repeat-y; background-size: contain;", $css);
     }
 
 }

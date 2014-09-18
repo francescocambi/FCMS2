@@ -66,7 +66,7 @@ abstract class Block {
 		if ($this->bgrepeatx == 0 && $this->bgrepeaty == 1) $stringcss .= " repeat-y";
 		if ($this->bgrepeatx == 0 && $this->bgrepeaty == 0) $stringcss .= " no-repeat";
 		
-		if ($stringcss == "background:") {
+		if ($bgcss == "background:") {
 			$stringcss = "";
 		} else {
 			$stringcss .= "; ";
