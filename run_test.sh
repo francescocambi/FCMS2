@@ -1,2 +1,2 @@
-#!/bin/bash
-./bin/phpunit --coverage-html ./report test
+#!/bin/sh
+bin/phpunit --coverage-html ./report --colors test

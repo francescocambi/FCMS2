@@ -1,20 +1,29 @@
 <?php
-require_once("../php/Connection.php");
+require_once("../bootstrap.php");
+
+$em = initializeEntityManager("../");
 
 //TODO: Verify html session
 
-$pdo = Connection::getPDO();
+$pageid = $_POST['pageid'];
 
-if (isset($_POST['pageid']) && $_POST['pageid'] != "") {
-	$sql = "DELETE FROM PAGE WHERE ID=?";
-	try {
-		$statement = $pdo->prepare($sql);
-		$statement->execute(array($_POST['pageid']));
-		echo "OK";
-	} catch (PDOException $e) {
-		$pdo->rollback();
-		echo "TRACE => ".$e->getTraceAsString();
-		exit("\nEXCEPTION: ".$e->getMessage());
-	}
-	
+if (is_null($pageid)) exit();
+
+$page = $em->find('Model\Page', $pageid);
+
+if (is_null($page)) exit("PAGE NOT FOUND");
+
+try {
+    foreach ($page->getPageBlocks() as $pageblock)
+        $em->remove($pageblock);
+    foreach ($page->getAccessGroups() as $accessgroup)
+        $em->remove($accessgroup);
+    $em->remove($page);
+    $em->flush();
+} catch (Exception $e) {
+    echo "EXCEPTION: ".$e->getMessage();
+    echo "\n\nTRACE => ".$e->getTraceAsString();
+    exit();
 }
+
+echo "OK";

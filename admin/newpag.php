@@ -1,281 +1,173 @@
 <!DOCTYPE HTML>
 <?php
 require_once("menu.php");
-require_once("../php/Connection.php");
 require_once("dialogs.php");
-$pdo = Connection::getPDO();
+require_once("../bootstrap.php");
+
+$em = initializeEntityManager("../");
 
 //TODO: Verify html session
 
 $EXCEPTION_THROWN = null;
 $OPERATION_COMPLETED = false;
 
-function blockStyleComboBox($pdo) {
-	$sql = "SELECT ID, NAME FROM BLOCK_STYLE";
-	$statement = $pdo->prepare($sql);
-	$statement->execute();
+function blockStyleComboBox() {
+    $rows = array(
+        0 => array( "CN" => "CenteredBlockStyle", "NAME" => "Centrato"),
+        1 => array( "CN" => "ExtendedBlockStyle", "NAME" => "Esteso")
+    );
 	
-	foreach ($statement->fetchAll() as $row) {
-		echo '<option value="'.$row['ID'].'">'.$row['NAME'].'</option>';
+	foreach ($rows as $row) {
+		echo '<option value="'.$row['CN'].'">'.$row['NAME'].'</option>';
 	}
 }
 
+/**
+ * @param $em Doctrine\ORM\EntityManager
+ * @param $_POST array
+ * @param null $pageid int
+ */
+function insertUpdateProcessing($em, $data, $pageid = null) {
+    $update = !is_null($pageid);
+
+    if ($update)
+        $page = $em->find('Model\Page', $pageid);
+    else
+        $page = new Model\Page();
+
+    if ($update) {
+        $deleteurl = $em->createQueryBuilder()
+            ->delete()
+            ->from('Model\Url', "url")
+            ->where("url.page=".$page->getId())
+            ->getQuery();
+        $deletepageblock = $em->createQueryBuilder()
+            ->delete()
+            ->from('Model\PageBlock', "pb")
+            ->where("pb.page=".$page->getId())
+            ->getQuery();
+        $deleteurl->execute();
+        $deletepageblock->execute();
+    }
+
+    $page->setName($data['name']);
+    $page->setTitle($data['title']);
+    $page->setPublished(!is_null($data['published']));
+    $page->setPublic(!is_null($data['public']));
+    $language = $em->find('Model\Language', $data['language']);
+    $page->setLanguage($language);
+
+    //Url insertion
+    foreach ($data['url'] as $urlstring)
+        if (strlen($urlstring) > 2) {
+            $url = new \Model\Url();
+            $url->setUrl($urlstring);
+            $page->addUrl($url);
+        }
+
+    if (!$update) {
+        $em->persist($page);
+        $em->flush();
+    }
+
+    //Processing Blocks
+    for ($i=0;$i<count($data['block']['id']);$i++) {
+        $blockid = $data['block']['id'][$i];
+
+        if ($blockid == 0) {
+            //Insert new block
+            $block = new \Model\ContentBlock();
+        } else {
+            //Update existing block
+            $block = $em->find('Model\ContentBlock', $blockid);
+        }
+
+        //Sets block properties
+        $block->setName($data['block']['name'][$i]);
+        $block->setDescription($data['block']['description'][$i]);
+        $block->setBlockStyleClassName($data['block']['style'][$i]); //TODO Require classname as select block style value
+        $block->setBgurl($data['block']['bckurl'][$i]);
+        $block->setBgred($data['block']['bckred'][$i]);
+        $block->setBggreen($data['block']['bckgreen'][$i]);
+        $block->setBgblue($data['block']['bckblue'][$i]);
+        $block->setBgopacity($data['block']['bckopacity'][$i]);
+        $block->setBgrepeatx($data['block']['bckrepeatx'][$i]);
+        $block->setBgrepeaty($data['block']['bckrepeaty'][$i]);
+        $block->setBgsize($data['block']['bcksize'][$i]);
+
+        if (!is_null($data['block']['content'][$i]) && $data['block']['content'][$i] != "")
+            $block->setContent($data['block']['content'][$i]);
+
+        if ($blockid == 0)
+            $em->persist($block);
+        else
+            $em->merge($block);
+
+        $em->flush();
+
+        //Adding block to page
+        $page->addBlock($block, $i);
+    }
+
+    if ($update)
+        $em->merge($page);
+    else
+        $em->persist($page);
+
+    $em->flush();
+
+}
+
+/**
+ * Page Insertion
+ */
 if (isset($_POST['name']) && !isset($_GET['pageid'])) {
-	//Modalità salvataggio dati in inserimento
-	$sql = "INSERT INTO PAGE (NAME, TITLE, PUBLISHED, PUBLIC, LANGUAGE_ID) VALUES (?, ?, ?, ?, ?)";
-	$sql2 = "INSERT INTO URL (URL, PAGE_ID) VALUES (?, ?)";
-	$sql3 = "INSERT INTO BLOCK (NAME, DESCRIPTION, BLOCK_STYLE_ID, BG_URL, BG_RED, BG_GREEN, BG_BLUE, BG_OPACITY, BG_REPEATX, BG_REPEATY, BG_SIZE) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	$sql4 = "INSERT INTO BLOCK_CONTENT VALUES (?, ?)";
-	$sql5 = "UPDATE BLOCK SET NAME=?, DESCRIPTION=?, BLOCK_STYLE_ID=?, BG_URL=?, BG_RED=?, BG_GREEN=?,
-			 BG_BLUE=?, BG_OPACITY=?, BG_REPEATX=?, BG_REPEATY=?, BG_SIZE=? WHERE ID=?";
-	$sql6 = "UPDATE BLOCK_CONTENT SET CONTENT=? WHERE ID=?";
-	$sql7 = "INSERT INTO PAGE_BLOCK VALUES (?, ?, ?)";
-	
-	try {
-		$pdo->beginTransaction();
-		//Page Insertion
-		$statement = $pdo->prepare($sql);
-		$published = isset($_POST['published']);
-		$public = isset($_POST['public']);
-		$statement->execute(array($_POST['name'], $_POST['title'], $published, $public, $_POST['language']));
-		//Retrieving page id
-		$pageid = $pdo->lastInsertId();
-		//Url Insertion
-		$statement = $pdo->prepare($sql2);
-		foreach ($_POST['url'] as $url)
-			if ($url != "")
-				$statement->execute(array($url, $pageid));
-		//Processing Blocks
-		for ($i=0;$i<count($_POST['block']['id']);$i++) {
-			$blockid = $_POST['block']['id'][$i];
-			if ($blockid == 0) {
-				//Block Insertion
-				$statement = $pdo->prepare($sql3);
-				$statement->execute(array($_POST['block']['name'][$i], 
-										  $_POST['block']['description'][$i],
-										  $_POST['block']['style'][$i],
-										  $_POST['block']['bckurl'][$i],
-										  $_POST['block']['bckred'][$i],
-										  $_POST['block']['bckgreen'][$i],
-										  $_POST['block']['bckblue'][$i],
-										  $_POST['block']['bckopacity'][$i],
-										  $_POST['block']['bckrepeatx'][$i],
-										  $_POST['block']['bckrepeaty'][$i],
-										  $_POST['block']['bcksize'][$i]
-										  ));
-				$blockid = $pdo->lastInsertId();
-				$statement = $pdo->prepare($sql4);
-				$statement->execute(array($blockid, $_POST['block']['content'][$i]));
-			} else if ($_POST['block']['content'][$i] != "") {
-				//Block Update
-				//Update block properties
-				$statement = $pdo->prepare($sql5);
-				$statement->execute(array($_POST['block']['name'][$i], 
-										  $_POST['block']['description'][$i],
-										  $_POST['block']['style'][$i],
-										  $_POST['block']['bckurl'][$i],
-										  $_POST['block']['bckred'][$i],
-										  $_POST['block']['bckgreen'][$i],
-										  $_POST['block']['bckblue'][$i],
-										  $_POST['block']['bckopacity'][$i],
-										  $_POST['block']['bckrepeatx'][$i],
-										  $_POST['block']['bckrepeaty'][$i],
-										  $_POST['block']['bcksize'][$i],
-										  $blockid						  ));
-				//Update block content
-				$statement = $pdo->prepare($sql6);
-				$statement->execute(array($_POST['block']['content'][$i], $blockid));
-			}
-			//Adding block to page
-			$statement = $pdo->prepare($sql7);
-			$statement->execute(array($i, $blockid, $pageid));
-		}
-		$pdo->commit();
+    try {
+        $em->beginTransaction();
+        insertUpdateProcessing($em, $_POST);
+        $em->commit();
 		$OPERATION_COMPLETED = true;
-	} catch (PDOException $e) {
-		$pdo->rollback();
+	} catch (Exception $e) {
+        $em->rollback();
 		$EXCEPTION_THROWN = $e;
-		// echo "TRACE => ".$e->getTraceAsString();
-		// exit("\nEXCEPTION: ".$e->getMessage());
-	}
-	
+		echo "TRACE => ".$e->getTraceAsString();
+		exit("\nEXCEPTION: ".$e->getMessage());
+    }
 }
 
-//Modalità salvataggio dati in aggiornamento
-if (isset($_POST['name']) && isset($_GET['pageid'])) {
-	//Preparazione query
-	$sql1 = "UPDATE PAGE SET NAME=?, TITLE=?, PUBLISHED=?, PUBLIC=?, LANGUAGE_ID=? WHERE ID=?";
-	$sql2 = "DELETE FROM URL WHERE PAGE_ID=?";
-	$sql3 = "INSERT INTO URL (URL, PAGE_ID) VALUES (?, ?)";
-	$sql4 = "DELETE FROM PAGE_BLOCK WHERE PAGE_ID=?";
-	$sql5 = "INSERT INTO BLOCK (NAME, DESCRIPTION, BLOCK_STYLE_ID, BG_URL, BG_RED, BG_GREEN, BG_BLUE, BG_OPACITY,
-			 BG_REPEATX, BG_REPEATY, BG_SIZE) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	$sql6 = "UPDATE BLOCK SET NAME=?, DESCRIPTION=?, BLOCK_STYLE_ID=?, BG_URL=?, BG_RED=?, BG_GREEN=?,
-			 BG_BLUE=?, BG_OPACITY=?, BG_REPEATX=?, BG_REPEATY=?, BG_SIZE=? WHERE ID=?";
-	$sql7 = "INSERT INTO BLOCK_CONTENT VALUES (?, ?)";
-	$sql8 = "UPDATE BLOCK_CONTENT SET CONTENT=? WHERE ID=?";
-	$sql9 = "INSERT INTO PAGE_BLOCK VALUES (?, ?, ?)";
-	
-	//Prepare $sql6 query for updating blocks
-	$update_assoc = array( 
-					array( "NAME", $_POST['block']['description'] ), 
-					array( "DESCRIPTION", $_POST['block']['description'] ),
-					array( "BLOCK_STYLE_ID", $_POST['block']['style'] ),
-					array( "BG_URL", $_POST['block']['bckurl'] ),
-					array( "BG_RED", $_POST['block']['bckred'] ),
-					array( "BG_GREEN", $_POST['block']['bckgreen'] ),
-					array( "BG_BLUE", $_POST['block']['bckblue'] ),
-					array( "BG_OPACITY", $_POST['block']['bckopacity'] ),
-					array( "BG_REPEATX", $_POST['block']['bckrepeatx'] ),
-					array( "BG_REPEATY", $_POST['block']['bckrepeaty'] ),
-					array( "BG_SIZE", $_POST['block']['bcksize'] )		);
-	
-	
-	//Begin update
-	try {
-		$pdo->beginTransaction();
-		//Page Insertion
-		$statement = $pdo->prepare($sql1);
-		$published = isset($_POST['published']);
-		$public = isset($_POST['public']);
-		$statement->execute(array($_POST['name'], $_POST['title'], $published, $public, $_POST['language'], $_GET['pageid']));
-		//Url reset
-		$statement = $pdo->prepare($sql2);
-		$statement->execute( array($_GET['pageid']) );
-		//Url Insertion
-		$statement = $pdo->prepare($sql3);
-		foreach ($_POST['url'] as $url)
-			if ($url != "")
-				$statement->execute(array($url, $_GET['pageid']));
-		//Page Block reset
-		$statement = $pdo->prepare($sql4);
-		$statement->execute(array($_GET['pageid']));
-		//Processing Blocks
-		for ($i=0;$i<count($_POST['block']['id']);$i++) {
-			$blockid = $_POST['block']['id'][$i];
-			if ($blockid == 0) {
-				//Block Insertion
-				$statement = $pdo->prepare($sql5);
-				$statement->execute(array($_POST['block']['name'][$i],
-										  $_POST['block']['description'][$i],
-										  $_POST['block']['style'][$i],
-										  $_POST['block']['bckurl'][$i],
-										  $_POST['block']['bckred'][$i],
-										  $_POST['block']['bckgreen'][$i],
-										  $_POST['block']['bckblue'][$i],
-										  $_POST['block']['bckopacity'][$i],
-										  $_POST['block']['bckrepeatx'][$i],
-										  $_POST['block']['bckrepeaty'][$i],
-										  $_POST['block']['bcksize'][$i]		  ));
-				$blockid = $pdo->lastInsertId();
-				$statement = $pdo->prepare($sql7);
-				$statement->execute(array($blockid, $_POST['block']['content'][$i]));
-			} else {
-				//Block Update
-				//Update Block Info
-				$statement = $pdo->prepare($sql6);
-				$statement->execute(array($_POST['block']['name'][$i],
-										  $_POST['block']['description'][$i],
-										  $_POST['block']['style'][$i],
-										  $_POST['block']['bckurl'][$i],
-										  $_POST['block']['bckred'][$i],
-										  $_POST['block']['bckgreen'][$i],
-										  $_POST['block']['bckblue'][$i],
-										  $_POST['block']['bckopacity'][$i],
-										  $_POST['block']['bckrepeatx'][$i],
-										  $_POST['block']['bckrepeaty'][$i],
-										  $_POST['block']['bcksize'][$i],
-										  $blockid ));
-				if ($_POST['block']['content'][$i] != "") {
-					//Update Block Content Info
-					$statement = $pdo->prepare($sql8);
-					$statement->execute(array($_POST['block']['content'][$i], $blockid));
-				}
-			}
-			//Adding block to page
-			$statement = $pdo->prepare($sql9);
-			$statement->execute(array($i, $blockid, $_GET['pageid']));
-		}
-		$pdo->commit();
+/**
+ * Modalità salvataggio dati in aggiornamento
+ */
+if (!is_null($_POST['name']) && !is_null($_GET['pageid'])) {
+    try {
+        $em->beginTransaction();
+        insertUpdateProcessing($em, $_POST, $_GET['pageid']);
+        $em->commit();
 		$OPERATION_COMPLETED = true;
-	} catch (PDOException $e) {
-		$pdo->rollback();
+	} catch (Exception $e) {
+        $em->rollback();
 		$EXCEPTION_THROWN = $e;
-		// echo "TRACE => ".$e->getTraceAsString();
-		// exit("\nEXCEPTION: ".$e->getMessage());
+		echo "TRACE => ".$e->getTraceAsString();
+		exit("\nEXCEPTION: ".$e->getMessage());
 	}
 }
 
 //Modalità modifica
-$UPDATE_MODE = isset($_GET['pageid']) && $_GET['pageid'] != 0;
-if ($UPDATE_MODE) {
+$UPDATE_MODE = false;
+$page = null;
+if (!is_null($_GET['pageid']) && $_GET['pageid'] > 0) {
 	//Retrieving all informations about this page
-	$pagedata = array();
-	//Query Definition
-	$sql1 = "SELECT ID, NAME, TITLE, PUBLISHED, PUBLIC, LANGUAGE_ID FROM PAGE WHERE ID=?";
-	$sql2 = "SELECT URL FROM URL WHERE PAGE_ID=?";
-	$sql3 = "SELECT BLOCK_CONTENT.ID, BLOCK_CONTENT.CONTENT, BLOCK.NAME, BLOCK.DESCRIPTION, BLOCK.BLOCK_STYLE_ID, BG_URL,
-			 BG_RED, BG_GREEN, BG_BLUE, BG_OPACITY, BG_REPEATX, BG_REPEATY, BG_SIZE
-			 FROM BLOCK NATURAL JOIN BLOCK_CONTENT JOIN PAGE_BLOCK ON BLOCK_ID=BLOCK_CONTENT.ID WHERE PAGE_ID=? ORDER BY VIEWORDER";
 	try {
-		//Retrieving Page Data
-		$statement = $pdo->prepare($sql1);
-		$statement->execute(array($_GET['pageid']));
-		$row = $statement->fetch();
-		//Collecting data in array pagedata
-		$pagedata['id'] = $_GET['pageid'];
-		$pagedata['name'] = $row['NAME'];
-		$pagedata['title'] = $row['TITLE'];
-		$pagedata['published'] = $row['PUBLISHED']==1;
-		$pagedata['public'] = $row['PUBLIC']==1;
-		$pagedata['language_id'] = $row['LANGUAGE_ID'];
-		//Retrieving URL Data
-		$statement = $pdo->prepare($sql2);
-		$statement->execute(array($_GET['pageid']));
-		$pagedata['url'] = array();
-		foreach ($statement->fetchAll() as $row) {
-			//Collecting data in array pagedata
-			array_push($pagedata['url'], $row['URL']);
-		}
-		//Retrieving Block Data
-		$statement = $pdo->prepare($sql3);
-		$statement->execute(array($_GET['pageid']));
-		$pagedata['block']['id'] = array();
-		$pagedata['block']['content'] = array();
-		$pagedata['block']['name'] = array();
-		$pagedata['block']['description'] = array();
-		$pagedata['block']['style'] = array();
-		$pagedata['block']['bckurl'] = array();
-		$pagedata['block']['bckred'] = array();
-		$pagedata['block']['bckgreen'] = array();
-		$pagedata['block']['bckblue'] = array();
-		$pagedata['block']['bckopacity'] = array();
-		$pagedata['block']['bckrepeatx'] = array();
-		$pagedata['block']['bckrepeaty'] = array();
-		$pagedata['block']['bcksize'] = array();
-		foreach ($statement->fetchAll() as $row) {
-			//Collecting data in array pagedata
-			array_push($pagedata['block']['id'], $row['ID']);
-			array_push($pagedata['block']['content'], $row['CONTENT']);
-			array_push($pagedata['block']['name'], $row['NAME']);
-			array_push($pagedata['block']['description'], $row['DESCRIPTION']);
-			array_push($pagedata['block']['style'], $row['BLOCK_STYLE_ID']);
-			array_push($pagedata['block']['bckurl'], $row['BG_URL']);
-			array_push($pagedata['block']['bckred'], $row['BG_RED']);
-			array_push($pagedata['block']['bckgreen'], $row['BG_GREEN']);
-			array_push($pagedata['block']['bckblue'], $row['BG_BLUE']);
-			array_push($pagedata['block']['bckopacity'], $row['BG_OPACITY']);
-			array_push($pagedata['block']['bckrepeatx'], $row['BG_REPEATX']);
-			array_push($pagedata['block']['bckrepeaty'], $row['BG_REPEATY']);
-			array_push($pagedata['block']['bcksize'], $row['BG_SIZE']);
-		}
-	} catch (PDOException $e) {
+        $page = $em->find('Model\Page', $_GET['pageid']);
+        $UPDATE_MODE = !is_null($page);
+	} catch (Exception $e) {
 		$EXCEPTION_THROWN = $e;
 		// echo $e->getTraceAsString();
 		// exit("\nEXCEPTION: ".$e->getMessage());
 	}
 }
 ?>
+<!--suppress ALL -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -295,9 +187,6 @@ if ($UPDATE_MODE) {
 </head>
 
 <body>
-	<style>
-
-	</style>
 <div id="layout">
     <!-- Menu toggle -->
     <a href="#menu" id="menuLink" class="menu-link">
@@ -311,7 +200,7 @@ if ($UPDATE_MODE) {
 
     <div id="main">
     	<div id="toolbar">
-    		<h1 style="text-align: center; margin-top: 0px; color: white;">Nuova Pagina</h1>	
+    		<h1 style="text-align: center; margin-top: 0; color: white;">Nuova Pagina</h1>
     	</div>
     	<form class="pure-form pure-form-aligned" method="POST">
     	
@@ -328,22 +217,22 @@ if ($UPDATE_MODE) {
         		
         		<div class="pure-control-group">
         			<label>Nome</label>
-        			<input name="name" type="text" value="<?php (isset($pagedata) && print($pagedata['name'])); ?>">
+        			<input name="name" type="text" value="<?php (is_null($page) || print($page->getName())); ?>">
         		</div>
         		
         		<div class="pure-control-group">
         			<label>Titolo</label>
-        			<input name="title" type="text" value="<?php (isset($pagedata) && print($pagedata['title'])); ?>">
+        			<input name="title" type="text" value="<?php (is_null($page) || print($page->getTitle())); ?>">
         		</div>
         		
         		<div class="pure-control-group">
         			<label>Pubblicata</label>
-        			<input name="published" type="checkbox" <?php (isset($pagedata) && $pagedata['published'] && print("checked")); ?>>
+        			<input name="published" type="checkbox" <?php (is_null($page) || ($page->getPublished() && print("checked"))); ?>>
         		</div>
         		
         		<div class="pure-control-group">
         			<label>Pubblica</label>
-        			<input name="public" type="checkbox" <?php (isset($pagedata) && $pagedata['public'] && print("checked")); ?>>&nbsp;&nbsp;
+        			<input name="public" type="checkbox" <?php (is_null($page) || ($page->getPublic() && print("checked") )); ?>>&nbsp;&nbsp;
         			<button class="pure-button pure-button-primary" style="background: rgb(66, 184, 221);">Imposta gruppi abilitati</button> 
         		</div>
         		
@@ -351,14 +240,12 @@ if ($UPDATE_MODE) {
         			<label>Lingua</label>
         			<select name="language">
         				<?php
-        					$sql = "SELECT ID, DESCRIPTION FROM LANGUAGES";
-							$statement = $pdo->prepare($sql);
-							$statement->execute();
-							foreach ($statement->fetchAll() as $row) {
-								if (isset($pagedata) && $row['ID']==$pagedata['language_id'])
-									echo "<option value=\"".$row['ID']."\" selected>".$row['DESCRIPTION']."</option>";
+                            $languages = $em->getRepository('Model\Language')->findAll();
+							foreach ($languages as $l) {
+								if (is_null($page) || $page->getLanguage()->equals($l))
+									echo "<option value=\"".$l->getId()."\" selected>".$l->getDescription()."</option>";
 								else
-									echo "<option value=\"".$row['ID']."\">".$row['DESCRIPTION']."</option>";
+									echo "<option value=\"".$l->getId()."\">".$l->getDescription()."</option>";
 							}
 						?>
         			</select>
@@ -377,12 +264,12 @@ if ($UPDATE_MODE) {
 	        			</thead>
 	        			<?php
 	        			if ($UPDATE_MODE) {
-	        				foreach ($pagedata['url'] as $url) {
+                            foreach ($page->getPageUrls()->toArray() as $url) {
 	        					?>
 	        					<tr>
-			        				<td mode="0"><?php echo $url; ?></td>
+			        				<td mode="0"><?php echo $url->getUrl(); ?></td>
 									<td><i class="fa fa-pencil-square fa-2x modurl"></i>&nbsp; &nbsp;<i class="fa fa-minus-square fa-2x delurl"></i></td>
-									<input type="hidden" name="url[]" value="<?php echo $url; ?>">	
+									<input type="hidden" name="url[]" value="<?php echo $url->getUrl(); ?>">
 								</tr>
 	        					<?php
 	        				}
@@ -405,28 +292,32 @@ if ($UPDATE_MODE) {
         	<div id="blocks" style="padding: 20px;">
         		<?php
         		if ($UPDATE_MODE) {
-        			for ($i=0;$i<count($pagedata['block']['id']);$i++) {
-        				?>
+                    $numBlocks = 0;
+//                    var_dump($page->getPageBlocksArray());
+//                    exit();
+                    foreach ($page->getPageBlocksArray() as $pageBlock) {
+                        $block = $pageBlock->getBlock();
+                        ?>
         				<div class="blockeditor">
 				        	<fieldset class="blockdata">
-				        		<input type="hidden" name="block[id][]" value="<?php echo $pagedata['block']['id'][$i]; ?>">
-				    			<input type="hidden" name="block[name][]" value="<?php echo $pagedata['block']['name'][$i]; ?>">
-				    			<input type="hidden" name="block[description][]" value="<?php echo $pagedata['block']['description'][$i]; ?>">
-				    			<input type="hidden" name="block[style][]" value="<?php echo $pagedata['block']['style'][$i]; ?>">
+				        		<input type="hidden" name="block[id][]" value="<?php echo $block->getId(); ?>">
+				    			<input type="hidden" name="block[name][]" value="<?php echo $block->getName() ?>">
+				    			<input type="hidden" name="block[description][]" value="<?php echo $block->getDescription(); ?>">
+				    			<input type="hidden" name="block[style][]" value="<?php echo $block->getBlockStyleClassName(); ?>">
 				    			
-				    			<input type="hidden" name="block[bckurl][]" value="<?php echo $pagedata['block']['bckurl'][$i]; ?>">
-				    			<input type="hidden" name="block[bckred][]" value="<?php echo $pagedata['block']['bckred'][$i]; ?>">
-				    			<input type="hidden" name="block[bckgreen][]" value="<?php echo $pagedata['block']['bckgreen'][$i]; ?>">
-				    			<input type="hidden" name="block[bckblue][]" value="<?php echo $pagedata['block']['bckblue'][$i]; ?>">
-				    			<input type="hidden" name="block[bckopacity][]" value="<?php echo $pagedata['block']['bckopacity'][$i]; ?>">
-				    			<input type="hidden" name="block[bckrepeatx][]" value="<?php echo $pagedata['block']['bckrepeatx'][$i]; ?>">
-				    			<input type="hidden" name="block[bckrepeaty][]" value="<?php echo $pagedata['block']['bckrepeaty'][$i]; ?>">
-				    			<input type="hidden" name="block[bcksize][]" value="<?php echo $pagedata['block']['bcksize'][$i]; ?>">
+				    			<input type="hidden" name="block[bckurl][]" value="<?php echo $block->getBgurl(); ?>">
+				    			<input type="hidden" name="block[bckred][]" value="<?php echo $block->getBgred(); ?>">
+				    			<input type="hidden" name="block[bckgreen][]" value="<?php echo $block->getBggreen(); ?>">
+				    			<input type="hidden" name="block[bckblue][]" value="<?php echo $block->getBgblue(); ?>">
+				    			<input type="hidden" name="block[bckopacity][]" value="<?php echo $block->getBgopacity(); ?>">
+				    			<input type="hidden" name="block[bckrepeatx][]" value="<?php echo $block->getBgrepeatx(); ?>">
+				    			<input type="hidden" name="block[bckrepeaty][]" value="<?php echo $block->getBgrepeaty(); ?>">
+				    			<input type="hidden" name="block[bcksize][]" value="<?php echo $block->getBgsize(); ?>">
 				        	</fieldset>
 				        	<div class="blockcontentdiv">
-				        		<?php echo $pagedata['block']['content'][$i]; ?>
+				        		<?php echo $block->getContent(); //Assuming this is always a content block ?>
 				        	</div>
-				        	<textarea id="tmceeditor<?php echo $i; ?>" class="blockcontent" name="block[content][]" style="display: none;"></textarea>
+				        	<textarea id="tmceeditor<?php echo $numBlocks++; ?>" class="blockcontent" name="block[content][]" style="display: none;"></textarea>
 				        	<div class="blockbuttons" style="margin-top: 5px; clear: both;">
 				        		<button type="button" class="pure-button pure-button-primary upbutton">Su</button>
 					    		<button type="button" class="pure-button pure-button-primary downbutton">Giu</button>
@@ -500,7 +391,7 @@ if ($UPDATE_MODE) {
 			<div class="pure-control-group">
 				<label>Stile Blocco</label>
 				<select id="nbm-style">
-					<?php blockStyleComboBox($pdo); ?>
+					<?php blockStyleComboBox(); ?>
 				</select>
 			</div>
 		</fieldset>
@@ -519,19 +410,14 @@ if ($UPDATE_MODE) {
 				</tr>
 			</thead>
 			<?php
-			//Retrieve blocks
-			$sql = "SELECT BLOCK.ID, BLOCK.NAME, BLOCK_STYLE.NAME 'STYLE'
-					FROM BLOCK, BLOCK_STYLE
-					WHERE BLOCK.BLOCK_STYLE_ID = BLOCK_STYLE.ID";
+			//Print block list
+            $blocks = $em->getRepository('Model\Block')->findAll();
 			
-			$statement = $pdo->prepare($sql);
-			$statement->execute();
-			
-			foreach ($statement->fetchAll() as $row) {
+			foreach ($blocks as $block) {
 				echo "<tr>";
-				echo "<td><input class=\"nbm-blockcheck\" type=\"checkbox\" value=\"".$row['ID']."\"></td>";
-				echo "<td>".$row['NAME']."</td>";
-				echo "<td>".$row['STYLE']."</td>";
+				echo "<td><input class=\"nbm-blockcheck\" type=\"checkbox\" value=\"".$block->getId()."\"></td>";
+				echo "<td>".$block->getName()."</td>";
+				echo "<td>".$block->getBlockStyleClassName()."</td>"; //TODO Will print block style name not classname
 				echo "</tr>";
 			}
 			
@@ -565,7 +451,7 @@ if ($UPDATE_MODE) {
 			<div class="pure-control-group">
 				<label>Stile Blocco</label>
 				<select id="bpd-blockstyle">
-					<?php blockStyleComboBox($pdo); ?>
+					<?php blockStyleComboBox(); ?>
 				</select>
 			</div><br>
 			
@@ -618,7 +504,7 @@ if ($UPDATE_MODE) {
 if ($UPDATE_MODE) {
 	?>
 	<script type="text/javascript">
-		editor_idx=<?php echo count($pagedata['block']['id']); ?>;
+		editor_idx=<?php echo $numBlocks; ?>;
 	</script>
 	<?php
 }

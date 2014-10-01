@@ -1,9 +1,9 @@
 <!DOCTYPE HTML>
 <?php
 require_once("menu.php");
-require_once("../php/Connection.php");
+require_once("../bootstrap.php");
 require_once("dialogs.php");
-$pdo = Connection::getPDO();
+$em = initializeEntityManager("../");
 
 //TODO: Verify html session
 ?>
@@ -55,13 +55,11 @@ $pdo = Connection::getPDO();
         		
         		<tbody>
         		<?php
-        			$sql = "SELECT ID, NAME, TITLE, PUBLISHED FROM PAGE";
-					$statement = $pdo->prepare($sql);
-					$statement->execute();
-					foreach ($statement->fetchAll() as $row) {
-						$published = ($row['PUBLISHED'] == 1) ? "Sì" : "No";
-						echo "<tr><td class=\"idcell\">".$row['ID']."</td><td>".$row['NAME']."</td><td>".$row['TITLE']."</td><td>".$published."</td>
-						<td><a href=\"newpag.php?pageid=".$row['ID']."\"><i class=\"fa  fa-pencil-square fa-lg\"></i></a><a href=\"#\" class=\"delpage\"><i class=\"fa fa-minus-square fa-lg\"></i></a></td></tr>";
+                    $pages = $em->getRepository('Model\Page')->findAll();
+					foreach ($pages as $page) {
+						$published = ($page->getPublished() == 1) ? "Sì" : "No";
+						echo "<tr><td class=\"idcell\">".$page->getId()."</td><td>".$page->getName()."</td><td>".$page->getTitle()."</td><td>".$published."</td>
+						<td><a href=\"newpag.php?pageid=".$page->getId()."\"><i class=\"fa  fa-pencil-square fa-lg\"></i></a><a href=\"#\" class=\"delpage\"><i class=\"fa fa-minus-square fa-lg\"></i></a></td></tr>";
 					}
         		?>
         		<tr><td colspan="5" style="text-align: center;"><a href="newpag.php"><i class="fa fa-plus-square fa-2x"></i></a></td></tr>

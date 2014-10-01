@@ -1,18 +1,28 @@
 <?php
 
+use \Model\Language;
+
 class FlagLanguageBar implements LanguageBar {
+
+    private $languages;
+    private $baseurl;
+
+    public function __construct(array $languages, $baseurl) {
+        $this->languages = $languages;
+        $this->baseurl = $baseurl;
+    }
 	
-	public function getHTML(array $languages) {
+	public function getHTML() {
 		$html = "";
 		//print_r($_GET);
-		foreach ($languages as $language) {
+		foreach ($this->languages as $language) {
 			$html .= "<a href=\"".$this->generateURLForLanguage($language)."\"><img class=\"languageflag\" src=\"".$language->getFlagImageURL()."\" /></a>";
 		}
 		return $html;
 	}
 	
 	private function generateURLForLanguage(Language $language) {
-		$exploded = explode("/", $_SERVER['REQUEST_URI']);
+		$exploded = explode("/", $this->baseurl);
 		
 		if ($exploded[count($exploded)-1] == "")
 			array_pop($exploded);
@@ -39,7 +49,7 @@ class FlagLanguageBar implements LanguageBar {
 		
 		return $string;
 	}
-	
+
 }
 
 ?>

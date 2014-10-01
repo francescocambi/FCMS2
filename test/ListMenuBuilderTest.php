@@ -7,6 +7,8 @@
 
 namespace test;
 
+use Model\Menu;
+use Model\MenuItem;
 
 class ListMenuBuilderTest extends \PHPUnit_Framework_TestCase {
 
@@ -14,17 +16,44 @@ class ListMenuBuilderTest extends \PHPUnit_Framework_TestCase {
 
     public function setUp() {
 
-        $items = array(
-            new \MenuItem(0,"item_a","url_a",0,0,array(
-                new \MenuItem(1,"item_a1","url_a1",0,0,NULL),
-                new \MenuItem(2,"item_a2","url_a2",0,0,array(
-                    new \MenuItem(3,"item_a3","url_a3",0,0,NULL)
-                ))
-            )),
-            new \MenuItem(4,"item_b","url_b",0,0,NULL)
-        );
+        $this->menu = new Menu();
+        $this->menu->setName("test_null");
 
-        $this->menu = new \Menu(0,"test_menu",null,$items);
+        $item1 = new MenuItem();
+        $item1->setLabel("item_a");
+        $item1->setUrl("url_a");
+        $item1->setItemOrder(0);
+        $item1->setHidden(false);
+        $this->menu->addMenuItem($item1);
+
+        $itema1 = new MenuItem();
+        $itema1->setLabel("item_a1");
+        $itema1->setUrl("url_a1");
+        $itema1->setItemOrder(0);
+        $itema1->setHidden(false);
+        $item1->addChild($itema1);
+
+        $itema2 = new MenuItem();
+        $itema2->setLabel("item_a2");
+        $itema2->setUrl("url_a2");
+        $itema2->setItemOrder(1);
+        $itema2->setHidden(false);
+        $item1->addChild($itema2);
+
+        $itema3 = new MenuItem();
+        $itema3->setLabel("item_a3");
+        $itema3->setUrl("url_a3");
+        $itema3->setItemOrder(2);
+        $itema3->setHidden(false);
+        $itema2->addChild($itema3);
+
+        $item2 = new MenuItem();
+        $item2->setLabel("item_b");
+        $item2->setUrl("url_b");
+        $item2->setItemOrder(1);
+        $item2->setHidden(false);
+        $this->menu->addMenuItem($item2);
+
     }
 
     public function testGenerateMenuHtml() {

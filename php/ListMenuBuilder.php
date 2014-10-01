@@ -4,7 +4,7 @@ class ListMenuBuilder implements MenuBuilder {
 	
 	private $menuHTML = "";
 	
-	public function generateFor(HierarchicalMenu $menu) {
+	public function generateFor(Model\HierarchicalMenu $menu) {
 		$this->menuHTML .= "<ul>";
 		$children = $menu->getChildren();
             foreach ($children as $child) {

@@ -11,16 +11,25 @@ class Request {
 		$this->language = $language;
 		$this->user = $user;
 	}
-	
-	public function getPage() {
+
+    /**
+     * @return Model\Page
+     */
+    public function getPage() {
 		return $this->page;
 	}
-	
-	public function getLanguage() {
+
+    /**
+     * @return Model\Language
+     */
+    public function getLanguage() {
 		return $this->language;
 	}
-	
-	public function getUser() {
+
+    /**
+     * @return Model\User
+     */
+    public function getUser() {
 		return $this->user;
 	}
 }

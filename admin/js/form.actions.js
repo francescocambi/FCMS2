@@ -238,7 +238,6 @@ $("#nbm-addexist").click(function() {
 		cloned.children().first().children().filter('[name="block[id][]"]').val(blockid);
 		
 		$.getJSON('retrieveBlock.php?blockid='+blockid, function(data) {
-			alert(data);
 			cloned.find('[name="block[id][]"]').val(data.ID);
 			cloned.find('[name="block[name][]"]').val(data.NAME);
 			cloned.find('[name="block[description][]"]').val(data.DESCRIPTION);
@@ -253,12 +252,7 @@ $("#nbm-addexist").click(function() {
 			cloned.find('[name="block[bckrepeaty][]"]').val(data.BG_REPEATY);
 			cloned.find('[name="block[bcksize][]"]').val(data.BG_SIZE);
 		});
-		
-		// $.ajax({
-			// url: "retrieveBlockContent.php?blockid="+blockid
-		// }).done(function(data) {
-			// cloned.children().filter(".blockcontentdiv").html(data);
-		// });
+
 	});
 	$("#nbm-insertblockform")[0].reset();
 	$("#newblockmodal").dialog("close");

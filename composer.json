@@ -5,7 +5,7 @@
         "phpunit/phpunit-story": "*",
         "phpunit/php-invoker": "*",
         "ext-xdebug" : ">=2.0.5",
-        "propel/propel": "~2.0@dev"
+        "doctrine/orm" : "*"
     },
     "autoload": {
         "psr-0": {"": "php"}

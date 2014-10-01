@@ -1,32 +1,15 @@
 <?php
 //require_once('php/InitialLoader.php');
 error_reporting(E_ERROR);
-require_once("vendor/autoload.php");
-$pagedao = new dao\PageDao();
-// Rileva la pagina da visualizzare analizzando la querystring nell'url
-if (isset($_GET['id'])) {
-	$page = $pagedao->getById($_GET['id']);
-// } else if (isset($_GET['name'])) {
-	// $page = $pagedao->getByName($_GET['name']);
-} else if (isset($_GET['url']) && $_GET['url'] != "") {
-	$page = $pagedao->getByURL($_GET['url']);
-}
-if ($page == null) {
-	$page = $pagedao->getByName("home");
-}
-// Se la pagina non è pubblica deve rilevare l'utente connesso
-// e controllare se l'utente ha i permessi per visualizzare la pagina
-if (!$page->isPublic()) {
-	session_start();
-	// $user = usa $_SESSION['userid'] per tirare fuori un oggetto User 
-	if ($_SESSION['userid'] == 0 || $page->canBeViewedBy($user))
-		$page = $pagedao->getByName("home");
-}
-$languagedao = new dao\LanguageDao();
-if (isset($_GET['lang']))
-	$language = $languagedao->getByCode($_GET['lang']);
-else
-	$language=$languagedao->getByCode('it');
+require_once("bootstrap.php");
+$em = initializeEntityManager("./");
+
+$requestmanager = new GETRequestManager($em);
+$request = $requestmanager->getRequest($_GET, null);
+
+$page = $request->getPage();
+$language = $request->getLanguage();
+if (is_null($page) || is_null($language)) exit();
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -39,14 +22,10 @@ else
 	</head>
 
 		<?php
-		//Provvisorio FIXME
-		$sql = "SELECT SET_VALUE FROM SETTINGS WHERE SET_KEY='BODY_BG'";
-		$stat = Connection::getPDO()->prepare($sql);
-		$stat->execute();
-		$row = $stat->fetch();
+        $bodyBg = $em->getRepository('\Model\Setting')->findOneBy(array( "settingKey" => "BODY_BG"))->getSettingValue();
 		$cssstring = "";
-		if ($row['SET_VALUE'] != "")
-			$cssstring = "background: url('".$row['SET_VALUE']."');"; 
+		if ($bodyBg != "")
+			$cssstring = "background: url('".$bodyBg."');";
 		?>
 		
 	<body style="<?php echo $cssstring; ?>">
@@ -54,23 +33,25 @@ else
 		<div id="head_wrapper"><div id="head">
 			<div id="lang">
 				<?php
-					$languageBar = new FlagLanguageBar();
-					echo $languageBar->getHTML($languagedao->getAll());
+                    $languages = $em->getRepository('\Model\Language')->findAll();
+					$languageBar = new FlagLanguageBar($languages, $_SERVER['REQUEST_URI']);
+					echo $languageBar->getHTML();
 				?>
 			</div>
 		</div></div>
 		
 		<div id="menu">
 			<?php 
-			$menuBuilder = new ListMenuBuilder();
-			$menuBuilder->generateFor($language->getMenu());
-			echo $menuBuilder->getHTML();
+                $menuBuilder = new ListMenuBuilder();
+                $menuBuilder->generateFor($request->getLanguage()->getMenu());
+                echo $menuBuilder->getHTML();
 			?>
 		</div>
 		
 		<?php
-		foreach($page->getBlocks() as $block)
-			echo $block->getHTML($language);
+            foreach ($page->getPageBlocks()->toArray() as $pageBlock) {
+                echo $pageBlock->getBlock()->getHTML(null);
+            }
 		?>
 		
 	</body>

@@ -1,16 +1,17 @@
 <?php
-require_once("../php/Connection.php");
-$pdo = Connection::getPDO();
+require_once("../bootstrap.php");
+$em = initializeEntityManager("../");
 
-if (isset($_POST['setkey']) && $_POST['setkey'] != "") {
-	$sql = "UPDATE SETTINGS SET SET_VALUE=? WHERE SET_KEY=?";
+if (!is_null($_POST['setkey'])) {
+    $setting = $em->find('Model\Setting', $_POST['setkey']);
+    $setting->setSettingValue($_POST['setvalue']);
 	try {
-		$statement = $pdo->prepare($sql);
-		$statement->execute(array($_POST['setvalue'], $_POST['setkey']));
+		$em->merge($setting);
+        $em->flush();
 		exit("OK");
 	} catch (PDOException $e) {
 		echo "EXCEPTION => ".$e->getMessage();
-		exit("TRACE => ".$e->getTraceAsString());
+		exit("\n\nTRACE => ".$e->getTraceAsString());
 	}
 }
 
@@ -66,14 +67,12 @@ require_once("dialogs.php");
         		
         		<tbody>
         			<?php
-        				$sql = "SELECT ID, SET_KEY, SET_VALUE FROM SETTINGS";
-						$statement = $pdo->prepare($sql);
-						$statement->execute();
-						foreach ($statement->fetchAll() as $row) {
+                        $settings = $em->getRepository('Model\Setting')->findAll();
+        				foreach ($settings as $setting) {
 							?>
 							<tr>
-								<td class="setkey"><?php echo $row['SET_KEY']; ?></td>
-								<td class="setvalue"><?php echo $row['SET_VALUE']; ?></td>
+								<td class="setkey"><?php echo $setting->getSettingKey(); ?></td>
+								<td class="setvalue"><?php echo $setting->getSettingValue(); ?></td>
 								<td class="pure-form valeditor" style="display: none;"><input type="text" id="custombg" class="txteditor">
 									<button type="button" class="pure-button openfileman">Sfoglia</button>
 								</td>

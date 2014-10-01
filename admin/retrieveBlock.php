@@ -1,23 +1,36 @@
 <?php
 
-require_once("../php/Connection.php");
+require_once("../bootstrap.php");
+
+$em = initializeEntityManager("../");
 
 //TODO: Verify html session
 
-$pdo = Connection::getPDO();
+$requestedBlock = $em->find('Model\ContentBlock', $_GET['blockid']);
 
-$sql = "SELECT BLOCK.ID, BLOCK_CONTENT.ID, BLOCK_CONTENT.CONTENT, BLOCK.NAME, BLOCK.DESCRIPTION, BLOCK.BLOCK_STYLE_ID, BG_URL,
-			 BG_RED, BG_GREEN, BG_BLUE, BG_OPACITY, BG_REPEATX, BG_REPEATY, BG_SIZE
-			 FROM BLOCK NATURAL JOIN BLOCK_CONTENT WHERE BLOCK.ID=:blockid";
+if (is_null($requestedBlock)) exit('{}');
 
-$statement = $pdo->prepare($sql);
-$statement->bindParam("blockid", $_GET['blockid']);
-$statement->execute();
+$mapping = array(
+    "ID" => $requestedBlock->getId(),
+    "NAME" => $requestedBlock->getName(),
+    "DESCRIPTION" => $requestedBlock->getDescription(),
+    "BLOCK_STYLE_ID" => $requestedBlock->getBlockStyleClassName(),
+    "BG_URL" => $requestedBlock->getBgurl(),
+    "BG_RED" => $requestedBlock->getBgred(),
+    "BG_GREEN" => $requestedBlock->getBggreen(),
+    "BG_BLUE" => $requestedBlock->getBgblue(),
+    "BG_OPACITY" => $requestedBlock->getBgopacity(),
+    "BG_REPEATX" => $requestedBlock->getBgrepeatx(),
+    "BG_REPEATY" => $requestedBlock->getBgrepeaty(),
+    "BG_SIZE" => $requestedBlock->getBgsize(),
+    "CONTENT" => $requestedBlock->getContent()
+);
+
+//Encode object to JSON and print
 
 $result_string = "{";
-$row = $statement->fetch(PDO::FETCH_ASSOC);
 
-foreach ($row as $key => $value) {
+foreach ($mapping as $key => $value) {
 	$result_string .= "\t".json_encode($key).": ".json_encode($value).",\n";
 }
 $result_string = substr($result_string, 0, strlen($result_string)-2);
@@ -25,4 +38,3 @@ $result_string .= "\n}";
 
 echo $result_string;
 
-?>
