@@ -91,8 +91,8 @@ migrate_table($oldDbPdo, $newDbPdo, "BLOCK_CONTENT", "ContentBlock", array(
     "CONTENT" => "content"
 ));
 
-//Table: GROUPS -> Group
-migrate_table($oldDbPdo, $newDbPdo, "GROUPS", "Group", array(
+//Table: GROUPS -> AccessGroup
+migrate_table($oldDbPdo, $newDbPdo, "GROUPS", "AccessGroup", array(
     "ID" => "id",
     "NAME" => "name",
     "DESCRIPTION" => "description"

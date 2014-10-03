@@ -2,18 +2,7 @@
 require_once("../bootstrap.php");
 $em = initializeEntityManager("../");
 
-if (!is_null($_POST['setkey'])) {
-    $setting = $em->find('Model\Setting', $_POST['setkey']);
-    $setting->setSettingValue($_POST['setvalue']);
-	try {
-		$em->merge($setting);
-        $em->flush();
-		exit("OK");
-	} catch (PDOException $e) {
-		echo "EXCEPTION => ".$e->getMessage();
-		exit("\n\nTRACE => ".$e->getTraceAsString());
-	}
-}
+require_once("checkSessionRedirect.php");
 
 require_once("menu.php");
 require_once("dialogs.php");
@@ -136,7 +125,7 @@ $('.btnsave').click(function(event) {
 	row.find(".btnmod").show();
 	
 	//Save setvalue on db
-	$.post('gestsettings.php', {setkey: setkey, setvalue: setvalue}, function (response) {
+	$.post('settingsws.php', {setkey: setkey, setvalue: setvalue}, function (response) {
 		if (response == "OK") {
 			//Show Operation complete dialog
 			$("#successful-op-dialog").dialog("open");

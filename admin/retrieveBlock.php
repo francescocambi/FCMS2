@@ -4,7 +4,7 @@ require_once("../bootstrap.php");
 
 $em = initializeEntityManager("../");
 
-//TODO: Verify html session
+require_once("checkSessionForbidden.php");
 
 $requestedBlock = $em->find('Model\ContentBlock', $_GET['blockid']);
 

@@ -1,8 +1,14 @@
+<?php
+require_once("../bootstrap.php");
+$em = initializeEntityManager("../");
+
+require_once("checkSessionRedirect.php");
+
+?>
+
 <!DOCTYPE HTML>
 <?php
 require_once("menu.php");
-
-//TODO: Verify html session
 ?>
 <html lang="it">
 <head>

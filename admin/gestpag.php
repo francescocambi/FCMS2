@@ -5,7 +5,7 @@ require_once("../bootstrap.php");
 require_once("dialogs.php");
 $em = initializeEntityManager("../");
 
-//TODO: Verify html session
+require_once("checkSessionRedirect.php");
 ?>
 <html lang="it">
 <head>

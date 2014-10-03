@@ -11,7 +11,6 @@ class GETRequestManager implements RequestManager {
         $this->em = $em;
     }
 
-	//TODO: Definire dove prendere i dao
 	public function getRequest() {
         $params = func_get_args();
 		$get = $params[0];
