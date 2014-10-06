@@ -6,6 +6,19 @@
 	background: rgb(64,64,64);
 }
 
+table {
+    border-spacing: 0px;
+}
+
+table td {
+    padding: 0px;
+}
+
+/* Value this to add space between text and table edges
+table td p, table td h1, table td h2, table td span {
+    margin: 2px;
+} */
+
 #head {
 	width: 75%; /* 1000px */
 	height: 90px;
@@ -98,7 +111,7 @@
 	/* background-size: 100%; */
 	background: rgb(1,113,186);
 	min-width: 700px;
-	width: 100%
+	width: 100%;
 	margin: 0px;
 	margin-top: 5px;
 }
