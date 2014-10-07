@@ -7,6 +7,8 @@ function print_menu($selected) {
 	$MENU = array(
 		"Home" => "home.php",
 		"Gestione Pagine" => "gestpag.php",
+        "Gestione Blocchi" => "gestblock.php",
+        "Gestione Menu" => "gestmenu.php",
 		"Impostazioni" => "gestsettings.php"
 	);
 

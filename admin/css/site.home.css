@@ -39,6 +39,12 @@ legend {
 .green-button {
 	background: rgb(28, 184, 65);
 }
+.red-border-input {
+    border-color: rgb(202, 60, 60);
+}
+.green-border-input {
+    border-color: rgb(28, 184, 65);
+}
 /*
 Add transition to containers so they can push in and out.
 */

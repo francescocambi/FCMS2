@@ -24,7 +24,7 @@ function blockStyleComboBox() {
 
 /**
  * @param $em Doctrine\ORM\EntityManager
- * @param $_POST array
+ * @param $data array
  * @param null $pageid int
  */
 function insertUpdateProcessing($em, $data, $pageid = null) {
@@ -74,39 +74,43 @@ function insertUpdateProcessing($em, $data, $pageid = null) {
     for ($i=0;$i<count($data['block']['id']);$i++) {
         $blockid = $data['block']['id'][$i];
 
-        if ($blockid == 0) {
-            //Insert new block
-            $block = new \Model\ContentBlock();
-        } else {
-            //Update existing block
-            $block = $em->find('Model\ContentBlock', $blockid);
+        //If block is new and content is empty, skip this block
+        if ( !($blockid == 0 && strlen($data['block']['content'][$i]) == 0) ) {
+
+            if ($blockid == 0) {
+                //Insert new block
+                $block = new \Model\ContentBlock();
+            } else {
+                //Update existing block
+                $block = $em->find('Model\ContentBlock', $blockid);
+            }
+
+            //Sets block properties
+            $block->setName($data['block']['name'][$i]);
+            $block->setDescription($data['block']['description'][$i]);
+            $block->setBlockStyleClassName($data['block']['style'][$i]);
+            $block->setBgurl($data['block']['bckurl'][$i]);
+            $block->setBgred($data['block']['bckred'][$i]);
+            $block->setBggreen($data['block']['bckgreen'][$i]);
+            $block->setBgblue($data['block']['bckblue'][$i]);
+            $block->setBgopacity($data['block']['bckopacity'][$i]);
+            $block->setBgrepeatx($data['block']['bckrepeatx'][$i]);
+            $block->setBgrepeaty($data['block']['bckrepeaty'][$i]);
+            $block->setBgsize($data['block']['bcksize'][$i]);
+
+            if (!is_null($data['block']['content'][$i]) && $data['block']['content'][$i] != "")
+                $block->setContent($data['block']['content'][$i]);
+
+            if ($blockid == 0)
+                $em->persist($block);
+            else
+                $em->merge($block);
+
+            $em->flush();
+
+            //Adding block to page
+            $page->addBlock($block, $i);
         }
-
-        //Sets block properties
-        $block->setName($data['block']['name'][$i]);
-        $block->setDescription($data['block']['description'][$i]);
-        $block->setBlockStyleClassName($data['block']['style'][$i]); //TODO Require classname as select block style value
-        $block->setBgurl($data['block']['bckurl'][$i]);
-        $block->setBgred($data['block']['bckred'][$i]);
-        $block->setBggreen($data['block']['bckgreen'][$i]);
-        $block->setBgblue($data['block']['bckblue'][$i]);
-        $block->setBgopacity($data['block']['bckopacity'][$i]);
-        $block->setBgrepeatx($data['block']['bckrepeatx'][$i]);
-        $block->setBgrepeaty($data['block']['bckrepeaty'][$i]);
-        $block->setBgsize($data['block']['bcksize'][$i]);
-
-        if (!is_null($data['block']['content'][$i]) && $data['block']['content'][$i] != "")
-            $block->setContent($data['block']['content'][$i]);
-
-        if ($blockid == 0)
-            $em->persist($block);
-        else
-            $em->merge($block);
-
-        $em->flush();
-
-        //Adding block to page
-        $page->addBlock($block, $i);
     }
 
     if ($update)
@@ -167,7 +171,6 @@ if (!is_null($_GET['pageid']) && $_GET['pageid'] > 0) {
 	}
 }
 ?>
-<!--suppress ALL -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -202,7 +205,7 @@ if (!is_null($_GET['pageid']) && $_GET['pageid'] > 0) {
     	<div id="toolbar">
     		<h1 style="text-align: center; margin-top: 0; color: white;">Nuova Pagina</h1>
     	</div>
-    	<form class="pure-form pure-form-aligned" method="POST">
+    	<form class="pure-form pure-form-aligned" id="page-editor-form" method="POST">
     	
         	<!-- <div style="width: 550px; height: 350px; padding: 15px; float: left;">   	 -->
         	<div class="pure-u-12-24" style="padding: 10px;">
@@ -250,7 +253,7 @@ if (!is_null($_GET['pageid']) && $_GET['pageid'] > 0) {
 						?>
         			</select>
         		</div>
-        		<button type="submit" class="pure-button pure-button-primary">Salva tutto</button>
+        		<button type="button" id="save-all" class="pure-button pure-button-primary">Salva tutto</button>
         	</div>
         	
         	<!-- <div style="width: 500px; height: 320px; padding: 15px; float: right; overflow: scroll;"> -->

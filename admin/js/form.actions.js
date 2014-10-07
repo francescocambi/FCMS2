@@ -131,6 +131,8 @@ $(".delblock").click(function delblock(event) {
 $("#newblock").click(function () {
 	//Apertura dialog apposita
 	$("#newblockmodal").dialog("open");
+    var nbmname = $("#newblockmodal").find("#nbm-name");
+    nbmname.css("border", "solid 1px #ccc");
 });
 
 //Funzione aggiunta blocco
@@ -218,48 +220,58 @@ function nbmtabcontrol(target) {
 
 //Azione pulsante aggiunta nuovo blocco
 $("#nbm-addnew").click(function() {
-	var cloned = newblock(true);
-	cloned.find(".modblock").hide();
-	cloned.children().first().children().filter("input").each(function(index, element) {
-		if ($(element).attr("name") == "block[name][]") {
-			$(element).val($("#nbm-name").val());
-		} else if ($(element).attr("name") == "block[description][]") {
-			$(element).val($("#nbm-description").val());
-		} else if ($(element).attr("name") == "block[style][]") {
-			$(element).val($("#nbm-style").val());
-		}
-	});
-	$("#nbm-newblockform")[0].reset();
-	$("#newblockmodal").dialog("close");
+    //Check if blockname is valid
+    var namefield = $("#nbm-name");
+    checkBlockNameUnique(0, namefield[0], function (nameisvalid) {
+
+        if (!nameisvalid) {
+            namefield[0].focus();
+            return;
+        }
+
+        var cloned = newblock(true);
+        cloned.find(".modblock").hide();
+        cloned.children().first().children().filter("input").each(function(index, element) {
+            if ($(element).attr("name") == "block[name][]") {
+                $(element).val($("#nbm-name").val());
+            } else if ($(element).attr("name") == "block[description][]") {
+                $(element).val($("#nbm-description").val());
+            } else if ($(element).attr("name") == "block[style][]") {
+                $(element).val($("#nbm-style").val());
+            }
+        });
+        $("#nbm-newblockform")[0].reset();
+        $("#newblockmodal").dialog("close");
+    });
 });
+
 
 //Azione pulsante aggiunta blocco esistente
 $("#nbm-addexist").click(function() {
-	$(".nbm-blockcheck:checked").each(function (index, element) {
-		var cloned = newblock(false);
-		cloned.find(".applyblock").hide();
-		var blockid = $(element).val();
-		cloned.children().first().children().filter('[name="block[id][]"]').val(blockid);
-		
-		$.getJSON('retrieveBlock.php?blockid='+blockid, function(data) {
-			cloned.find('[name="block[id][]"]').val(data.ID);
-			cloned.find('[name="block[name][]"]').val(data.NAME);
-			cloned.find('[name="block[description][]"]').val(data.DESCRIPTION);
-			cloned.find(".blockcontentdiv").html(data.CONTENT);
-			cloned.find('[name="block[style][]"]').val(data.BLOCK_STYLE_ID);
-			cloned.find('[name="block[bckurl][]"]').val(data.BG_URL);
-			cloned.find('[name="block[bckred][]"]').val(data.BG_RED);
-			cloned.find('[name="block[bckgreen][]"]').val(data.BG_GREEN);
-			cloned.find('[name="block[bckblue][]"]').val(data.BG_BLUE);
-			cloned.find('[name="block[bckopacity][]"]').val(data.BG_OPACITY);
-			cloned.find('[name="block[bckrepeatx][]"]').val(data.BG_REPEATX);
-			cloned.find('[name="block[bckrepeaty][]"]').val(data.BG_REPEATY);
-			cloned.find('[name="block[bcksize][]"]').val(data.BG_SIZE);
-		});
+    $(".nbm-blockcheck:checked").each(function (index, element) {
+        var cloned = newblock(false);
+        cloned.find(".applyblock").hide();
+        var blockid = $(element).val();
+        cloned.children().first().children().filter('[name="block[id][]"]').val(blockid);
+        $.getJSON('blockws.php?action=get&blockid='+blockid, function(data) {
+            cloned.find('[name="block[id][]"]').val(data.ID);
+            cloned.find('[name="block[name][]"]').val(data.NAME);
+            cloned.find('[name="block[description][]"]').val(data.DESCRIPTION);
+            cloned.find(".blockcontentdiv").html(data.CONTENT);
+            cloned.find('[name="block[style][]"]').val(data.BLOCK_STYLE_ID);
+            cloned.find('[name="block[bckurl][]"]').val(data.BG_URL);
+            cloned.find('[name="block[bckred][]"]').val(data.BG_RED);
+            cloned.find('[name="block[bckgreen][]"]').val(data.BG_GREEN);
+            cloned.find('[name="block[bckblue][]"]').val(data.BG_BLUE);
+            cloned.find('[name="block[bckopacity][]"]').val(data.BG_OPACITY);
+            cloned.find('[name="block[bckrepeatx][]"]').val(data.BG_REPEATX);
+            cloned.find('[name="block[bckrepeaty][]"]').val(data.BG_REPEATY);
+            cloned.find('[name="block[bcksize][]"]').val(data.BG_SIZE);
+        });
 
-	});
-	$("#nbm-insertblockform")[0].reset();
-	$("#newblockmodal").dialog("close");
+    });
+    $("#nbm-insertblockform")[0].reset();
+    $("#newblockmodal").dialog("close");
 });
 //Handler errori ajax
 $(document).ajaxError(function (event, jqxhr, settings, thrownError) {
@@ -311,6 +323,7 @@ $(".blockproperties").click(function(event) {
 	openBlockPropertiesOwner = $(event.target).parent().parent();
 	//Precompila form con dati blocco
 	$("#bpd-form")[0].reset();
+    $("#bpd-blockname").css("border", "solid 1px #ccc");
 	var assoc = [
 		["#bpd-blockname", "block[name][]"],
 		["#bpd-blockdescription", "block[description][]"],
@@ -323,6 +336,8 @@ $(".blockproperties").click(function(event) {
 	for (var i=0; i<assoc.length; i++) {
 		$(assoc[i][0]).val(openBlockPropertiesOwner.find('[name="'+assoc[i][1]+'"]').val());
 	}
+    //Imposta validità block name
+    $("#bpm-blockname").attr("valid", "true");
 	//Imposta checkbox repeatx repeaty
 	if (openBlockPropertiesOwner.find('[name="block[bckrepeatx][]"]').val() == 1)
 		$("#bpd-chkbckrepeatx").prop("checked", "true");
@@ -342,30 +357,132 @@ $(".blockproperties").click(function(event) {
 //Azione pulsante salvataggio proprietà blocco
 $("#bpd-btnsave").click(function(event) {
 	if (openBlockPropertiesOwner == null) return;
-	//Scarica dati del form nella dialog nei campi hidden del relativo blocco
-	var assoc = [
-		["#bpd-blockname", "block[name][]"],
-		["#bpd-blockdescription", "block[description][]"],
-		["#bpd-blockstyle", "block[style][]"],
-		["#bpd-txtbckurl", "block[bckurl][]"],
-		["#bpd-txtbckred", "block[bckred][]"],
-		["#bpd-txtbckgreen", "block[bckgreen][]"],
-		["#bpd-txtbckblue", "block[bckblue][]"],
-		["#bpd-txtbckopacity", "block[bckopacity][]"] ];
-	for (var i=0; i<assoc.length; i++) {
-		openBlockPropertiesOwner.find('[name="'+assoc[i][1]+'"]')[0].value = $(assoc[i][0]).val();
-	}
-	//Scarica dati checkbox repeatx repeaty
-	var repeatx = $("#bpd-chkbckrepeatx:checked").size();
-	var repeaty = $("#bpd-chkbckrepeaty:checked").size();
-	openBlockPropertiesOwner.find('[name="block[bckrepeatx][]"]')[0].value = repeatx;
-	openBlockPropertiesOwner.find('[name="block[bckrepeaty][]"]')[0].value = repeaty;
-	//Scarica dati radio button background size
-	var bcksize = $(event.target).parent().find('input[name="bpd-bcksize"]:checked').val();
-	openBlockPropertiesOwner.find('[name="block[bcksize][]"]')[0].value = bcksize;
-	//Resetta form e variabile di stato openBlockPropertiesOwner
-	$("#bpd-form")[0].reset();
-	openBlockPropertiesOwner = null;
-	//Chiude la dialog
-	$("#blockpropdialog").dialog("close");
+
+    //Check if blockname is valid
+    var blockid = openBlockPropertiesOwner.find('input[name="block[id][]"]').val();
+    var validblockname = checkBlockNameUnique(blockid, $("#bpd-blockname")[0], function (validblockname) {
+
+        if (!validblockname) {
+            $("#bpd-blockname")[0].focus();
+            return;
+        }
+
+        //Scarica dati del form nella dialog nei campi hidden del relativo blocco
+        var assoc = [
+            ["#bpd-blockname", "block[name][]"],
+            ["#bpd-blockdescription", "block[description][]"],
+            ["#bpd-blockstyle", "block[style][]"],
+            ["#bpd-txtbckurl", "block[bckurl][]"],
+            ["#bpd-txtbckred", "block[bckred][]"],
+            ["#bpd-txtbckgreen", "block[bckgreen][]"],
+            ["#bpd-txtbckblue", "block[bckblue][]"],
+            ["#bpd-txtbckopacity", "block[bckopacity][]"] ];
+        for (var i=0; i<assoc.length; i++) {
+            openBlockPropertiesOwner.find('[name="'+assoc[i][1]+'"]')[0].value = $(assoc[i][0]).val();
+        }
+        //Scarica dati checkbox repeatx repeaty
+        var repeatx = $("#bpd-chkbckrepeatx:checked").size();
+        var repeaty = $("#bpd-chkbckrepeaty:checked").size();
+        openBlockPropertiesOwner.find('[name="block[bckrepeatx][]"]')[0].value = repeatx;
+        openBlockPropertiesOwner.find('[name="block[bckrepeaty][]"]')[0].value = repeaty;
+        //Scarica dati radio button background size
+        var bcksize = $(event.target).parent().find('input[name="bpd-bcksize"]:checked').val();
+        openBlockPropertiesOwner.find('[name="block[bcksize][]"]')[0].value = bcksize;
+        //Resetta form e variabile di stato openBlockPropertiesOwner
+        $("#bpd-form")[0].reset();
+        openBlockPropertiesOwner = null;
+        //Chiude la dialog
+        $("#blockpropdialog").dialog("close");
+    });
+});
+
+/* Controllo vincolo di unicità sul nome blocco. */
+function checkBlockNameUnique(id, target, callback) {
+    target.value = target.value.trim();
+    var txtvalue = target.value;
+    if (txtvalue == "") {
+        $(target).css("border", "solid 2px rgb(202, 60, 60)");
+        return false;
+    }
+    $.getJSON("blockws.php?action=checkname&name="+txtvalue+"&blockid="+id, function(data) {
+        if (data.status == "error") {
+            //Show error dialog
+            $("#erd-errdata").val(data.errormessage);
+            $("#error-dialog").dialog("open");
+            return false;
+        }
+        if (data.status == "ok") {
+            if (data.result == "true") {
+                $(target).css("border", "solid 2px rgb(28, 184, 65)");
+                callback(true);
+            } else {
+                $(target).css("border", "solid 2px rgb(202, 60, 60)");
+                displayErrorDialog("Errore", "Impossibile usare lo stesso nome per pi&ugrave; blocchi. Usarne un altro.");
+                callback(false);
+            }
+        }
+    });
+
+}
+
+/* Controllo vincolo unicità su nome pagina */
+function checkPageNameUnique(id, target, callback) {
+    target.value = target.value.trim();
+    var txtvalue = target.value;
+    if (txtvalue == "") {
+        $(target).css("border", "solid 2px rgb(202, 60, 60)");
+        return false;
+    }
+    $.getJSON("pagews.php?action=checkname&name="+txtvalue+"&pageid="+id, function(data) {
+        if (data.status == "error") {
+            //Show error dialog
+            $("#erd-errdata").val(data.errormessage);
+            $("#error-dialog").dialog("open");
+            return false;
+        }
+        if (data.status == "ok") {
+            if (data.result == "true") {
+                $(target).css("border", "solid 2px rgb(28, 184, 65)");
+                callback(true);
+            } else {
+                $(target).css("border", "solid 2px rgb(202, 60, 60)");
+                displayErrorDialog("Errore", "Impossibile usare lo stesso nome per pi&ugrave; pagine. Usarne un altro.");
+                callback(false);
+            }
+        }
+    });
+
+}
+
+/**
+ * Generates and open a new jquery ui dialog with title and message
+ * passed as arguments to display errors for the user
+ * @param title
+ * @param message
+ */
+function displayErrorDialog(title, message) {
+    var html = '<div class="message-error-dialog"><p>'+message+'</p>' +
+        '<button type="button" class="pure-button pure-button-primary red-button" style="float: right;">Ok</button>' +
+        '</div>';
+    var dialog = $(html).dialog({
+        title: title,
+        modal: true,
+        autoOpen: true
+    });
+    dialog.find("button").click(function() {
+        dialog.dialog("close");
+    });
+}
+
+$('#save-all').click(function() {
+    var namefield = $('input[name="name"]');
+    checkPageNameUnique($("#id").val(), namefield[0], function (result) {
+        if (!result) {
+            namefield[0].focus();
+            return;
+        }
+
+        //Submit form
+        $("#page-editor-form").submit();
+    });
 });

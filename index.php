@@ -18,9 +18,8 @@ if (is_null($page) || is_null($language)) exit();
 		<title><?php echo $page->getTitle(); ?></title>
 		<link rel="stylesheet" type="text/css" href="resources/css/stile.css">
         <link rel="stylesheet" type="text/css" href="admin/css/tables-min.css">
-        <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-        <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.fancybox-1.3.4.pack.min.js"></script>
+        <script type="text/javascript" src="resources/js/jquery-1.4.3.min.js"></script>
+        <script type="text/javascript" src="resources/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
         <script type="text/javascript">
             $(function($){
                 var addToAll = false;
@@ -42,6 +41,7 @@ if (is_null($page) || is_null($language)) exit();
             $.noConflict();
         </script>
         <link rel="stylesheet" type="text/css" media="screen" href="http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.fancybox-1.3.4.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="resources/fancybox/jquery.fancybox-1.3.4.css">
         <style type="text/css">
             a.fancybox img {
                 border: none;

@@ -94,7 +94,7 @@ $("#dcd-ok").click(function(event) {
 	infos = {
 		pageid: id
 	};
-	$.post('deletepage.php', infos, function (response) {
+	$.post('pagews.php?action=delete', infos, function (response) {
 		if (response == "OK") {
 			$(".idcell").each(function(index, element) {
 			  if ($(element).text() == id) $(element).parent().remove();
