@@ -29,9 +29,15 @@ class Menu implements HierarchicalMenu {
 
     /**
      * @var \Model\MenuItem
-     * @OneToMany(targetEntity="MenuItem", mappedBy="menu", cascade={"all"})
+     * @OneToMany(targetEntity="MenuItem", mappedBy="menu", cascade={"persist"})
      */
     protected $items;
+
+    /**
+     * @var ArrayCollection
+     * @OneToMany(targetEntity="Language", mappedBy="menu")
+     */
+    protected $languages;
 
     public function __construct() {
         $this->items = new ArrayCollection();
@@ -91,13 +97,34 @@ class Menu implements HierarchicalMenu {
     public function getName()
     {
         return $this->name;
-}
+    }
+
+    /**
+     * @param \Doctrine\Common\Collections\ArrayCollection $languages
+     */
+    public function setLanguages($languages)
+    {
+        $this->languages = $languages;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getLanguages()
+    {
+        return $this->languages;
+    }
 
     /**
      * @return MenuItem[]
      */
     public function getChildren() {
-		return $this->items->toArray();
+        $children = array();
+        foreach ($this->items->toArray() as $item) {
+            if (is_null($item->getParent()))
+                array_push($children, $item);
+        }
+		return $children;
 	}
 
     /**

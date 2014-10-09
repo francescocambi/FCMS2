@@ -59,7 +59,7 @@ require_once("checkSessionRedirect.php");
 					foreach ($pages as $page) {
 						$published = ($page->getPublished() == 1) ? "Sì" : "No";
 						echo "<tr><td class=\"idcell\">".$page->getId()."</td><td>".$page->getName()."</td><td>".$page->getTitle()."</td><td>".$published."</td>
-						<td><a href=\"newpag.php?pageid=".$page->getId()."\"><i class=\"fa  fa-pencil-square fa-lg\"></i></a><a href=\"#\" class=\"delpage\"><i class=\"fa fa-minus-square fa-lg\"></i></a></td></tr>";
+						<td><a href=\"newpag.php?pageid=".$page->getId()."\"><i class=\"fa  fa-pencil-square fa-lg\"></i></a><a class=\"delpage delete\"><i class=\"fa fa-minus-square fa-lg\"></i></a></td></tr>";
 					}
         		?>
         		<tr><td colspan="5" style="text-align: center;"><a href="newpag.php"><i class="fa fa-plus-square fa-2x"></i></a></td></tr>

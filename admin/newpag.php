@@ -253,7 +253,11 @@ if (!is_null($_GET['pageid']) && $_GET['pageid'] > 0) {
 						?>
         			</select>
         		</div>
-        		<button type="button" id="save-all" class="pure-button pure-button-primary">Salva tutto</button>
+
+                <div class="pure-control-group" style="margin-top:20px;">
+        		    <label>  </label>
+                    <button type="button" id="save-all" class="pure-button pure-button-primary" style="width: 200px;">Salva tutto</button>
+                </div>
         	</div>
         	
         	<!-- <div style="width: 500px; height: 320px; padding: 15px; float: right; overflow: scroll;"> -->

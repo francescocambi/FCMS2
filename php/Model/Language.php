@@ -36,7 +36,7 @@ class Language {
 
     /**
      * @var \Model\Menu
-     * @OneToOne(targetEntity="Menu")
+     * @ManyToOne(targetEntity="Menu", inversedBy="languages")
      */
     protected $menu;
 

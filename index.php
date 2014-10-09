@@ -40,7 +40,6 @@ if (is_null($page) || is_null($language)) exit();
             });
             $.noConflict();
         </script>
-        <link rel="stylesheet" type="text/css" media="screen" href="http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.fancybox-1.3.4.css" />
         <link rel="stylesheet" type="text/css" media="screen" href="resources/fancybox/jquery.fancybox-1.3.4.css">
         <style type="text/css">
             a.fancybox img {

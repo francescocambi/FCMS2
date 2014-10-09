@@ -474,12 +474,14 @@ function displayErrorDialog(title, message) {
     });
 }
 
+/* Submit form action */
 $('#save-all').click(function() {
     var namefield = $('input[name="name"]');
     checkPageNameUnique($("#id").val(), namefield[0], function (result) {
         if (!result) {
             namefield[0].focus();
             return;
+
         }
 
         //Submit form

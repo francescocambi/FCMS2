@@ -45,6 +45,9 @@ legend {
 .green-border-input {
     border-color: rgb(28, 184, 65);
 }
+.delete {
+    cursor: pointer;
+}
 /*
 Add transition to containers so they can push in and out.
 */

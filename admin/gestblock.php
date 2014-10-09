@@ -12,7 +12,7 @@ require_once("checkSessionRedirect.php");
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="favicon.gif" type="image/gif">
-    <title>Gestione Pagine</title>
+    <title>Gestione Blocchi</title>
 
     <script src="js/jquery-2.1.1.min.js"></script>
     <link rel="stylesheet" href="css/pure-min.css">
@@ -52,15 +52,15 @@ require_once("checkSessionRedirect.php");
             </tr>
             </thead>
 
-            <tbody>
+            <tbody style="">
             <?php
             $blocks = $em->getRepository('Model\Block')->findAll();
             foreach ($blocks as $block) {
                 echo "<tr><td class=\"idcell\">".$block->getId()."</td><td>".$block->getName()."</td><td>".$block->getDescription()."</td>
-						<td><a href=\"#\"><i class=\"fa  fa-pencil-square fa-lg\"></i></a><a href=\"#\" class=\"delete\"><i class=\"fa fa-minus-square fa-lg\"></i></a></td></tr>";
+						<td><a href=\"modblock.php?blockid=".$block->getId()."\"><i class=\"fa  fa-pencil-square fa-lg\"></i></a><a class=\"delete\"><i class=\"fa fa-minus-square fa-lg\"></i></a></td></tr>";
             }
             ?>
-<!--            <tr><td colspan="5" style="text-align: center;"><a href="newpag.php"><i class="fa fa-plus-square fa-2x"></i></a></td></tr>-->
+            <tr><td colspan="5" style="text-align: center;"><a href="modblock.php"><i class="fa fa-plus-square fa-2x"></i></a></td></tr>
             </tbody>
         </table>
     </div>

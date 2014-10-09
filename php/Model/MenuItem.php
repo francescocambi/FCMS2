@@ -43,8 +43,8 @@ class MenuItem implements HierarchicalMenu {
 
     /**
      * @var \Model\Menu
-     * @ManyToOne(targetEntity="Menu", inversedBy="items", cascade={"all"})
-     * @JoinColumn(name="menu_id", referencedColumnName="id")
+     * @ManyToOne(targetEntity="Menu", inversedBy="items", cascade={"persist"})
+     * @JoinColumn(name="menu_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $menu;
 
@@ -57,6 +57,7 @@ class MenuItem implements HierarchicalMenu {
     /**
      * @var MenuItem
      * @ManyToOne(targetEntity="MenuItem", inversedBy="children", cascade={"all"})
+     * @JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $parent;
 
@@ -158,6 +159,9 @@ class MenuItem implements HierarchicalMenu {
     public function setMenu($menu)
     {
         $this->menu = $menu;
+        foreach ($this->children->toArray() as $child) {
+            $child->setMenu($menu);
+        }
     }
 
     /**
