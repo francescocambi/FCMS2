@@ -51,6 +51,7 @@ function insertUpdateProcessing($em, $data, $pageid = null) {
     }
 
     $page->setName($data['name']);
+    $page->setDescription($data['description']);
     $page->setTitle($data['title']);
     $page->setPublished(!is_null($data['published']));
     $page->setPublic(!is_null($data['public']));
@@ -222,6 +223,11 @@ if (!is_null($_GET['pageid']) && $_GET['pageid'] > 0) {
         			<label>Nome</label>
         			<input name="name" type="text" value="<?php (is_null($page) || print($page->getName())); ?>">
         		</div>
+
+                <div class="pure-control-group">
+                    <label>Descrizione</label>
+                    <textarea name="description" rows="4" cols="35" maxlength="155"><?php (is_null($page) || print($page->getDescription())); ?></textarea>
+                </div>
         		
         		<div class="pure-control-group">
         			<label>Titolo</label>

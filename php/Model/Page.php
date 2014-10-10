@@ -30,6 +30,12 @@ class Page {
     protected $title;
 
     /**
+     * @var string
+     * @Column(type="string", nullable=true, length=155)
+     */
+    protected $description;
+
+    /**
      * @var bool
      * @Column(type="boolean", nullable=false)
      */
@@ -146,6 +152,22 @@ class Page {
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 
     /**

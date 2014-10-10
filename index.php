@@ -15,7 +15,12 @@ if (is_null($page) || is_null($language)) exit();
 <html>
 	
 	<head>
-		<title><?php echo $page->getTitle(); ?></title>
+		<title><?php
+            $title = $page->getTitle()." - ";
+            $title .= $em->getRepository('\Model\Setting')->findOneBy(array( "settingKey" => "TITLE_DESC"))->getSettingValue();
+            echo $title;
+            ?></title>
+        <meta name="description" content="<?php echo $page->getDescription(); ?>">
 		<link rel="stylesheet" type="text/css" href="resources/css/stile.css">
         <link rel="stylesheet" type="text/css" href="admin/css/tables-min.css">
         <script type="text/javascript" src="resources/js/jquery-1.4.3.min.js"></script>
