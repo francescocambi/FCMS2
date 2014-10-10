@@ -9,6 +9,7 @@ function print_menu($selected) {
 		"Gestione Pagine" => "gestpag.php",
         "Gestione Blocchi" => "gestblock.php",
         "Gestione Menu" => "gestmenu.php",
+        "Gestione Lingue" => "gestlang.php",
 		"Impostazioni" => "gestsettings.php"
 	);
 
