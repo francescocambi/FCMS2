@@ -13,6 +13,10 @@ table {
 table td {
     padding: 0px;
 }
+p, h1, h2, h3, h4, h5 {
+    padding-left: 10px;
+    padding-right: 10px;
+}
 
 /* Value this to add space between text and table edges
 table td p, table td h1, table td h2, table td span {
