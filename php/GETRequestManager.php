@@ -23,7 +23,7 @@ class GETRequestManager implements RequestManager {
             if (!is_null($url))
                 $page = $url->getPage();
         }
-	    if (is_null($page)) {
+	    if (is_null($page) || !$page->isPublished()) {
             $page = $this->em->getRepository('Model\Page')->findOneBy(array("name" => "home"));
         }
 
@@ -34,12 +34,6 @@ class GETRequestManager implements RequestManager {
             $langCode = $get['lang'];
         }
         $language = $this->em->getRepository('Model\Language')->findOneBy(array("code" => $langCode));
-		
-		//Rileva l'utente e delega il suo riconoscimento a LoginManager
-		$session = $params[1];
-		//Riconosce il codice di sessione e se lo fa cercare da LoginManager
-		//che gli restituisce l'oggetto utente associato
-		//TODO
 		
 		return new Request($page, $language, null);
 		

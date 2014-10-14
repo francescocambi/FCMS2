@@ -74,6 +74,7 @@ table td p, table td h1, table td h2, table td span {
 }
 #menu li a {
 	min-width: 70px;
+    width: 100px; /* Fit this size when menu is completed */
 	height: 39px;
 	line-height: 39px;
 	display: block;

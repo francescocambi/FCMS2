@@ -46,6 +46,10 @@ class FlagLanguageBar implements LanguageBar {
 			$string = substr($string, 0, strlen($string)-1);
 		
 		//echo "----".$string;
+
+        if (!isset($_GET['url']) || (isset($_GET['url']) && $_GET['url'] == "")) {
+            $string .= "/";
+        }
 		
 		return $string;
 	}

@@ -114,7 +114,7 @@ if (isset($_POST['code'])) {
                     $menus = $em->getRepository('Model\Menu')->findAll();
                     foreach ($menus as $menu) {
                         if ($UPDATE_MODE && $language->getMenu()->getId()==$menu->getId())
-                            echo "<option value=\"".$menu->getId()."\" checked>".$menu->getName()."</option>";
+                            echo "<option value=\"".$menu->getId()."\" selected>".$menu->getName()."</option>";
                         else
                             echo "<option value=\"".$menu->getId()."\">".$menu->getName()."</option>";
                     }

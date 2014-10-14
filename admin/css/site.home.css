@@ -45,7 +45,7 @@ legend {
 .green-border-input {
     border-color: rgb(28, 184, 65);
 }
-.delete {
+i {
     cursor: pointer;
 }
 /*

@@ -183,14 +183,14 @@ function processChildren($data, $i, $menuid, $order, $level) {
                         $html .= '    <input type="text" name="label[]" style="display: none;" placeholder="Etichetta" value="'.$child->getLabel().'">&nbsp;&nbsp;';
                         $html .= '    <input type="text" name="url[]" style="display: none;" placeholder="Url" value="'.$child->getUrl().'">';
                         $html .= '    <input type="hidden" name="level[]" value="'.$level.'">';
-                        $html .= '    <a href="#" class="edit-li"><i class="fa fa-pencil-square fa-lg"></i></a>';
-                        $html .= '    <a class="delete-li" href="#"><i class="fa fa-minus-square fa-lg"></i></a>';
-                        $html .= '    <a class="up-li" href="#"><i class="fa fa-arrow-up fa-lg"></i></a>';
-                        $html .= '    <a class="down-li" href="#"><i class="fa fa-arrow-down fa-lg"></i></a>';
+                        $html .= '    <a class="edit-li"><i class="fa fa-pencil-square fa-lg"></i></a>';
+                        $html .= '    <a class="delete-li"><i class="fa fa-minus-square fa-lg"></i></a>';
+                        $html .= '    <a class="up-li"><i class="fa fa-arrow-up fa-lg"></i></a>';
+                        $html .= '    <a class="down-li"><i class="fa fa-arrow-down fa-lg"></i></a>';
                         $html .= '    <ul>';
                         if ($child->getChildren() != null)
                             $html .= generateFor($child, ($level + 1));
-                        $html .= '<li class="new-li" level='.($level + 1).'><a class="new-li-a" href="#"><i class="fa fa-plus-square fa-lg"></i></a></li>';
+                        $html .= '<li class="new-li" level='.($level + 1).'><a class="new-li-a"><i class="fa fa-plus-square fa-lg"></i></a></li>';
                         $html .= '    </ul>';
                         $html .= '</li>';
                     }
@@ -198,7 +198,7 @@ function processChildren($data, $i, $menuid, $order, $level) {
                 }
                 ?>
 
-                <li level=0 class="new-li"><a class="new-li-a" href="#"><i class="fa fa-plus-square fa-lg"></i></a></li>
+                <li level=0 class="new-li"><a class="new-li-a"><i class="fa fa-plus-square fa-lg"></i></a></li>
 
                 <li style="display: none;" id="li-template">
                     <span class="label-caption">Nuovo</span>
@@ -206,12 +206,12 @@ function processChildren($data, $i, $menuid, $order, $level) {
                     <input type="text" name="url[]" style="display: none;" placeholder="Url">
                     <input type="hidden" name="order[]">
                     <input type="hidden" name="level[]">
-                    <a href="#" class="edit-li"><i class="fa fa-pencil-square fa-lg"></i></a>
-                    <a class="delete-li" href="#"><i class="fa fa-minus-square fa-lg"></i></a>
-                    <a class="up-li" href="#"><i class="fa fa-arrow-up fa-lg"></i></a>
-                    <a class="down-li" href="#"><i class="fa fa-arrow-down fa-lg"></i></a>
+                    <a  class="edit-li"><i class="fa fa-pencil-square fa-lg"></i></a>
+                    <a class="delete-li" ><i class="fa fa-minus-square fa-lg"></i></a>
+                    <a class="up-li" ><i class="fa fa-arrow-up fa-lg"></i></a>
+                    <a class="down-li" ><i class="fa fa-arrow-down fa-lg"></i></a>
                     <ul>
-                        <li class="new-li"><a class="new-li-a" href="#"><i class="fa fa-plus-square fa-lg"></i></a></li>
+                        <li class="new-li"><a class="new-li-a" ><i class="fa fa-plus-square fa-lg"></i></a></li>
                     </ul>
                 </li>
             </ul>
