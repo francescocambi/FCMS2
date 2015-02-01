@@ -59,7 +59,11 @@ require_once("checkSessionRedirect.php");
 					foreach ($pages as $page) {
 						$published = ($page->getPublished() == 1) ? "Sì" : "No";
 						echo "<tr><td class=\"idcell\">".$page->getId()."</td><td>".$page->getName()."</td><td>".$page->getTitle()."</td><td>".$published."</td>
-						<td><a href=\"newpag.php?pageid=".$page->getId()."\"><i class=\"fa  fa-pencil-square fa-lg\"></i></a><a class=\"delpage delete\"><i class=\"fa fa-minus-square fa-lg\"></i></a></td></tr>";
+						<td>
+						<a class=\"editpage\" href=\"newpag.php?pageid=".$page->getId()."\"><i class=\"fa  fa-pencil-square fa-lg\"></i></a>
+						<a class=\"duplicatepage\"><i class=\"fa fa-plus-square fa-lg\"></i></a>
+						<a class=\"delpage delete\"><i class=\"fa fa-minus-square fa-lg\"></i></a>
+						</td></tr>";
 					}
         		?>
         		<tr><td colspan="5" style="text-align: center;"><a href="newpag.php"><i class="fa fa-plus-square fa-2x"></i></a></td></tr>
@@ -70,6 +74,7 @@ require_once("checkSessionRedirect.php");
 
 <?php deleteConfirmDialog(); ?>
 <?php errorDialog(); ?>
+<?php actionConfirmationDialog(); ?>
 
 <script src="js/menu.js"></script>
 <script>
@@ -80,6 +85,58 @@ $(".delpage").click(function(event) {
 	$("#dcd-objid").val(id);
 	$("#delete-confirm-dialog").dialog('open');
 });
+$(".duplicatepage").click(function(event) {
+    var id = $(event.target).parent().parent().parent().find("*:nth-child(1)").text();
+    var name = $(event.target).parent().parent().parent().find("*:nth-child(2)").text();
+    $("#acd-message").after("<div class=\"pure-control-group\" id=\"acd-dup-blocks-div\">" +
+    "<input type=\"checkbox\" id=\"acd-duplicate-blocks\" value=\"1\" checked>" +
+    "<label>Duplica anche i blocchi nella pagina</label></div>");
+    $("#acd-message").text("Confermi la duplicazione della pagina "+name+" e di tutti i blocchi in essa contenuti?");
+    $("#acd-objid").val(id);
+    $("#action-confirmation-dialog").dialog("open");
+});
+$("#acd-cancel").click(function() {
+   $("#acd-dup-blocks-div").remove();
+});
+$("#acd-ok").click(function() {
+   //Action when user confirm page duplication
+    //Send a message to the server requesting operation
+    //operation must be implemented in pagews script
+    //Collects info
+    var id = $("#acd-objid").val();
+    $("#action-confirmation-dialog").dialog("close");
+    var duplicateblocks = $("#acd-duplicate-blocks").prop("checked");
+    infos = {
+        pageid: id,
+        duplicateblocks: duplicateblocks
+    };
+    $("#acd-dup-blocks-div").remove();
+    //Send duplication request to pagews
+    $.post('pagews.php?action=duplicate', infos, function (response) {
+        //Response is OK/ERROR and new page id separated by a space
+        //So i can split on " " to obtain two arguments
+        if (response.result = true ) {
+            var row_clone;
+            //Search for row of page duplicated and clones it for
+            $(".idcell").each(function(index, element) {
+                if ($(element).text() == id) row_clone = $(element).parent().clone(true);
+            }).after(function() {
+                //appending cloned row to the page list table
+                row_clone.find(".idcell").text(response.id);
+                row_clone.find(".idcell").next().text(response.name);
+                row_clone.find(".editpage").attr('href', 'newpag.php?pageid='+response.id);
+                $("#content-table tbody").children().last().before(row_clone);
+            });
+        }
+        else {
+            //If things goes wrong
+            var errorDetailString = response.exception+"\n\n"+response.trace;
+            $("#error-dialog").find("#erd-errdata").val(errorDetailString);
+            $("#error-dialog").dialog("open");
+        }
+    }, 'json');
+});
+
 $(document).ajaxError(function (event, jqxhr, settings, thrownError) {
 	//var cloned = $("#error-dialog").clone(true);
 	var cloned = $("#error-dialog");

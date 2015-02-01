@@ -51,6 +51,7 @@ class MenuItem implements HierarchicalMenu {
     /**
      * @var ArrayCollection
      * @OneToMany(targetEntity="MenuItem", mappedBy="parent", cascade={"all"})
+     * @OrderBy({"itemOrder" = "ASC"})
      */
     protected $children;
 

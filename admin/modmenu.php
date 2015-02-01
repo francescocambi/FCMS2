@@ -17,6 +17,7 @@ if ($UPDATE_MODE)
 
 if (isset($_POST['label'])) {
     try {
+
         $em->beginTransaction();
 
         if (!$UPDATE_MODE)
@@ -89,7 +90,7 @@ function processChildren($data, $i, $menuid, $order, $level) {
             //Se questo elemento ha figli
             if ($data['level'][$i+1] > $data['level'][$i]) {
                 $processedItems = processChildren($data, $i, $menuid, $order, $data['level'][$i+1]);
-                $i += $processedItems;
+                $i += count($processedItems);
                 foreach ($processedItems as $item)
                     $menuitem->addChild($item);
             }

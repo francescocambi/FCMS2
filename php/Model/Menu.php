@@ -30,6 +30,7 @@ class Menu implements HierarchicalMenu {
     /**
      * @var \Model\MenuItem
      * @OneToMany(targetEntity="MenuItem", mappedBy="menu", cascade={"persist"})
+     * @OrderBy({"itemOrder" = "ASC"})
      */
     protected $items;
 
@@ -124,6 +125,7 @@ class Menu implements HierarchicalMenu {
             if (is_null($item->getParent()))
                 array_push($children, $item);
         }
+
 		return $children;
 	}
 

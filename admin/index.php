@@ -63,7 +63,7 @@ if (isset($_POST['email']) && isset($_POST['password']) && $_POST['email'] != ""
 	</head>
 	<body>
 		<div class="container" style="">
-			<img class="logo" src="logo.png">
+			<img class="logo" src="/admin/logo.png">
 			<form class="pure-form" method="POST">
 				<!-- <legend><b>Application Login</b></legend> -->
 				<fieldset class="pure-group">

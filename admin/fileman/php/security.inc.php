@@ -21,7 +21,11 @@
   Contact: Lyubomir Arsov, liubo (at) web-lobby.com
 */
 function checkAccess($action){
-  if(!session_id())
-    session_start();
+
+    require_once("../../../bootstrap.php");
+    $em = initializeEntityManager("../../../");
+
+    require_once("../../checkSessionForbidden.php");
+
 }
 ?>

@@ -48,6 +48,12 @@ legend {
 i {
     cursor: pointer;
 }
+
+/* Fa in modo che il contenuto del blocco non si sovrapponga ai pulsanti di gestione del
+blocco nella modifica pagina/blocco */
+.blockcontentdiv {
+    overflow: hidden;
+}
 /*
 Add transition to containers so they can push in and out.
 */

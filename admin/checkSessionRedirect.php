@@ -4,7 +4,7 @@ $session = \Authentication\SessionFactory::getInstance()->detectCurrentSession($
 
 if (is_null($session) || !$session->isValid($_SERVER['REMOTE_ADDR'])) {
     //header("Location: ./", null, 403);
-    header("Location: ./");
+    header("Location: /admin/index.php");
     exit();
 }
 

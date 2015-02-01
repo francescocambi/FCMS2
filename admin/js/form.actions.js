@@ -19,7 +19,7 @@ tinymce.init({
 });
 
 function RoxyFileBrowser(field_name, url, type, win) {
-  var roxyFileman = 'fileman/index.html';
+  var roxyFileman = 'fileman/index.php';
   if (roxyFileman.indexOf("?") < 0) {     
     roxyFileman += "?type=" + type;   
   }
@@ -42,7 +42,7 @@ function RoxyFileBrowser(field_name, url, type, win) {
 }
 
 function CustomRoxyFileBrowser(field_name) {
-  var roxyFileman = 'fileman/index.html';
+  var roxyFileman = 'fileman/index.php';
   if (roxyFileman.indexOf("?") < 0) {     
     roxyFileman += "?input=" + field_name;   
   }
@@ -396,7 +396,7 @@ $("#bpd-btnsave").click(function(event) {
     });
 });
 
-/* Controllo vincolo di unicità sul nome blocco. */
+/* Checks unique constraint on block name */
 function checkBlockNameUnique(id, target, callback) {
     target.value = target.value.trim();
     var txtvalue = target.value;
@@ -481,7 +481,6 @@ $('#save-all').click(function() {
         if (!result) {
             namefield[0].focus();
             return;
-
         }
 
         //Submit form

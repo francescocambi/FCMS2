@@ -3,6 +3,7 @@
 error_reporting(E_ERROR);
 require_once("bootstrap.php");
 $em = initializeEntityManager("./");
+require_once("admin/checkSessionRedirect.php");
 
 $requestmanager = new GETRequestManager($em);
 $request = $requestmanager->getRequest($_GET, null);
@@ -21,41 +22,34 @@ if (is_null($page) || is_null($language)) exit();
             echo $title;
             ?></title>
         <meta name="description" content="<?php echo $page->getDescription(); ?>">
-		<link rel="stylesheet" type="text/css" href="resources/css/stile.css">
+        <link rel="stylesheet" type="text/css" href="resources/css/stile.css">
         <link rel="stylesheet" type="text/css" href="admin/css/tables-min.css">
-        <script type="text/javascript" src="resources/js/jquery-1.4.3.min.js"></script>
-        <script type="text/javascript" src="resources/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-        <script type="text/javascript">
-            $(function($){
-                var addToAll = false;
-                var gallery = true;
-                var titlePosition = 'inside';
-                $(addToAll ? 'img' : 'img.ingrandimento').each(function(){
-                    var $this = $(this);
-                    var title = $this.attr('title');
-                    var src = $this.attr('data-big') || $this.attr('src');
-                    var a = $('<a href="#" class="fancybox"></a>').attr('href', src).attr('title', title);
-                    $this.wrap(a);
-                });
-                if (gallery)
-                    $('a.fancybox').attr('rel', 'fancyboxgallery');
-                $('a.fancybox').fancybox({
-                    titlePosition: titlePosition
-                });
-            });
-            $.noConflict();
-        </script>
-        <link rel="stylesheet" type="text/css" media="screen" href="resources/fancybox/jquery.fancybox-1.3.4.css">
-        <style type="text/css">
-            a.fancybox img {
-                border: none;
-                box-shadow: 0 1px 7px rgba(0,0,0,0.6);
-                -o-transform: scale(1,1); -ms-transform: scale(1,1); -moz-transform: scale(1,1); -webkit-transform: scale(1,1); transform: scale(1,1); -o-transition: all 0.2s ease-in-out; -ms-transition: all 0.2s ease-in-out; -moz-transition: all 0.2s ease-in-out; -webkit-transition: all 0.2s ease-in-out; transition: all 0.2s ease-in-out;
+        <link rel="stylesheet" type="text/css" href="resources/lightbox/css/lightbox.css">
+
+        <link rel="stylesheet" type="text/css" href="resources/slick/slick.css"/>
+
+        <script type="text/javascript" src="resources/js/jquery-1.11.2.min.js"></script>
+
+        <script type="text/javascript" src="resources/lightbox/js/lightbox.min.js"></script>
+
+        <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+        <script type="text/javascript" src="resources/slick/slick.min.js"></script>
+
+        <!-- blueimp gallery -->
+        <link rel="stylesheet" href="resources/gallery/css/blueimp-gallery.min.css">
+
+
+        <!-- end -->
+
+        <style>
+            .slick-prev {
+                left: 7px;
             }
-            a.fancybox:hover img {
-                position: relative; z-index: 999; -o-transform: scale(1.03,1.03); -ms-transform: scale(1.03,1.03); -moz-transform: scale(1.03,1.03); -webkit-transform: scale(1.03,1.03); transform: scale(1.03,1.03);
+            .slick-next {
+                right: 7px;
             }
         </style>
+
 	</head>
 
 		<?php
@@ -76,21 +70,65 @@ if (is_null($page) || is_null($language)) exit();
 				?>
 			</div>
 		</div></div>
-		
+
+        <div id="menu-wrap">
 		<div id="menu">
-			<?php 
+			<?php
                 $menuBuilder = new ListMenuBuilder();
                 $menuBuilder->generateFor($request->getLanguage()->getMenu());
                 echo $menuBuilder->getHTML();
 			?>
 		</div>
+        </div>
 		
 		<?php
             foreach ($page->getPageBlocks()->toArray() as $pageBlock) {
                 echo $pageBlock->getBlock()->getHTML(null);
             }
 		?>
-		
+
+
+        <!-- The Gallery as lightbox dialog, should be a child element of the document body -->
+        <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
+            <div class="slides"></div>
+            <h3 class="title"></h3>
+            <a class="prev">&lsaquo;</a>
+            <a class="next">&rsaquo;</a>
+            <a class="close">&Chi;</a>
+            <ol class="indicator"></ol>
+        </div>
+
+
+
+        <script type="text/javascript">
+            $(".ingrandimento").each(function (index, item) {
+                $(item).wrap('<a href="' + $(item).attr("src") + '" data-lightbox="gallery' + index + '"></a>');
+            });
+
+            $(document).ready(function(){
+                $('.carousel').slick({
+                    autoplay: true,
+                    autoplaySpeed: 2000,
+                    dots: true,
+                    speed: 500
+                });
+            });
+        </script>
+
+
+        <script src="resources/gallery/js/jquery.blueimp-gallery.min.js"></script>
+        <script>
+//            document.getElementById('links').onclick = function (event) {
+//                event = event || window.event;
+//                var target = event.target || event.srcElement,
+//                    link = target.src ? target.parentNode : target,
+//                    options = {index: link, event: event},
+//                    links = this.getElementsByTagName('a');
+//                blueimp.Gallery(links, options);
+//            };
+
+        </script>
+
 	</body>
 
 </html>

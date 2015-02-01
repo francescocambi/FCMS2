@@ -86,7 +86,7 @@ require_once("dialogs.php");
 <script src="js/menu.js"></script>
 <script>
 function CustomRoxyFileBrowser(field_name) {
-  var roxyFileman = 'fileman/index.html';
+  var roxyFileman = 'fileman/index.php';
   if (roxyFileman.indexOf("?") < 0) {     
     roxyFileman += "?input=" + field_name;   
   }

@@ -76,7 +76,7 @@ function verifyPath($path){
   }
 }
 function fixPath($path){
-  $path = $_SERVER['DOCUMENT_ROOT'].'/'.$path;
+  //$path = $_SERVER['DOCUMENT_ROOT'].'/'.$path;
   $path = str_replace('\\', '/', $path);
   $path = str_replace('//', '/', $path);
   return $path;
@@ -94,7 +94,7 @@ function getFilesPath(){
   $ret = (isset($_SESSION[SESSION_PATH_KEY]) && $_SESSION[SESSION_PATH_KEY] != ''?$_SESSION[SESSION_PATH_KEY]:FILES_ROOT);
   if(!$ret){
     $ret = RoxyFile::FixPath(BASE_PATH.'/Uploads');
-    $ret = str_replace(RoxyFile::FixPath($_SERVER['DOCUMENT_ROOT']), '', $ret);
+    //$ret = str_replace(RoxyFile::FixPath($_SERVER['DOCUMENT_ROOT']), '', $ret);
   }
   return $ret;
 }

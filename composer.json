@@ -5,7 +5,8 @@
         "phpunit/phpunit-story": "*",
         "phpunit/php-invoker": "*",
         "ext-xdebug" : ">=2.0.5",
-        "doctrine/orm" : "*"
+        "doctrine/orm" : "*",
+        "silex/silex": "*"
     },
     "autoload": {
         "psr-0": {"": "php"}

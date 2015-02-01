@@ -10,10 +10,14 @@ use Doctrine\ORM\EntityManager;
  */
 function initializeEntityManager($relativePathToRoot) {
     $paths = array($relativePathToRoot."php/Model/");
+    $proxydir = $relativePathToRoot."temp/";
     $isDevMode = true;
 
     require($relativePathToRoot."connection.properties.php");
 
-    $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
-    return EntityManager::create($dbParams, $config);
+    $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode, $proxydir);
+    // echo "Annotation loaded<br>";
+    $em = EntityManager::create($dbParams, $config);
+    // echo "Entity Manager created!";
+    return $em;
 }

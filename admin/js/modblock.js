@@ -20,7 +20,7 @@ tinymce.init({
 });
 
 function RoxyFileBrowser(field_name, url, type, win) {
-    var roxyFileman = 'fileman/index.html';
+    var roxyFileman = 'fileman/index.php';
     if (roxyFileman.indexOf("?") < 0) {
         roxyFileman += "?type=" + type;
     }
@@ -43,7 +43,7 @@ function RoxyFileBrowser(field_name, url, type, win) {
 }
 
 function CustomRoxyFileBrowser(field_name) {
-    var roxyFileman = 'fileman/index.html';
+    var roxyFileman = 'fileman/index.php';
     if (roxyFileman.indexOf("?") < 0) {
         roxyFileman += "?input=" + field_name;
     }

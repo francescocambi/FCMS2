@@ -3,19 +3,20 @@
 
 #head_wrapper {
 	width: 100%;
-	background: rgb(64,64,64);
+	background: rgb(239,239,239);
 }
 
 table {
     border-spacing: 0px;
 }
 
-table td {
-    padding: 0px;
-}
 p, h1, h2, h3, h4, h5 {
     padding-left: 10px;
     padding-right: 10px;
+}
+
+h1, h2, h3, h4, h5 {
+    color: rgb(235,79,66);
 }
 
 /* Value this to add space between text and table edges
@@ -25,8 +26,8 @@ table td p, table td h1, table td h2, table td span {
 
 #head {
 	width: 75%; /* 1000px */
-	height: 90px;
-	background: url('../uploads/logo/logo.png') no-repeat rgb(64,64,64);
+	height: 120px;
+	background: url('../images/logo_head.gif') no-repeat rgb(239,239,239);
 	/* background-size: cover; */
 	margin: auto;
 }
@@ -52,12 +53,17 @@ table td p, table td h1, table td h2, table td span {
 	width: 30px;
 }
 
+#menu-wrap {
+    width: 100%;
+    background: rgba(139,137,138,1);
+}
+
 #menu {
 	width: 1000px;
 	height: 39px;
 	margin: auto;
 	margin-top: 2px;
-	background: rgba(255,255,255,0.45);
+	background: rgba(139,137,138,1);
 }
 
 #menu ul {
@@ -81,17 +87,17 @@ table td p, table td h1, table td h2, table td span {
 	padding: 0px 15px;
 	text-decoration: none;
 	text-align: center;
-	color: rgb(64,64,64);
+	color: rgb(230, 230, 230);
 	font-weight: normal;
-	font-size: 9pt;
+	font-size: 10pt;
 }
 #menu .selected {
-	background: rgba(255,255,255,0.85);
+	background: rgba(139,137,138,1);
 	color: black;
 }
 #menu li:hover a {
 	color: black;
-	background: rgba(255,255,255,0.85);
+	background: rgba(139,137,138,1);
 }
 #menu li a:hover {
 	text-decoration: underline;
@@ -101,13 +107,13 @@ table td p, table td h1, table td h2, table td span {
 	top: 39px;
 	visibility: hidden;
 	text-decoration: none;
-	background: rgba(255,255,255,0.75);
+	background: rgba(139,137,138,1);
 }
 #menu ul li:hover ul {
 	visibility: visible;
 }
 #menu ul li ul li:hover {
-	background: rgba(255,255,255,0.85);
+	background: rgba(139,137,138,1);
 	text-decoration: underline;
 }
 
@@ -155,9 +161,10 @@ table td p, table td h1, table td h2, table td span {
 }
 
 body {
-	background: url('../images/body_bg.jpg');
+	/* background: url('../images/body_bg.jpg');
 	background-attachment: fixed;
-	background-size: 100%;
+	background-size: 100%; */
+    background: rgb(247,247,247);
 	font-family: 'Source Sans Pro', sans-serif;
 	margin: 0px;
 	padding: 0px;
