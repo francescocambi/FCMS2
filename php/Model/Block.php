@@ -1,6 +1,7 @@
 <?php
 
 namespace Model;
+use Silex\Application;
 
 /**
  * Class Block
@@ -54,7 +55,7 @@ abstract class Block {
 	protected $bgblue;
 
     /**
-     * @var decimal
+     * @var float
      * @Column(type="decimal", precision=3, scale=2, nullable=true)
      */
     protected $bgopacity;
@@ -301,10 +302,10 @@ abstract class Block {
     }
 
     /**
-     * @param \Request $request
+     * @param \Silex\Application
      * @return string
      */
-    public abstract function getHTML($request);
+    public abstract function getHTML($app);
 
     /**
      * @return string

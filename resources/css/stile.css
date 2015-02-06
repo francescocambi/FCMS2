@@ -27,7 +27,7 @@ table td p, table td h1, table td h2, table td span {
 #head {
 	width: 75%; /* 1000px */
 	height: 120px;
-	background: url('../images/logo_head.gif') no-repeat rgb(239,239,239);
+	background: url('/resources/images/logo_head.gif') no-repeat rgb(239,239,239);
 	/* background-size: cover; */
 	margin: auto;
 }

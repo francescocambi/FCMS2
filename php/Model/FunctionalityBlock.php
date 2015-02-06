@@ -1,6 +1,7 @@
 <?php
 
 namespace Model;
+use Silex\Application;
 
 /**
  * Class FunctionalityBlock
@@ -11,28 +12,23 @@ class FunctionalityBlock extends Block {
 
     /**
      * @var string
-     * @Column(type="text", nullable=false)
+     * @Column(type="string", nullable=false)
      */
-    protected $blockCode;
+    protected $frontControllerClassName;
 
     /**
-     * @var
+     * @var string
+     * @column(type="string", nullable=false)
      */
-    private $internationalCaptions; //Array of InternationalCaption objects
+    protected $frontControllerActionName;
 
-	public function getHTML($caller) {
 
-        //Check if $caller->getLanguage() is supported by this block.
-        //Otherwise sets a default language
+	public function getHTML($app) {
 
-        //Print captions array in code for evaluation
-		foreach ($this->internationalCaptions as $i) {
-			if ($caller->getLanguage()->equals($i->getLanguage()))
-				$blockCode = $i->getCaptionsArrayPhp()." ".$this->blockCode;
-		}
-		
-		return eval($blockCode);
-		
+//        print $app;
+//        $frontController = new $this->frontControllerClassName();
+//        return $frontController->{$this->frontControllerActionName}();
+
 	}
 	
 }

@@ -3,7 +3,7 @@
 namespace Model;
 
 use \Doctrine\Common\Collections\ArrayCollection;
-
+use Silex\Application;
 /**
  * Class ContentBlock
  * @package Model
@@ -59,7 +59,7 @@ class ContentBlock extends Block {
         return $this->languages;
     }
 
-	public function getHTML($caller) {
+	public function getHTML($app) {
 		
 		return $this->getBlockStyle()->stylizeHTML($this->content, $this->getBackgroundCSS());
 		
