@@ -40,7 +40,7 @@
 
 </head>
 
-<body style="background: url('{{ bodyBgUrl }}');">
+<body {% if bodyBgUrl is not empty %} style="background: url('{{ bodyBgUrl }}');" {% endif %}>
 
 <div id="head_wrapper">
     <div id="head">
@@ -50,23 +50,11 @@
     </div>
 </div>
 
-{% macro menu(menuobj) %}
-    {% import _self as menuMacro %}
-    <ul>
-    {% for childitem in menuobj.getChildren() %}
-        <li><a href="{{ childitem.getURL() }}">{{ childitem.getLabel() }}</a>
-        {#{% if childitem.Children is not empty  %}#}
-            {#{% menuMacro.menu(childitem) %}#}
-        {#{% endif %}#}
-        </li>
-    {% endfor %}
-    </ul>
-{% endmacro %}
-{% import _self as menuMacro %}
+
 
 <div id="menu-wrap">
     <div id="menu">
-        {{ menuMacro.menu(menuobj) }}
+        {{ menuHtml|raw }}
     </div>
 </div>
 

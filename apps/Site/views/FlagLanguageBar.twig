@@ -1,0 +1,5 @@
+{% for language in languages %}
+<a href="{{ path(app.config.get('LanguageBar.RouteName'), {lang: language.Code}) }}">
+    <img class="languageflag" src="{{ language.FlagImageURL }}" />
+</a>
+{% endfor %}

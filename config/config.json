@@ -1,0 +1,8 @@
+{
+    "Application.Debug": true,
+    "Application.Development": true,
+    "LanguageBar.View": "FlagLanguageBar.twig",
+    "LanguageBar.RouteName": "languageOnly",
+    "Menu.View": "ListMenu.twig",
+    "Menu.RouteName": ""
+}

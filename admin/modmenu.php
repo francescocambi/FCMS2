@@ -175,7 +175,7 @@ function processChildren($data, $i, $menuid, $order, $level) {
                     echo generateFor($menu, 0);
                 }
 
-                function generateFor(Model\HierarchicalMenu $menu, $level) {
+                function generateFor(Model\IHierarchicalMenu $menu, $level) {
                     $children = $menu->getChildren();
                     $html = "";
                     foreach ($children as $child) {

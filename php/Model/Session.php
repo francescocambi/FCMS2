@@ -134,19 +134,25 @@ class Session {
 
     /**
      * Check session validity
-     * @param string Client ip address
+     * @param string $clientIp Client ip address
      * @return bool
      */
     public function isValid($clientIp) {
         //If logout has happened, session has been closed
-        if ( !is_null( $this->getClosingTimestamp() ) ) return false;
+        if ( !is_null( $this->getClosingTimestamp() ) ) {
+            return false;
+        }
 
         //If client ip address is different, user must login again on new client
-        if ( $this->getClientIpAddress() != $clientIp ) return false;
+        if ( $this->getClientIpAddress() != $clientIp ) {
+            return false;
+        }
 
         $now = new \DateTime();
         //If login was done more than 1h ago, session is expired
-        if ( $this->getLoginTimestamp()->diff($now, true)->s > 3600 ) return false;
+        if ( $this->getLoginTimestamp()->diff($now, true)->h >= 1 ) {
+            return false;
+        }
 
         //Otherwise session is still valid
         return true;

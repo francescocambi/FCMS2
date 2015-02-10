@@ -34,7 +34,7 @@ class FlagLanguageBarTest extends \PHPUnit_Framework_TestCase {
     public function testGetHTML() {
         $languagebar = new \FlagLanguageBar($this->languages, "/");
         $html = $languagebar->getHTML();
-        $expected = "<a href=\"/t1\"><img class=\"languageflag\" src=\"image/url\" /></a><a href=\"/t2\"><img class=\"languageflag\" src=\"image/url\" /></a>";
+        $expected = "<a href=\"/t1/\"><img class=\"languageflag\" src=\"image/url\" /></a><a href=\"/t2/\"><img class=\"languageflag\" src=\"image/url\" /></a>";
         $this->assertEquals($expected, $html);
     }
 

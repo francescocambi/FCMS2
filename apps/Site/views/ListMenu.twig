@@ -1,0 +1,17 @@
+{% macro menu(menuobj) %}
+    {% import _self as menuMacro %}
+    <ul>
+        {% for childitem in menuobj.Children %}
+            <li>
+                <a href="{{ childitem.URL }}">{{ childitem.Label }}</a>
+                {% if childitem.Children %}
+                    {{ menuMacro.menu(childitem) }}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endmacro %}
+
+{% import _self as menuMacro %}
+
+{{ menuMacro.menu(menuobj) }}

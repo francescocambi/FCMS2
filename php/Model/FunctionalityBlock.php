@@ -22,12 +22,15 @@ class FunctionalityBlock extends Block {
      */
     protected $frontControllerActionName;
 
-
+    /**
+     * @param \Silex\Application $app
+     * @return string
+     */
 	public function getHTML($app) {
 
-//        print $app;
-//        $frontController = new $this->frontControllerClassName();
-//        return $frontController->{$this->frontControllerActionName}();
+        $frontController = new $this->frontControllerClassName();
+        $content = $frontController->{$this->frontControllerActionName}($app);
+        return $this->getBlockStyle()->stylizeHTML($content, $this->getBackgroundCSS());
 
 	}
 	

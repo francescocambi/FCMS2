@@ -12,32 +12,65 @@ use \Symfony\Component\HttpFoundation\Request;
 
 $app = new Silex\Application();
 
-$app['debug'] = true;
-
-$app['em'] = $app->share(function () {
-    return initializeEntityManager("./");
+//Register Configuration Files Service
+//Loads repository of configuration parameters from specified files
+$app->register(new \Yosymfony\Silex\ConfigServiceProvider\ConfigServiceProvider(array(
+    __DIR__."/config/"
+)));
+$app['config'] = $app->share(function () use ($app) {
+    return $app['configuration']->load('config.json');
 });
 
+$app['debug'] = $app['config']->get('Application.Debug');
+
+if ($app['config']->get('Application.Development')) {
+    $applicationMode = "development";
+} else {
+    $applicationMode = "production";
+}
+
+$app['em'] = $app->share(function () use ($applicationMode) {
+    return initializeEntityManager("./", $applicationMode);
+});
+
+//Register Controller Service
+//Dynamically loads controllers for app->match
 $app->register(new \Silex\Provider\ServiceControllerServiceProvider());
 
+//Register Url Generator Service
+//Given a set of parameters it helps generating urls from
+//the bind name specified for a route
 $app->register(new \Silex\Provider\UrlGeneratorServiceProvider());
 
-$app->register(new \Silex\Provider\TwigServiceProvider(), array(
-    'twig.path' => array(
-        __DIR__.'/views/',
-        __DIR__.'/apps/Site/views/'
-    ),
-    'twig.options' => array(
+//Register Twig Template System Service
+//Twig's job is to render views based on specific template files
+
+if ($app['config']->get('Application.Development')) {
+    $twig_options = array(
+        'autoescape' => false
+    );
+} else {
+    $twig_options = array(
         'cache' => __DIR__.'/temp/',
         'auto_reload' => true,
         'autoescape' => false
-    )
+    );
+}
+$app->register(new \Silex\Provider\TwigServiceProvider(), array(
+    'twig.path' => array(
+        __DIR__.'/views/',
+        __DIR__.'/apps/Site/views/',
+        __DIR__.'/plugins/ContactMe/views/'
+    ),
+    'twig.options' => $twig_options
 ));
 
+//Define pages front controller
 $app['page.controller'] = $app->share(function () use ($app) {
     return new \App\Site\Controller\SiteController();
 });
 
+//Routes definition
 $app->match('/{lang}/', 'page.controller:renderPage')
     ->assert('lang', '[a-z]{2}')
     ->bind('languageOnly');
@@ -63,5 +96,5 @@ $app->match('/{lang}/{url}', 'page.controller:renderPage')
 //    return new Response($message);
 //});
 
-
+//Application Execution
 $app->run();

@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @package Model
  * @Entity
  */
-class Menu implements HierarchicalMenu {
+class Menu implements IHierarchicalMenu {
 
     /**
      * @var int

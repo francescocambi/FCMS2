@@ -7,7 +7,9 @@
 
 namespace App\Site\Controller;
 
+use App\Site\LanguageBar\LanguageBar;
 
+use App\Site\Menu\MenuBuilder;
 use Silex\Application;
 
 class SiteController {
@@ -22,11 +24,11 @@ class SiteController {
         ), null);
 
         $menu = $request->getLanguage()->getMenu();
-        $menuBuilder = new \ListMenuBuilder();
-        $menuBuilder->generateFor($menu);
+        $menuBuilder = new MenuBuilder($app, $menu);
 
         $languages = $app['em']->getRepository('\Model\Language')->findAll();
-        $languageBar = new \FlagLanguageBar($languages, $app['request']->server->get('REQUEST_URI'));
+
+        $languageBar = new LanguageBar($app, $languages);
 
         $bodyBgUrl = $app['em']->getRepository('\Model\Setting')->findOneBy(array("settingKey" => "BODY_BG"))->getSettingValue();
 

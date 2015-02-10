@@ -3,7 +3,8 @@
         "doctrine/orm" : "*",
         "silex/silex": "*",
         "twig/twig": "~1.18",
-        "symfony/twig-bridge": "~2.6"
+        "symfony/twig-bridge": "~2.6",
+        "yosymfony/config-serviceprovider": ">=1.2.2"
     },
     "require-dev": {
         "phpunit/phpunit": ">=4.2",

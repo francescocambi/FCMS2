@@ -2,10 +2,10 @@
 
 namespace Model;
 
-interface HierarchicalMenu {
+interface IHierarchicalMenu {
 
     /**
-     * @return HierarchicalMenu[]
+     * @return IHierarchicalMenu[]
      */
     public function getChildren();
 	
