@@ -17,7 +17,8 @@
         "psr-4": {
             "": "php/",
             "App\\": "apps/",
-            "Plugin\\": "plugins/"
+            "Plugin\\": "plugins/",
+            "Test\\": "test/"
         }
     },
     "config": {

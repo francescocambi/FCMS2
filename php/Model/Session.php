@@ -148,7 +148,7 @@ class Session {
             return false;
         }
 
-        $now = new \DateTime();
+        $now = new \DateTime('now', new \DateTimeZone('Europe/Rome'));
         //If login was done more than 1h ago, session is expired
         if ( $this->getLoginTimestamp()->diff($now, true)->h >= 1 ) {
             return false;

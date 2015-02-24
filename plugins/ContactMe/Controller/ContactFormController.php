@@ -19,9 +19,9 @@ class ContactFormController {
         if ( is_null($app['request']->request->get('referrer')) ) {
 
             //If POST is empty render form
-            return $app['twig']->render('contactFormBlock.twig');
+            return $app['twig']->render('plugins\\ContactMe\\contactFormBlock.twig');
         } else {
-            return $app['twig']->render('formFeedbackBlock.twig');
+            return $app['twig']->render('plugins\\ContactMe\\formFeedbackBlock.twig');
             //else persist data, handle results and display op completed message
         }
 

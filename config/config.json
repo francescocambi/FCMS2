@@ -1,8 +1,14 @@
 {
     "Application.Debug": true,
     "Application.Development": true,
-    "LanguageBar.View": "FlagLanguageBar.twig",
+    "LanguageBar.View": "App\\Site\\FlagLanguageBar.twig",
     "LanguageBar.RouteName": "languageOnly",
-    "Menu.View": "ListMenu.twig",
-    "Menu.RouteName": ""
+    "Menu.View": "App\\Site\\ListMenu.twig",
+    "Menu.RouteName": "",
+    "Database": {
+        "driver": "pdo_mysql",
+        "user": "root",
+        "password": "mysql",
+        "dbname": "framework_doc"
+    }
 }

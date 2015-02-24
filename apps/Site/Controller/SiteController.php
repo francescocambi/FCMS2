@@ -36,7 +36,7 @@ class SiteController {
 
         $titleSuffix = $app['em']->getRepository('\Model\Setting')->findOneBy(array("settingKey" => "TITLE_DESC"))->getSettingValue();
 
-        return $app['twig']->render('Page.twig', array(
+        return $app['twig']->render('App\\Site\\Page.twig', array(
             "title" => $page->getTitle(),
             "titleSuffix" => $titleSuffix,
             "pageDescription" => $page->getDescription(),

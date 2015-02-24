@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html lang="it">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/admin/favicon.gif" type="image/gif">
+
+    {% block title %}
+    <title>Admin Area Home</title>
+    {% endblock %}
+
+    <!-- <script src="js/jquery-2.1.1.min.js"></script> -->
+    <link rel="stylesheet" href="/static/admin/css/pure-min.css">
+    <!-- <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/tables-min.css"> -->
+    <!-- <link rel="stylesheet" href="jquery-ui/jquery-ui.css">
+    <script src="jquery-ui/jquery-ui.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/static/admin/css/site.home.css">
+
+</head>
+
+
+<body>
+
+<div id="layout">
+    <!-- Menu toggle -->
+    <a href="#menu" id="menuLink" class="menu-link">
+        <!-- Hamburger icon -->
+        <span></span>
+    </a>
+
+    <div id="menu">
+        {% block menu %}
+        {{ menuBlock }}
+        {% endblock %}
+    </div>
+
+    <div id="main">
+        <div id="toolbar">
+            {% block toolbar %}
+            <h1>Benvenuto!</h1>
+            {% endblock %}
+        </div>
+        {% block content %}
+        <h2 style="text-align: center; margin-top: 40px; font-weight: lighter;">Usa il men&ugrave; a sinistra per selezionare l'operazione desiderata.</h2>
+        {% endblock %}
+    </div>
+</div>
+
+
+<script src="/static/admin/js/menu.js"></script>
+
+</body>
+</html>
+

@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Application Login</title>
+    <link rel="stylesheet" href="/static/admin/css/pure-min.css">
+    <link rel="stylesheet" href="/static/admin/css/forms-min.css">
+    <link rel="icon" href="/favicon.gif" type="image/gif">
+    <style>
+        body {
+            background: rgb(25,24,24);
+        }
+        .container {
+            background: #F2F2F2;
+            padding: 10px;
+            margin: auto;
+            width: 400px;
+            margin-top: 10%;
+            border-radius: 5px;
+        }
+        .logo {
+            width: 399px;
+            height: 118px;
+            margin: 2px;
+        }
+        .errorMessage p {
+            color: red;
+            text-align: center;
+            margin-top: -7px;
+            margin-bottom: 3px;
+            font-height: 0.8em;
+        }
+    </style>
+</head>
+<body>
+<div class="container" style="">
+    <img class="logo" src="/static/admin/login-head.png">
+    <form class="pure-form" action="{{ path('admin_login_check') }}" method="POST">
+        <!-- <legend><b>Application Login</b></legend> -->
+        <fieldset class="pure-group">
+            <input type="text" name="_username" class="pure-input-1" value="{{ last_username }}" placeholder="Username">
+            <input type="password" name="_password" class="pure-input-1" placeholder="Password">
+        </fieldset>
+        {% if error %}
+            <div class="errorMessage"><p>{{ error|escape }}</p></div>
+        {% endif %}
+        <button type="submit" class="pure-button pure-input-1 pure-button-primary">Sign In</button>
+    </form>
+</div>
+</body>
+</html>

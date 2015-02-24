@@ -34,15 +34,6 @@ class PageTest extends \PHPUnit_Framework_TestCase {
         $this->pageinst->setPublished(true);
         $this->pageinst->setPublic(true);
 
-        $group1 = new AccessGroup();
-        $group1->setId(1);
-        $group1->setName("test");
-        $group1->setDescription("test");
-        $this->pageinst->addAccessGroup($group1);
-
-        $this->user = new User();
-        $this->user->joinAccessGroup($group1);
-
         $block = new ContentBlock();
         $block->setName("testblock");
         $block->setContent("<h1>This is a block</h1>");
@@ -60,14 +51,6 @@ class PageTest extends \PHPUnit_Framework_TestCase {
 
     public function testIsPublic() {
         $this->assertTrue($this->pageinst->isPublic());
-    }
-
-    public function testCanBeViewedByPositive() {
-        $this->assertTrue($this->pageinst->canBeViewedBy($this->user));
-    }
-
-    public function testCanBeViewedByNegative() {
-        $this->assertFalse($this->pageinst->canBeViewedBy(new User()));
     }
 
     public function testGetBlocks() {

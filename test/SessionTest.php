@@ -22,7 +22,7 @@ class SessionTest extends PHPUnit_Framework_TestCase {
         $this->session = new \Model\Session();
         $this->clientip = "1.1.1.1";
         $this->session->setClientIpAddress($this->clientip);
-        $now = new DateTime();
+        $now = new DateTime('now', new DateTimeZone('Europe/Rome'));
         $this->session->setLoginTimestamp($now);
         $this->session->setToken("TokenTokenTokenToken");
         $user = $this->getMock('Model\User');
@@ -34,7 +34,7 @@ class SessionTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testIsValidForClosedSession() {
-        $this->session->setClosingTimestamp(new DateTime());
+        $this->session->setClosingTimestamp(new DateTime('now', new DateTimeZone('Europe/Rome')));
         $this->assertFalse($this->session->isValid($this->clientip));
     }
 

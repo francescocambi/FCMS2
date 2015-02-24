@@ -5,7 +5,7 @@ require_once("vendor/autoload.php");
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 
-function initializeEntityManager($relativePathToRoot, $applicationMode="production") {
+function initializeEntityManager($relativePathToRoot, $dbParams, $applicationMode="production") {
     if ($applicationMode == "development") {
         $cache = new \Doctrine\Common\Cache\ArrayCache;
     } else {
@@ -19,7 +19,8 @@ function initializeEntityManager($relativePathToRoot, $applicationMode="producti
     //during plugin setup phase
     $driverImpl = $config->newDefaultAnnotationDriver(array(
         $relativePathToRoot."php/Model/",
-        $relativePathToRoot."plugins/ContactMe/Model/"
+        $relativePathToRoot."plugins/ContactMe/Model/",
+        $relativePathToRoot."apps/Admin/Model/"
     ));
     $config->setMetadataDriverImpl($driverImpl);
     $config->setQueryCacheImpl($cache);
@@ -31,8 +32,6 @@ function initializeEntityManager($relativePathToRoot, $applicationMode="producti
     } else {
         $config->setAutoGenerateProxyClasses(false);
     }
-
-    require($relativePathToRoot."connection.properties.php");
 
     $em = EntityManager::create($dbParams, $config);
 
@@ -50,7 +49,8 @@ function initializeTestEntityManager($relativePathToRoot, $applicationMode="deve
     //during plugin setup phase
     $driverImpl = $config->newDefaultAnnotationDriver(array(
         $relativePathToRoot."php/Model/",
-        $relativePathToRoot."plugins/ContactMe/Model/"
+        $relativePathToRoot."plugins/ContactMe/Model/",
+        $relativePathToRoot."apps/Admin/Model/"
     ));
     $config->setMetadataDriverImpl($driverImpl);
     $config->setQueryCacheImpl($cache);

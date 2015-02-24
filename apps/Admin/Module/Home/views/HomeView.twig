@@ -1,0 +1,15 @@
+{% extends 'App\\Admin\\Base.twig' %}
+
+{% block title %}
+<title>New Admin Area Home</title>
+{% endblock %}
+
+{% block toolbar %}
+<h1>Welcome!</h1>
+{% endblock %}
+
+{% block content %}
+<h2 style="text-align: center; margin-top: 40px; font-weight: lighter;">
+    {{ welcomeMessage|escape }}
+</h2>
+{% endblock %}

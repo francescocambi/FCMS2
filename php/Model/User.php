@@ -2,14 +2,16 @@
 
 namespace Model;
 
-use \Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Component\Security\Core\User\EquatableInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Class User
  * @package Model
  * @Entity
  */
-class User {
+class User implements AdvancedUserInterface, EquatableInterface {
 
     /**
      * @var int
@@ -19,9 +21,15 @@ class User {
 
     /**
      * @var string
-     * @Column(type="string", nullable=false)
+     * @Column(type="string", nullable=false, unique=true)
      */
     protected $email;
+
+    /**
+     * @var string
+     * @Column(type="string", nullable=false, unique=true)
+     */
+    protected $username;
 
     /**
      * @var string
@@ -78,13 +86,68 @@ class User {
     protected $country;
 
     /**
-     * @var ArrayCollection
-     * @ManyToMany(targetEntity="AccessGroup", cascade={"all"})
+     * @var string
+     * @Column(type="string")
      */
-    protected $accessGroups;
-	
+    protected $roles;
+
+    /**
+     * @var string
+     * @Column(type="string")
+     */
+    protected $salt;
+
+    /**
+     * @var \DateTime
+     * @Column(type="datetime", nullable=true)
+     */
+    protected $accountExpiration;
+
+    /**
+     * @var bool
+     * @Column(type="boolean", nullable=false)
+     */
+    protected $enabled;
+
+    /**
+     * @var \DateTime
+     * @Column(type="datetime", nullable=true)
+     */
+    protected $credentialsExpiration;
+
 	public function __construct() {
-        $this->accessGroups = new ArrayCollection();
+        $this->enabled = true;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getAccountExpiration()
+    {
+        return $this->accountExpiration;
+    }
+
+    /**
+     * @param \DateTime $accountExpiration
+     */
+    public function setAccountExpiration($accountExpiration)
+    {
+        $this->accountExpiration = $accountExpiration;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->address;
     }
 
     /**
@@ -98,9 +161,9 @@ class User {
     /**
      * @return string
      */
-    public function getAddress()
+    public function getCap()
     {
-        return $this->address;
+        return $this->cap;
     }
 
     /**
@@ -114,9 +177,9 @@ class User {
     /**
      * @return string
      */
-    public function getCap()
+    public function getCity()
     {
-        return $this->cap;
+        return $this->city;
     }
 
     /**
@@ -130,9 +193,9 @@ class User {
     /**
      * @return string
      */
-    public function getCity()
+    public function getCountry()
     {
-        return $this->city;
+        return $this->country;
     }
 
     /**
@@ -144,19 +207,19 @@ class User {
     }
 
     /**
-     * @return string
+     * @return \DateTime
      */
-    public function getCountry()
+    public function getCredentialsExpiration()
     {
-        return $this->country;
+        return $this->credentialsExpiration;
     }
 
     /**
-     * @param string $email
+     * @param \DateTime $credentialsExpiration
      */
-    public function setEmail($email)
+    public function setCredentialsExpiration($credentialsExpiration)
     {
-        $this->email = $email;
+        $this->credentialsExpiration = $credentialsExpiration;
     }
 
     /**
@@ -168,27 +231,35 @@ class User {
     }
 
     /**
-     * @param ArrayCollection $accessGroups
+     * @param string $email
      */
-    public function setAccessGroups($accessGroups)
+    public function setEmail($email)
     {
-        $this->accessGroups = $accessGroups;
+        $this->email = $email;
     }
 
     /**
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return boolean
      */
-    public function getAccessGroups()
+    public function isEnabled()
     {
-        return $this->accessGroups;
+        return $this->enabled;
     }
 
     /**
-     * @return int
+     * @param boolean $enabled
      */
-    public function getId()
+    public function setEnabled($enabled)
     {
-        return $this->id;
+        $this->enabled = $enabled;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**
@@ -202,9 +273,9 @@ class User {
     /**
      * @return string
      */
-    public function getName()
+    public function getPassword()
     {
-        return $this->name;
+        return $this->password;
     }
 
     /**
@@ -218,9 +289,9 @@ class User {
     /**
      * @return string
      */
-    public function getPassword()
+    public function getPhone()
     {
-        return $this->password;
+        return $this->phone;
     }
 
     /**
@@ -234,9 +305,9 @@ class User {
     /**
      * @return string
      */
-    public function getPhone()
+    public function getProvince()
     {
-        return $this->phone;
+        return $this->province;
     }
 
     /**
@@ -248,11 +319,43 @@ class User {
     }
 
     /**
+     * @return \Symfony\Component\Security\Core\Role\Role[]
+     */
+    public function getRoles()
+    {
+        return explode(',', $this->roles);
+    }
+
+    /**
+     * @param \Symfony\Component\Security\Core\Role\Role[] $roles
+     */
+    public function setRoles($roles)
+    {
+        $this->roles = join(',', $roles);
+    }
+
+    /**
      * @return string
      */
-    public function getProvince()
+    public function getSalt()
     {
-        return $this->province;
+        return $this->salt;
+    }
+
+    /**
+     * @param string $salt
+     */
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSurname()
+    {
+        return $this->surname;
     }
 
     /**
@@ -266,29 +369,60 @@ class User {
     /**
      * @return string
      */
-    public function getSurname()
+    public function getUsername()
     {
-        return $this->surname;
+        return $this->username;
     }
-
-	/**
-	 * Check if the string passed by argument mathes user's password.
-	 * @param string
-	 * @returns bool
-	 */
-	public function checkPassword($password)
-    {
-		return ($this->password == $password);
-	}
 
     /**
-     * @param AccessGroup $group
+     * @param string $username
      */
-    public function joinAccessGroup(AccessGroup $group)
+    public function setUsername($username)
     {
-        $this->accessGroups->add($group);
+        $this->username = $username;
     }
-	
+
+    /**
+     * {{@inheritdoc}}
+     */
+    public function eraseCredentials() {
+
+    }
+
+    /**
+     * @return bool|void
+     */
+    public function isAccountNonExpired() {
+        $now = new \DateTime();
+        return $this->accountExpiration > $now;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAccountNonLocked() {
+        return $this->enabled;
+    }
+
+    /**
+     * @return bool|void
+     */
+    public function isCredentialsNonExpired() {
+        $now = new \DateTime();
+        return $this->credentialsExpiration > $now;
+    }
+
+    /**
+     * @param UserInterface $user
+     * @return bool
+     */
+    public function isEqualTo(UserInterface $user) {
+        if ($this->username === $user->getUsername()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 
