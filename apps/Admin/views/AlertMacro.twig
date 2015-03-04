@@ -1,0 +1,19 @@
+{# Type can be one of (error, success, notice, info) #}
+{% macro alert(type, message) %}
+<div class="{{ type }}-box alert">
+    <div class="msg">{{ message|escape }}</div>
+    <a class="toggle-alert">Toggle</a>
+</div>
+{% endmacro %}
+
+
+{% macro exceptionAlert(message, traceAsString) %}
+<div class="error-box alert">
+    <div class="msg">
+        {{ message|escape }}
+        <br>
+        {{ traceAsString|e }}
+    </div>
+    <a class="toggle-alert">Toggle</a>
+</div>
+{% endmacro %}

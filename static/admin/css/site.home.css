@@ -240,3 +240,34 @@ Hides the menu at `48em`, but modify this based on your app's needs.
         left: 200px;
     }
 }
+
+
+/* -- Alert box Style ------------------------------------------------------- */
+
+.alert {
+    /* padding: 19px 15px; */
+    padding: 19px 15px;
+    color: #fefefe;
+    position: relative;
+    font: 14px/20px; /* Museo300Regular, Helvetica, Arial, sans-serif; */
+}
+.alert .msg { padding: 0 20px 0 40px;}
+.alert p { margin: 0;}
+.alert .toggle-alert {
+    position: absolute;
+    top: 7px;
+    right: 10px;
+    display: block;
+    text-indent: -10000px;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    -webkit-box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.1), 1px 1px 1px rgba(255, 255, 255, 0.1);
+    -moz-box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.1), 1px 1px 1px rgba(255, 255, 255, 0.1);
+    box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.1), 1px 1px 1px rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.08) url('/static/admin/images/alert.png') no-repeat 6px 6px;
+}
+.info-box {		background: #2fa9f6 url('/static/admin/images/info.png') no-repeat 14px 14px;}
+.success-box {	background: #7EB62E url('/static/admin/images/success.png') no-repeat 14px 14px;}
+.error-box {	background: #f64b2f url('/static/admin/images/error.png') no-repeat 14px 14px;}
+.notice-box {	background: #f6ca2f url('/static/admin/images/notice.png') no-repeat 14px 14px;}

@@ -9,13 +9,18 @@
     <title>Admin Area Home</title>
     {% endblock %}
 
-    <!-- <script src="js/jquery-2.1.1.min.js"></script> -->
+
     <link rel="stylesheet" href="/static/admin/css/pure-min.css">
-    <!-- <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/tables-min.css"> -->
-    <!-- <link rel="stylesheet" href="jquery-ui/jquery-ui.css">
-    <script src="jquery-ui/jquery-ui.js"></script>
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/static/admin/css/tables-min.css">
+    <link rel="stylesheet" href="/static/admin/jquery-ui/jquery-ui.css">
+    <link rel="stylesheet" href="/static/admin/css/font-awesome-4.2.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/static/admin/css/site.home.css">
+
+    <script src="/static/admin/js/jquery-2.1.1.min.js"></script>
+    <script src="/static/admin/jquery-ui/jquery-ui.js"></script>
+
+    {% block head %}
+    {% endblock %}
 
 </head>
 
@@ -49,6 +54,10 @@
 
 
 <script src="/static/admin/js/menu.js"></script>
+
+{% block tail %}
+
+{% endblock %}
 
 </body>
 </html>

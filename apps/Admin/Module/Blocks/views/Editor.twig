@@ -1,0 +1,165 @@
+
+{% extends "App\\Admin\\Base.twig" %}
+
+{% block title %}
+<title>Editor Blocchi</title>
+{% endblock %}
+
+{% block toolbar %}
+<h1>Editor Blocchi</h1>
+{% endblock %}
+
+{% block head %}
+    <script type="text/javascript" src="/static/admin/tinymce/tinymce.min.js"></script>
+{% endblock %}
+
+</head>
+
+{% block content %}
+
+    <form method="POST" class="pure-form" id="block-editor-form"
+          action="{% if block.id > 0 %}{{  }}{% else %}{{  }}{% endif %}">
+
+        <div class="pure-form-aligned">
+            <!-- DIV CON INFORMAZIONI BASE BLOCCO -->
+            <div class="pure-u-1-2" style="min-width: 400px; float: left;">
+                <legend>Info Base</legend>
+
+                {% if block.id > 0 %}
+                    <div class="pure-control-group">
+                        <label>Id</label>
+                        <input type="text" id="id" value="{{ block.id }}" disabled>
+                    </div>
+                {% endif %}
+
+                <div class="pure-control-group">
+                    <label>Nome</label>
+                    <input type="text" id="blockname" name="name" value="{{ block.name }}">
+                </div>
+                <div class="pure-control-group">
+                    <label>Descrizione</label>
+                    <textarea type="text" name="description">{{ block.description }}</textarea>
+                </div>
+                <div class="pure-control-group">
+                    <label>Stile Blocco</label>
+                    <select name="blockStyleClassName" size="1">
+                        {% for style in styles %}
+                            <option value="{{ style.classname }}" {% if style.classname == block.blockStyleClassName %}selected{% endif %}>
+                                {{ style.description }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <fieldset class="pure-control-group">
+                    <label>  </label>
+                    <button type="button" id="save-all" class="pure-button pure-button-primary" style="width: 200px;">Salva Tutto</button>
+                </fieldset>
+            </div>
+
+            <!-- DIV CON INFORMAZIONI SFONDO BLOCCO -->
+            <div class="pure-u-1-2" style="float: right; min-width: 500px;">
+                <legend>Sfondo Blocco</legend>
+                <div class="pure-control-group">
+                    <label>URL Immagine</label>
+                    <input type="text" id="bgurl" name="bgurl" value="{{ block.bgurl }}">
+                    <button type="button" class="pure-button openfileman">Sfoglia</button>
+                </div>
+
+                <div class="pure-control-group">
+                    <label>Colore</label>
+                    <input type="text" name="bgred" size="3" placeholder="Red" value="{{ block.bgred }}">
+                    <input type="text" name="bggreen" size="3" placeholder="Green" value="{{ block.bggreen }}">
+                    <input type="text" name="bgblue" size="3" placeholder="Blue" value="{{ block.bgblue }}">
+                    <input type="text" name="bgopacity" size="3" placeholder="Opacity" value="{{ block.bgopacity }}">
+                </div>
+
+                <div class="pure-control-group">
+                    <label>Ripetizione Immagine</label>
+                    <table class="pure-table pure-table-striped" style="display: inline-table;">
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="bgrepeatx" {% if block.bgrepeatx %} checked {% endif %}>
+                            </td>
+                            <td>Orizzontale</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="bgrepeaty" {% if block.bgrepeaty %} checked {% endif %}>
+                            </td>
+                            <td>Verticale </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="pure-control-group" style="clear: both;">
+                    <label>Dimensioni</label>
+                    <table class="pure-table pure-table-striped" style="display: inline-table;">
+                        <tr>
+                            <td>
+                                <input type="radio" name="bgsize" value="cover" {% if block.bgsize == 'cover' %} checked {% endif %}>
+                            </td>
+                            <td>Esteso 100%</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" name="bgsize" value="contain" {% if block.bgsize == 'contain' %} checked {% endif %}>
+                            </td>
+                            <td>Esteso in proporzione</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" name="bgsize" value="" {% if block.bgsize is empty %} checked {% endif %}>
+                            </td>
+                            <td>Dimensioni reali</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+
+
+        </div>
+
+        <legend>Contenuto</legend>
+
+        <!-- INIZIO AREA EDITING BLOCCO -->
+        <div class="blockeditor" style="padding: 20px;">
+            <?php if ($UPDATE_MODE) { ?>
+            {% if block.id > 0 %}
+            <div class="blockcontentdiv">
+                {{ block.content }}
+            </div>
+            {% endif %}
+            <textarea id="tmceeditor" class="blockcontent" name="content" {% if block.id > 0 %}style="display: none;"{% endif %}></textarea>
+
+            <div class="blockbuttons" style="margin-top: 5px; clear: both;">
+                <button type="button" class="pure-button pure-button-primary applyblock" style="display: none;">Applica Modifiche</button>
+                <button type="button" class="pure-button pure-button-primary modblock">Modifica</button>
+            </div>
+        </div>
+        <!-- FINE AREA EDITING BLOCCO -->
+
+    </form>
+
+{% endblock %}
+
+{% block tail %}
+    <div id="roxyCustomPanel" style="display: none;">
+        <iframe src="" style="width:100%;height:100%" frameborder="0"></iframe>
+    </div>
+
+    <style>
+        legend {
+            margin-left: 10px;
+        }
+    </style>
+
+    <script type="text/javascript" src="/static/admin/js/modblock.js"></script>
+
+    <script type="text/javascript">
+        var UPDATE_MODE = {% if block.id > 0 %}true{% else %}false{% endif %};
+        if (!UPDATE_MODE) {
+            $(".modblock").click();
+        }
+    </script>
+{% endblock %}

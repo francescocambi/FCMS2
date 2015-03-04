@@ -1,0 +1,20 @@
+<div id="action-confirmation-dialog" style="display: none;">
+    <p id="acd-message"></p>
+    <button type="button" class="pure-button pure-button-primary green-button" id="acd-ok" style="float: right;">Conferma</button>
+    <button type="button" class="pure-button pure-button-primary" id="acd-cancel" style="float: left;">Annulla</button>
+    <input type="hidden" id="acd-objid">
+</div>
+<script>
+    $("#action-confirmation-dialog").dialog({
+        autoOpen: false,
+        title: "Richiesta Conferma",
+        modal: true,
+        close: function() {
+            $("#acd-message").text("");
+            $("#acd-objid").val("");
+        }
+    });
+    $("#acd-cancel").click(function() {
+        $("#action-confirmation-dialog").dialog("close");
+    });
+</script>

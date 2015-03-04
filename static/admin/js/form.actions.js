@@ -253,7 +253,7 @@ $("#nbm-addexist").click(function() {
         cloned.find(".applyblock").hide();
         var blockid = $(element).val();
         cloned.children().first().children().filter('[name="block[id][]"]').val(blockid);
-        $.getJSON('blockws.php?action=get&blockid='+blockid, function(data) {
+        $.getJSON('/admin/blocks/'+blockid, function(data) {
             cloned.find('[name="block[id][]"]').val(data.ID);
             cloned.find('[name="block[name][]"]').val(data.NAME);
             cloned.find('[name="block[description][]"]').val(data.DESCRIPTION);
@@ -404,7 +404,7 @@ function checkBlockNameUnique(id, target, callback) {
         $(target).css("border", "solid 2px rgb(202, 60, 60)");
         return false;
     }
-    $.getJSON("blockws.php?action=checkname&name="+txtvalue+"&blockid="+id, function(data) {
+    $.getJSON("/admin/blocks/checkBlockName?name="+txtvalue+"&blockid="+id, function(data) {
         if (data.status == "error") {
             //Show error dialog
             $("#erd-errdata").val(data.errormessage);
@@ -433,7 +433,7 @@ function checkPageNameUnique(id, target, callback) {
         $(target).css("border", "solid 2px rgb(202, 60, 60)");
         return false;
     }
-    $.getJSON("pagews.php?action=checkname&name="+txtvalue+"&pageid="+id, function(data) {
+    $.getJSON("/admin/pages/checkPageName?name="+txtvalue+"&pageid="+id, function(data) {
         if (data.status == "error") {
             //Show error dialog
             $("#erd-errdata").val(data.errormessage);
@@ -441,7 +441,7 @@ function checkPageNameUnique(id, target, callback) {
             return false;
         }
         if (data.status == "ok") {
-            if (data.result == "true") {
+            if (data.result) {
                 $(target).css("border", "solid 2px rgb(28, 184, 65)");
                 callback(true);
             } else {

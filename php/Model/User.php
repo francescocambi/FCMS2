@@ -393,7 +393,7 @@ class User implements AdvancedUserInterface, EquatableInterface {
      * @return bool|void
      */
     public function isAccountNonExpired() {
-        $now = new \DateTime();
+        $now = new \DateTime('now', new \DateTimeZone('Europe/Rome'));
         return $this->accountExpiration > $now;
     }
 
@@ -408,7 +408,7 @@ class User implements AdvancedUserInterface, EquatableInterface {
      * @return bool|void
      */
     public function isCredentialsNonExpired() {
-        $now = new \DateTime();
+        $now = new \DateTime('now', new \DateTimeZone('Europe/Rome'));
         return $this->credentialsExpiration > $now;
     }
 

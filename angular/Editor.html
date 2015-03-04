@@ -1,0 +1,542 @@
+<!DOCTYPE HTML>
+<html lang="it">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/admin/favicon.gif" type="image/gif">
+
+    <title>Editor Pagine</title>
+
+
+    <link rel="stylesheet" href="/static/admin/css/pure-min.css">
+    <link rel="stylesheet" href="/static/admin/css/tables-min.css">
+    <link rel="stylesheet" href="/static/admin/jquery-ui/jquery-ui.css">
+    <link rel="stylesheet" href="/static/admin/css/font-awesome-4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/admin/css/site.home.css">
+
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+
+    <script src="/static/admin/js/jquery-2.1.1.min.js"></script>
+    <script src="/static/admin/jquery-ui/jquery-ui.js"></script>
+
+    <script type="text/javascript" src="/static/admin/tinymce/tinymce.min.js"></script>
+
+    <script>
+
+        var app = angular.module('fcms', ['ngResources']);
+        app.controller('mycontroller', )
+
+    </script>
+
+</head>
+
+
+<body>
+
+<div id="layout">
+<!-- Menu toggle -->
+<a href="#menu" id="menuLink" class="menu-link">
+    <!-- Hamburger icon -->
+    <span></span>
+</a>
+
+<div id="menu">
+    <div class="pure-menu pure-menu-open">
+        <img src="/static/admin/login-head.png" style="border: none; width: 200px; height: 58px; margin-bottom: -5px;">
+        <p style="width: 200px; margin: 0px; color: white; text-align: center; margin-top: 3px; margin-bottom: 3px;">Operatore:&nbsp;&nbsp;&nbsp;&nbsp;administrator</p>
+        <p style="width: 200px; margin: 0px; color: white; text-align: center; margin-top: 3px; margin-bottom: 3px; font-size: 0.3em;">Version v1.0.2</p>
+        <ul>
+            <li><a href="/admin/home/">Home</a></li>
+            <li class="menu-item-divided pure-menu-selected"><a href="/admin/pages/">Gestione Pagine</a></li>
+        </ul>
+    </div>
+</div>
+
+<div id="main">
+<div id="toolbar">
+    <h1>Editor Pagine</h1>
+</div>
+
+
+<div class="success-box alert">
+    <div class="msg">Operazione Completata</div>
+    <a class="toggle-alert">Toggle</a>
+</div>
+
+
+
+
+<form class="pure-form pure-form-aligned" id="page-editor-form" method="POST" action="save">
+
+<!-- <div style="width: 550px; height: 350px; padding: 15px; float: left;">   	 -->
+<div class="pure-u-12-24" style="padding: 10px;">
+    <legend>Pagina</legend>
+
+    <div class="pure-control-group" ng-show="">
+        <label>ID</label>
+        <input id="id" type="text" value="1" disabled>
+    </div>
+
+    <div class="pure-control-group">
+        <label>Nome</label>
+        <input name="name" type="text" value="home_it">
+    </div>
+
+    <div class="pure-control-group">
+        <label>Descrizione</label>
+        <textarea name="description" rows="4" cols="35" maxlength="155">Home Page</textarea>
+    </div>
+
+    <div class="pure-control-group">
+        <label>Titolo</label>
+        <input name="title" type="text" value="Home Page">
+    </div>
+
+    <div class="pure-control-group">
+        <label>Pubblicata</label>
+        <input name="published" type="checkbox"  checked >
+    </div>
+
+    <div class="pure-control-group">
+        <label>Pubblica</label>
+        <input name="public" type="checkbox"  checked >&nbsp;&nbsp;
+    </div>
+
+    <div class="pure-control-group">
+        <label>Lingua</label>
+        <select name="language">
+            <option value="1"  selected >
+                Italiano
+            </option>
+            <option value="2" >
+                ENGLISH
+            </option>
+        </select>
+    </div>
+
+    <div class="pure-control-group" style="margin-top:20px;">
+        <label>  </label>
+        <button type="button" id="save-all" class="pure-button pure-button-primary" style="width: 200px;">Salva tutto</button>
+    </div>
+</div>
+
+<!-- <div style="width: 500px; height: 320px; padding: 15px; float: right; overflow: scroll;"> -->
+<div class="pure-u-10-24" style="overflow: scroll; padding: 10px; float: right;">
+    <legend>Url Pagina</legend>
+    <div class="pure-control-group">
+        <table class="pure-table pure-table-striped center" style="text-align: center;">
+            <thead>
+            <th style="width: 200px; text-align: center;">http://www.*****.it/</th>
+            <th></th>
+            </thead>
+
+
+            <tr id="newurlrow">
+                <td colspan="2"><button type="button" class="pure-button" id="newurl">Nuovo</button></td>
+            </tr>
+            <tr style="display: none;" id="urlrowtpl">
+                <td mode="1"><input type="text"></td>
+                <td><i class="fa fa-pencil-square fa-2x modurl" style="color: #0078e7;"></i>&nbsp; &nbsp;<i class="fa fa-minus-square fa-2x delurl" style="color: #0078e7;"></i></td>
+                <input type="hidden" name="url[]">
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+<legend style="line-height: 40px; margin: 5px; width: 99%">Blocchi Pagina <button type="button" class="pure-button pure-button-primary" style="float: right;" id="newblock">Aggiungi Blocco</button></legend>
+<div id="blocks" style="padding: 20px;">
+    <div class="blockeditor">
+        <fieldset class="blockdata">
+            <input type="hidden" name="block[id][]" value="9">
+            <input type="hidden" name="block[name][]" value="carousel">
+            <input type="hidden" name="block[description][]" value="slide immagini di testa">
+            <input type="hidden" name="block[style][]" value="CenteredBlockStyle">
+
+            <input type="hidden" name="block[bckurl][]" value="">
+            <input type="hidden" name="block[bckred][]" value="0">
+            <input type="hidden" name="block[bckgreen][]" value="0">
+            <input type="hidden" name="block[bckblue][]" value="0">
+            <input type="hidden" name="block[bckopacity][]" value="0.00">
+            <input type="hidden" name="block[bckrepeatx][]" value="">
+            <input type="hidden" name="block[bckrepeaty][]" value="">
+            <input type="hidden" name="block[bcksize][]" value="">
+        </fieldset>
+        <div class="blockcontentdiv">
+            <div class="content" style="background: rgba(0, 0, 0, 0.00); "><div class="carousel" style="width: 1000px; height: 300px;">
+                <div style="background: url('/resources/uploads/carousel/pool-development.gif') no-repeat; width: 1000px; height: 300px; font-size: 14pt;">
+                    <h1 style="color: white; position: relative; top: 100px; left: 10px; font-size: 30pt; text-align: left;">Esperienza<br /> nella<br /> Progettazione</h1>
+                </div>
+                <div style="background: url('/resources/uploads/carousel/built-pool.gif') no-repeat; width: 1000px; height: 300px; text-align: right; font-size: 30pt;">
+                    <h1 style="color: black; position: relative; top: 65px; right: 20px; font-size: 30pt; text-align: right;">Modernit&agrave; della Soluzione&nbsp;</h1>
+                </div>
+                <div style="background: url('/resources/uploads/carousel/montelupo-1.gif') no-repeat; width: 1000px; height: 300px; text-align: center;">
+                    <h1 style="position: relative; top: 50px; color: white; font-size: 30pt; text-align: center;">Nuovi Immobili Commerciali</h1>
+                </div>
+            </div></div>
+        </div>
+        <textarea id="tmceeditor1" class="blockcontent" name="block[content][]" style="display: none;"></textarea>
+        <div class="blockbuttons" style="margin-top: 5px; clear: both;">
+            <button type="button" class="pure-button pure-button-primary upbutton">Su</button>
+            <button type="button" class="pure-button pure-button-primary downbutton">Giu</button>
+            <button type="button" class="pure-button pure-button-primary delblock">Elimina</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" class="pure-button pure-button-primary applyblock" style="display: none;">Applica Modifiche</button>
+            <button type="button" class="pure-button pure-button-primary modblock">Modifica</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" class="pure-button pure-button-primary blockproperties">Propriet&agrave; Blocco</button>
+        </div>
+    </div>
+    <div class="blockeditor">
+        <fieldset class="blockdata">
+            <input type="hidden" name="block[id][]" value="8">
+            <input type="hidden" name="block[name][]" value="home-esperienza">
+            <input type="hidden" name="block[description][]" value="">
+            <input type="hidden" name="block[style][]" value="CenteredBlockStyle">
+
+            <input type="hidden" name="block[bckurl][]" value="">
+            <input type="hidden" name="block[bckred][]" value="0">
+            <input type="hidden" name="block[bckgreen][]" value="0">
+            <input type="hidden" name="block[bckblue][]" value="0">
+            <input type="hidden" name="block[bckopacity][]" value="0.00">
+            <input type="hidden" name="block[bckrepeatx][]" value="">
+            <input type="hidden" name="block[bckrepeaty][]" value="">
+            <input type="hidden" name="block[bcksize][]" value="">
+        </fieldset>
+        <div class="blockcontentdiv">
+            <div class="content" style="background: rgba(0, 0, 0, 0.00); "><h1 style="text-align: left;">&nbsp;</h1>
+                <h1 style="text-align: left;"><strong>50 anni di esperienza!</strong></h1>
+                <p>La nostra cinquantennale esperienza ci permette di offrirvi servizi e consulenze di ogni tipo relativi all&rsquo;attivit&agrave; edilizia e immobiliare.</p>
+                <p>I nostri punti di forza sono l&rsquo;organizzazione e la qualit&agrave; dei servizi.</p>
+                <p>&nbsp;</p>
+                <p>&nbsp;</p></div>
+        </div>
+        <textarea id="tmceeditor2" class="blockcontent" name="block[content][]" style="display: none;"></textarea>
+        <div class="blockbuttons" style="margin-top: 5px; clear: both;">
+            <button type="button" class="pure-button pure-button-primary upbutton">Su</button>
+            <button type="button" class="pure-button pure-button-primary downbutton">Giu</button>
+            <button type="button" class="pure-button pure-button-primary delblock">Elimina</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" class="pure-button pure-button-primary applyblock" style="display: none;">Applica Modifiche</button>
+            <button type="button" class="pure-button pure-button-primary modblock">Modifica</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" class="pure-button pure-button-primary blockproperties">Propriet&agrave; Blocco</button>
+        </div>
+    </div>
+    <div class="blockeditor">
+        <fieldset class="blockdata">
+            <input type="hidden" name="block[id][]" value="3">
+            <input type="hidden" name="block[name][]" value="Contatti">
+            <input type="hidden" name="block[description][]" value="">
+            <input type="hidden" name="block[style][]" value="ExtendedBlockStyle">
+
+            <input type="hidden" name="block[bckurl][]" value="">
+            <input type="hidden" name="block[bckred][]" value="235">
+            <input type="hidden" name="block[bckgreen][]" value="79">
+            <input type="hidden" name="block[bckblue][]" value="66">
+            <input type="hidden" name="block[bckopacity][]" value="1.00">
+            <input type="hidden" name="block[bckrepeatx][]" value="">
+            <input type="hidden" name="block[bckrepeaty][]" value="">
+            <input type="hidden" name="block[bcksize][]" value="">
+        </fieldset>
+        <div class="blockcontentdiv">
+            <div class="extended_wrapper" style="background: rgba(235, 79, 66, 1.00); "><div class="extended_content"><h2><span style="color: #ffffff;">Contatti:</span></h2>
+                <p><span style="color: #ffffff;">Via Giovanni Magherini Graziano, 24</span></p>
+                <p><span style="color: #ffffff;">50063 Figline Val D'Arno (FI)</span></p>
+                <p><span style="color: #ffffff;">Codice Fiscale e Partita IVA 06077940481</span></p>
+                <p style="text-align: right;"><span style="color: #999999;">Copyright (c) 2014 ELMCO Consorzio Costruzioni</span></p></div></div>
+        </div>
+        <textarea id="tmceeditor3" class="blockcontent" name="block[content][]" style="display: none;"></textarea>
+        <div class="blockbuttons" style="margin-top: 5px; clear: both;">
+            <button type="button" class="pure-button pure-button-primary upbutton">Su</button>
+            <button type="button" class="pure-button pure-button-primary downbutton">Giu</button>
+            <button type="button" class="pure-button pure-button-primary delblock">Elimina</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" class="pure-button pure-button-primary applyblock" style="display: none;">Applica Modifiche</button>
+            <button type="button" class="pure-button pure-button-primary modblock">Modifica</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" class="pure-button pure-button-primary blockproperties">Propriet&agrave; Blocco</button>
+        </div>
+    </div>
+    <div class="blockeditor">
+        <fieldset class="blockdata">
+            <input type="hidden" name="block[id][]" value="10">
+            <input type="hidden" name="block[name][]" value="functionalityProva">
+            <input type="hidden" name="block[description][]" value="">
+            <input type="hidden" name="block[style][]" value="CenteredBlockStyle">
+
+            <input type="hidden" name="block[bckurl][]" value="">
+            <input type="hidden" name="block[bckred][]" value="">
+            <input type="hidden" name="block[bckgreen][]" value="">
+            <input type="hidden" name="block[bckblue][]" value="">
+            <input type="hidden" name="block[bckopacity][]" value="">
+            <input type="hidden" name="block[bckrepeatx][]" value="">
+            <input type="hidden" name="block[bckrepeaty][]" value="">
+            <input type="hidden" name="block[bcksize][]" value="">
+        </fieldset>
+        <div class="blockcontentdiv">
+            <div class="content" style=""><form method="POST">
+                <table>
+                    <tr><td>Referente</td><td><input type="text" name="referrer"></td></tr>
+                    <tr><td>Email</td><td><input type="email" name="email"></td></tr>
+                    <tr><td>Testo</td><td><textarea name="content" rows="8" cols="30"></textarea></td></tr>
+                    <tr><td colspan="2" style="text-align: center;"><input type="submit" id="contactme-submit-btn" value="Invia"></td></tr>
+                </table>
+            </form></div>
+        </div>
+        <textarea id="tmceeditor4" class="blockcontent" name="block[content][]" style="display: none;"></textarea>
+        <div class="blockbuttons" style="margin-top: 5px; clear: both;">
+            <button type="button" class="pure-button pure-button-primary upbutton">Su</button>
+            <button type="button" class="pure-button pure-button-primary downbutton">Giu</button>
+            <button type="button" class="pure-button pure-button-primary delblock">Elimina</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" class="pure-button pure-button-primary applyblock" style="display: none;">Applica Modifiche</button>
+            <button type="button" class="pure-button pure-button-primary modblock">Modifica</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" class="pure-button pure-button-primary blockproperties">Propriet&agrave; Blocco</button>
+        </div>
+    </div>
+</div>
+
+</form>
+
+<div id="editormodel" class="blockeditor" style="display: none;">
+    <fieldset class="blockdata">
+        <input type="hidden" name="block[id][]" value="0">
+        <input type="hidden" name="block[name][]">
+        <input type="hidden" name="block[description][]">
+        <input type="hidden" name="block[style][]">
+
+        <input type="hidden" name="block[bckurl][]">
+        <input type="hidden" name="block[bckred][]">
+        <input type="hidden" name="block[bckgreen][]">
+        <input type="hidden" name="block[bckblue][]">
+        <input type="hidden" name="block[bckopacity][]">
+        <input type="hidden" name="block[bckrepeatx][]">
+        <input type="hidden" name="block[bckrepeaty][]">
+        <input type="hidden" name="block[bcksize][]">
+    </fieldset>
+    <textarea class="blockcontent" name="block[content][]" style="display: none;"></textarea>
+    <div class="blockbuttons" style="margin-top: 5px; clear: both;">
+        <button type="button" class="pure-button pure-button-primary upbutton">Su</button>
+        <button type="button" class="pure-button pure-button-primary downbutton">Giu</button>
+        <button type="button" class="pure-button pure-button-primary delblock">Elimina</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" class="pure-button pure-button-primary applyblock">Applica Modifiche</button>
+        <button type="button" class="pure-button pure-button-primary modblock">Modifica</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" class="pure-button pure-button-primary blockproperties">Propriet&agrave; Blocco</button>
+    </div>
+</div>
+
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+
+<script src="/static/admin/js/menu.js"></script>
+
+
+<!-- INIZIO CODICE DEFINIZIONE DIALOG NUOVO BLOCCO -->
+<div id="newblockmodal" style="height: 400px; width: 600px; font-size: 0.9em;">
+    <fieldset class="pure-form" style="text-align: center; margin-bottom: 10px;" id="nbm-tabcontrol">
+        <button type="button" id="nbm-new" class="pure-button pure-button-primary" onclick="nbmtabcontrol(this)">Nuovo Blocco</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" id="nbm-exist" class="pure-button" onclick="nbmtabcontrol(this)">Blocco Esistente</button>
+    </fieldset>
+    <div id="nbm-newblockscreen" class="pure-form pure-form-aligned">
+        <form action="#" id="nbm-newblockform">
+            <fieldset>
+                <div class="pure-control-group">
+                    <label>Nome</label>
+                    <input type="text" id="nbm-name">
+                </div>
+                <div class="pure-control-group">
+                    <label>Descrizione</label>
+                    <textarea id="nbm-description"></textarea>
+                </div>
+                <div class="pure-control-group">
+                    <label>Stile Blocco</label>
+                    <select id="nbm-style">
+                        <option value="CenteredBlockStyle">Centrato</option>
+                        <option value="ExtendedBlockStyle">Esteso</option>
+                    </select>
+                </div>
+            </fieldset>
+        </form>
+        <button type="button" id="nbm-addnew" class="pure-button pure-button-primary" style="float: right;">Aggiungi</button>
+    </div>
+    <div id="nbm-insertblockscreen" style="display: none;">
+        <form action="#" id="nbm-insertblockform">
+            <div style="max-height: 350px; overflow: scroll;">
+                <table class="pure-table pure-table-striped center">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Nome</th>
+                        <th>Stile</th>
+                    </tr>
+                    </thead>
+                    <tr>
+                        <td><input class="nbm-blockcheck" type="checkbox" value="1"></td>
+                        <td>prova</td>
+                        <td>CenteredBlockStyle</td>
+                    </tr>
+                    <tr>
+                        <td><input class="nbm-blockcheck" type="checkbox" value="2"></td>
+                        <td>pool</td>
+                        <td>CenteredBlockStyle</td>
+                    </tr>
+                    <tr>
+                        <td><input class="nbm-blockcheck" type="checkbox" value="3"></td>
+                        <td>Contatti</td>
+                        <td>ExtendedBlockStyle</td>
+                    </tr>
+                    <tr>
+                        <td><input class="nbm-blockcheck" type="checkbox" value="4"></td>
+                        <td>chi-siamo-1</td>
+                        <td>CenteredBlockStyle</td>
+                    </tr>
+                    <tr>
+                        <td><input class="nbm-blockcheck" type="checkbox" value="5"></td>
+                        <td>contatti-2</td>
+                        <td>ExtendedBlockStyle</td>
+                    </tr>
+                    <tr>
+                        <td><input class="nbm-blockcheck" type="checkbox" value="6"></td>
+                        <td>impgallery</td>
+                        <td>CenteredBlockStyle</td>
+                    </tr>
+                    <tr>
+                        <td><input class="nbm-blockcheck" type="checkbox" value="7"></td>
+                        <td>i-nostri-lavori</td>
+                        <td>CenteredBlockStyle</td>
+                    </tr>
+                    <tr>
+                        <td><input class="nbm-blockcheck" type="checkbox" value="8"></td>
+                        <td>home-esperienza</td>
+                        <td>CenteredBlockStyle</td>
+                    </tr>
+                    <tr>
+                        <td><input class="nbm-blockcheck" type="checkbox" value="9"></td>
+                        <td>carousel</td>
+                        <td>CenteredBlockStyle</td>
+                    </tr>
+                    <tr>
+                        <td><input class="nbm-blockcheck" type="checkbox" value="10"></td>
+                        <td>functionalityProva</td>
+                        <td>CenteredBlockStyle</td>
+                    </tr>
+                    <tr>
+                        <td><input class="nbm-blockcheck" type="checkbox" value="11"></td>
+                        <td>kflòdskfòsl</td>
+                        <td>ExtendedBlockStyle</td>
+                    </tr>
+                </table>
+            </div>
+            <button type="button" id="nbm-addexist" class="pure-button pure-button-primary" style="float: right;">Aggiungi</button>
+        </form>
+
+    </div>
+</div>
+<!-- FINE CODICE DEFINIZIONE DIALOG NUOVO BLOCCO -->
+
+<!-- INIZIO CODICE DEFINIZIONE DIALOG PROPRIETA BLOCCO -->
+<div id="blockpropdialog" style="font-size: 0.9em;">
+    <form action="#" class="pure-form pure-form-aligned" id="bpd-form">
+        <fieldset>
+
+            <legend>Propriet&agrave; Blocco</legend>
+
+            <div class="pure-control-group">
+                <label>Nome</label>
+                <input type="text" id="bpd-blockname">
+            </div>
+
+            <div class="pure-control-group">
+                <label>Descrizione</label>
+                <textarea id="bpd-blockdescription"></textarea>
+            </div>
+
+            <div class="pure-control-group">
+                <label>Stile Blocco</label>
+                <select id="bpd-blockstyle">
+                    <option value="CenteredBlockStyle">Centrato</option>
+                    <option value="ExtendedBlockStyle">Esteso</option>
+                </select>
+            </div><br>
+
+            <legend>Sfondo Blocco</legend>
+
+            <div class="pure-control-group">
+                <label>URL Immagine</label>
+                <input type="text" id="bpd-txtbckurl">
+                <button type="button" class="pure-button openfileman">Sfoglia</button>
+            </div>
+
+            <div class="pure-control-group">
+                <label>Colore</label>
+                <input type="text" id="bpd-txtbckred" size="3" placeholder="Red">
+                <input type="text" id="bpd-txtbckgreen" size="3" placeholder="Green">
+                <input type="text" id="bpd-txtbckblue" size="3" placeholder="Blue">
+                <input type="text" id="bpd-txtbckopacity" size="3" placeholder="Opacity">
+            </div>
+
+            <div class="pure-control-group">
+                <label>Ripetizione Immagine</label>
+                <table class="pure-table pure-table-striped" style="display: inline-table;">
+                    <tr><td><input type="checkbox" id="bpd-chkbckrepeatx"></td><td>Orizzontale</td></tr>
+                    <tr><td><input type="checkbox" id="bpd-chkbckrepeaty"></td><td>Verticale </td></tr>
+                </table>
+            </div>
+
+            <div class="pure-control-group" style="clear: both;">
+                <label>Dimensioni</label>
+                <table class="pure-table pure-table-striped" style="display: inline-table;">
+                    <tr><td><input type="radio" id="bpd-bcksizecover" name="bpd-bcksize" value="cover"></td><td>Esteso 100%</td></tr>
+                    <tr><td><input type="radio" id="bpd-bcksizecontain" name="bpd-bcksize" value="contain"></td><td>Esteso in proporzione</td></tr>
+                    <tr><td><input type="radio" id="bpd-bcksizeinit" name="bpd-bcksize" value="" checked></td><td>Dimensioni reali</td></tr>
+                </table>
+            </div>
+        </fieldset>
+        <button type="button" class="pure-button pure-button-primary" id="bpd-btnsave" style="float: right;">Salva</button>
+    </form>
+</div>
+<!-- FINE CODICE DEFINIZIONE DIALOG PROPRIETA BLOCCO -->
+
+
+<div id="roxyCustomPanel" style="display: none;">
+    <iframe src="" style="width:100%;height:100%" frameborder="0"></iframe>
+</div>
+
+<script type="text/javascript" src="/static/admin/js/form.actions.js"></script>
+<script src="/static/admin/js/menu.js"></script>
+<script type="text/javascript">
+    editor_idx=5;
+</script>
+
+<div id="error-dialog" style="display: none;">
+    <p>Si &egrave; verificato un errore, le seguenti informazioni possono essere utili all'amministratore del sistema.</p>
+    <p>Per riprendere il lavoro si consiglia di chiudere la pagina e tornare nell'area di amministrazione.</p>
+    <textarea id="erd-errdata" disabled>
+    </textarea>
+    <button type="button" class="pure-button pure-button-primary red-button" id="erd-ok" style="float: right;">Ok</button>
+</div>
+<script>
+    $("#error-dialog").dialog({
+        title: "Errore",
+        modal: true,
+        autoOpen:  false     });
+    $("#erd-ok").click(function() {
+        $("#error-dialog").dialog("close");
+    });
+</script>
+
+</body>
+</html>
+

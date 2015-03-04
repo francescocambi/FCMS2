@@ -1,0 +1,83 @@
+
+{% extends "App\\Admin\\Base.twig" %}
+
+{% block title %}
+<title>Gestione Blocchi</title>
+{% endblock %}
+
+{% block toolbar %}
+<h1>Gestione Blocchi</h1>
+{% endblock %}
+
+{% block content %}
+    <table class="pure-table pure-table-striped center" id="content-table" style="margin-top: 3em;">
+        <thead>
+        <tr style="font-size: 1.1em;">
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Descrizione</th>
+            <th></th>
+        </tr>
+        </thead>
+
+        <tbody style="">
+        {% for block in blocks %}
+        <tr>
+            <td class="idcell">{{ block.id }}</td>
+            <td>{{ block.name }}</td>
+            <td>{{ block.description }}</td>
+            <td>
+                <a href="{{  }}"><i class="fa fa-pencil-square fa-lg"></i></a>
+                <a class="delete"><i class="fa fa-minus-square fa-lg"></i></a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="5" style="text-align: center;">
+                <a href="{{  }}">
+                    <i class="fa fa-plus-square fa-2x"></i>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block tail %}
+
+    {% include "App\\Admin\\DeleteConfirmationDialog.twig" %}
+    {% include "App\\Admin\\ErrorDialog.twig" %}
+
+    <script>
+        $(".delete").click(function(event) {
+            var id = $(event.target).parent().parent().parent().find("*:nth-child(1)").text();
+            var name = $(event.target).parent().parent().parent().find("*:nth-child(2)").text();
+            $("#dcd-objname").text(name);
+            $("#dcd-objid").val(id);
+            $("#delete-confirm-dialog").dialog('open');
+        });
+        $(document).ajaxError(function (event, jqxhr, settings, thrownError) {
+            //var cloned = $("#error-dialog").clone(true);
+            var cloned = $("#error-dialog");
+            cloned.find("p").remove();
+            cloned.find("textarea").remove();
+            cloned.children().first().before($("<p>Errore: "+thrownError+"</p>"));
+            $(cloned).dialog("open");
+        });
+        $("#dcd-ok").click(function(event) {
+            var id = $("#dcd-objid").val();
+            $("#delete-confirm-dialog").dialog("close");
+            $.get(id+'/delete', function (response) {
+                if (response == "OK") {
+                    $(".idcell").each(function(index, element) {
+                        if ($(element).text() == id) $(element).parent().remove();
+                    });
+                } else {
+                    $("#error-dialog").find("#erd-errdata").val(response);
+                    $("#error-dialog").dialog("open");
+                }
+            });
+        });
+    </script>
+
+{% endblock %}

@@ -34,7 +34,8 @@ if ($app['config']->get('Application.Development')) {
 
 // Initializing Entity Manager Doctrine ORM
 $app['em'] = $app->share(function () use ($app, $applicationMode) {
-    return initializeEntityManager("./", $app['config']->get('Database'), $applicationMode);
+//    return initializeEntityManager("./", $app['config']->get('Database'), $applicationMode);
+    return initializeDevelopmentEntityManager("./");
 });
 
 //Register Monolog Logging Service
@@ -85,7 +86,7 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), array(
     'security.encoder.digest' => new \Symfony\Component\Security\Core\Encoder\PlaintextPasswordEncoder(),
     'security.firewalls' => array(
         'admin' => array(
-            'pattern' => '^/admin',
+            'pattern' => '^/admin|api',
 //            'http' => true,
             'form' => array('login_path' => '/login', 'check_path' => '/admin/login_check'),
             'logout' => array('logout_path' => '/admin/logout'),
@@ -122,6 +123,8 @@ $app->match('/admin', function () use ($app) {
 });
 
 $app->mount('/', new \App\Site\SiteControllerProvider());
+
+$app->mount('/api', new \App\Api\ApiControllerProvider());
 
 //$app->error(function (\Exception $e, $code) use ($app) {
 //    switch ($code) {

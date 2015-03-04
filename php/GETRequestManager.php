@@ -31,7 +31,7 @@ class GETRequestManager implements RequestManager {
             if (!is_null($url))
                 $page = $url->getPage();
         }
-	    if (is_null($page) || !$page->isPublished()) {
+	    if (!isset($page) || !$page->isPublished()) {
             $homepname = "home_".$langCode;
             $page = $this->em->getRepository('Model\Page')->findOneBy(array("name" => $homepname)); //and lang = language
         }

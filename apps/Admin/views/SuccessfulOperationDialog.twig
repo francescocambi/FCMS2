@@ -1,0 +1,14 @@
+<div id="successful-op-dialog" style="display: none;">
+    <p>Operazione Completata!</p><br>
+    <button type="button" class="pure-button pure-button-primary green-button" id="sod-ok" style="float: right;">Ok</button>
+</div>
+<script>
+    $("#successful-op-dialog").dialog({
+        title: "Operazione Completata",
+        modal: true,
+        autoOpen: false
+    });
+    $("#sod-ok").click(function() {
+        $("#successful-op-dialog").dialog("close");
+    });
+</script>

@@ -1,0 +1,20 @@
+<div id="delete-confirm-dialog" style="display: none;">
+    <p>Confermi l'eliminazione di <b id="dcd-objname"></b>?</p><br>
+    <button type="button" class="pure-button pure-button-primary red-button" id="dcd-ok" style="float: left;">Conferma</button>
+    <button type="button" class="pure-button pure-button-primary" id="dcd-cancel" style="float: right;">Annulla</button>
+    <input type="hidden" id="dcd-objid">
+</div>
+<script>
+    $("#delete-confirm-dialog").dialog({
+        autoOpen: false,
+        title: "Conferma Cancellazione",
+        modal: true,
+        close: function() {
+            $("#dcd-objname").text("");
+            $("#dcd-objid").val("");
+        }
+    });
+    $("#dcd-cancel").click(function() {
+        $("#delete-confirm-dialog").dialog("close");
+    });
+</script>

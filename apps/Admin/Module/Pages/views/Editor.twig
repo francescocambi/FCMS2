@@ -1,0 +1,328 @@
+{% extends 'App\\Admin\\Base.twig' %}
+
+{% block head %}
+    <script type="text/javascript" src="/static/admin/tinymce/tinymce.min.js"></script>
+{% endblock %}
+
+{% block title %}
+<title>Editor Pagine</title>
+{% endblock %}
+
+{% block toolbar %}
+<h1>Editor Pagine</h1>
+{% endblock %}
+
+{% block content %}
+
+    {% import 'App\\Admin\\AlertMacro.twig' as alert %}
+
+    {% if success %}
+        {{ alert.alert('success', "Operazione Completata") }}
+    {% endif %}
+
+    {% if exception != null %}
+        {{ alert.exceptionAlert(exception.message, exception.traceString) }}
+    {% endif %}
+
+
+<form class="pure-form pure-form-aligned" id="page-editor-form" method="POST" action="
+{% if page.id > 0 %}{{ path('admin.pages.updatePage', {id: page.id}) }}{% else %}{{ path('admin.pages.insertPage') }}{% endif %}">
+
+    <!-- <div style="width: 550px; height: 350px; padding: 15px; float: left;">   	 -->
+    <div class="pure-u-12-24" style="padding: 10px;">
+        <legend>Pagina</legend>
+
+        {% if page.id > 0 %}
+        <div class="pure-control-group" ng-show="">
+            <label>ID</label>
+            <input id="id" type="text" value="{{ page.id }}" disabled>
+        </div>
+        {% endif %}
+
+        <div class="pure-control-group">
+            <label>Nome</label>
+            <input name="name" type="text" value="{{ page.name }}">
+        </div>
+
+        <div class="pure-control-group">
+            <label>Descrizione</label>
+            <textarea name="description" rows="4" cols="35" maxlength="155">{{ page.description }}</textarea>
+        </div>
+
+        <div class="pure-control-group">
+            <label>Titolo</label>
+            <input name="title" type="text" value="{{ page.title }}">
+        </div>
+
+        <div class="pure-control-group">
+            <label>Pubblicata</label>
+            <input name="published" type="checkbox" {% if page.published %} checked {% endif %}>
+        </div>
+
+        <div class="pure-control-group">
+            <label>Pubblica</label>
+            <input name="public" type="checkbox" {%  if page.public %} checked {% endif %}>&nbsp;&nbsp;
+            {#<button class="pure-button pure-button-primary" style="background: rgb(66, 184, 221);">Imposta gruppi abilitati</button>#}
+        </div>
+
+        <div class="pure-control-group">
+            <label>Lingua</label>
+            <select name="language">
+                {% for language in languages %}
+                <option value="{{ language.id }}" {% if page.getLanguage() is not null and language.id == page.getLanguage().id %} selected {% endif %}>
+                    {{ language.description }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="pure-control-group" style="margin-top:20px;">
+            <label>  </label>
+            <button type="button" id="save-all" class="pure-button pure-button-primary" style="width: 200px;">Salva tutto</button>
+        </div>
+    </div>
+
+    <!-- <div style="width: 500px; height: 320px; padding: 15px; float: right; overflow: scroll;"> -->
+    <div class="pure-u-10-24" style="overflow: scroll; padding: 10px; float: right;">
+        <legend>Url Pagina</legend>
+        <div class="pure-control-group">
+            <table class="pure-table pure-table-striped center" style="text-align: center;">
+                <thead>
+                <th style="width: 200px; text-align: center;">http://www.*****.it/</th>
+                <th></th>
+                </thead>
+
+                {% for url in page.getPageUrls().toArray() %}
+                <tr>
+                    <td mode="0">{{ url.url }}</td>
+                    <td><i class="fa fa-pencil-square fa-2x modurl"></i>&nbsp; &nbsp;<i class="fa fa-minus-square fa-2x delurl"></i></td>
+                    <input type="hidden" name="url[]" value="{{ url.url }}">
+                </tr>
+                {% endfor %}
+
+                <tr id="newurlrow">
+                    <td colspan="2"><button type="button" class="pure-button" id="newurl">Nuovo</button></td>
+                </tr>
+                <tr style="display: none;" id="urlrowtpl">
+                    <td mode="1"><input type="text"></td>
+                    <td><i class="fa fa-pencil-square fa-2x modurl" style="color: #0078e7;"></i>&nbsp; &nbsp;<i class="fa fa-minus-square fa-2x delurl" style="color: #0078e7;"></i></td>
+                    <input type="hidden" name="url[]">
+                </tr>
+            </table>
+        </div>
+
+    </div>
+
+    <legend style="line-height: 40px; margin: 5px; width: 99%">Blocchi Pagina <button type="button" class="pure-button pure-button-primary" style="float: right;" id="newblock">Aggiungi Blocco</button></legend>
+    <div id="blocks" style="padding: 20px;">
+        {% for pageblock in page.getPageBlocksArray() %}
+        <div class="blockeditor">
+            <fieldset class="blockdata">
+                <input type="hidden" name="block[id][]" value="{{ pageblock.block.id }}">
+                <input type="hidden" name="block[name][]" value="{{ pageblock.block.name }}">
+                <input type="hidden" name="block[description][]" value="{{ pageblock.block.description }}">
+                <input type="hidden" name="block[style][]" value="{{ pageblock.block.getBlockStyleClassName() }}">
+
+                <input type="hidden" name="block[bckurl][]" value="{{ pageblock.block.bgurl }}">
+                <input type="hidden" name="block[bckred][]" value="{{ pageblock.block.bgred }}">
+                <input type="hidden" name="block[bckgreen][]" value="{{ pageblock.block.bggreen }}">
+                <input type="hidden" name="block[bckblue][]" value="{{ pageblock.block.bgblue }}">
+                <input type="hidden" name="block[bckopacity][]" value="{{ pageblock.block.bgopacity }}">
+                <input type="hidden" name="block[bckrepeatx][]" value="{{ pageblock.block.bgrepeatx }}">
+                <input type="hidden" name="block[bckrepeaty][]" value="{{ pageblock.block.bgrepeaty }}">
+                <input type="hidden" name="block[bcksize][]" value="{{ pageblock.block.bgsize }}">
+            </fieldset>
+            <div class="blockcontentdiv">
+                {{ pageblock.block.getHtml(app)|raw }}
+            </div>
+            <textarea id="tmceeditor{{ loop.index }}" class="blockcontent" name="block[content][]" style="display: none;"></textarea>
+            <div class="blockbuttons" style="margin-top: 5px; clear: both;">
+                <button type="button" class="pure-button pure-button-primary upbutton">Su</button>
+                <button type="button" class="pure-button pure-button-primary downbutton">Giu</button>
+                <button type="button" class="pure-button pure-button-primary delblock">Elimina</button>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <button type="button" class="pure-button pure-button-primary applyblock" style="display: none;">Applica Modifiche</button>
+                <button type="button" class="pure-button pure-button-primary modblock">Modifica</button>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <button type="button" class="pure-button pure-button-primary blockproperties">Propriet&agrave; Blocco</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</form>
+
+<div id="editormodel" class="blockeditor" style="display: none;">
+    <fieldset class="blockdata">
+        <input type="hidden" name="block[id][]" value="0">
+        <input type="hidden" name="block[name][]">
+        <input type="hidden" name="block[description][]">
+        <input type="hidden" name="block[style][]">
+
+        <input type="hidden" name="block[bckurl][]">
+        <input type="hidden" name="block[bckred][]">
+        <input type="hidden" name="block[bckgreen][]">
+        <input type="hidden" name="block[bckblue][]">
+        <input type="hidden" name="block[bckopacity][]">
+        <input type="hidden" name="block[bckrepeatx][]">
+        <input type="hidden" name="block[bckrepeaty][]">
+        <input type="hidden" name="block[bcksize][]">
+    </fieldset>
+    <textarea class="blockcontent" name="block[content][]" style="display: none;"></textarea>
+    <div class="blockbuttons" style="margin-top: 5px; clear: both;">
+        <button type="button" class="pure-button pure-button-primary upbutton">Su</button>
+        <button type="button" class="pure-button pure-button-primary downbutton">Giu</button>
+        <button type="button" class="pure-button pure-button-primary delblock">Elimina</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" class="pure-button pure-button-primary applyblock">Applica Modifiche</button>
+        <button type="button" class="pure-button pure-button-primary modblock">Modifica</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" class="pure-button pure-button-primary blockproperties">Propriet&agrave; Blocco</button>
+    </div>
+</div>
+
+</div>
+</div>
+</div>
+
+{% endblock %}
+
+{% block tail %}
+
+<!-- INIZIO CODICE DEFINIZIONE DIALOG NUOVO BLOCCO -->
+<div id="newblockmodal" style="height: 400px; width: 600px; font-size: 0.9em;">
+    <fieldset class="pure-form" style="text-align: center; margin-bottom: 10px;" id="nbm-tabcontrol">
+        <button type="button" id="nbm-new" class="pure-button pure-button-primary" onclick="nbmtabcontrol(this)">Nuovo Blocco</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" id="nbm-exist" class="pure-button" onclick="nbmtabcontrol(this)">Blocco Esistente</button>
+    </fieldset>
+    <div id="nbm-newblockscreen" class="pure-form pure-form-aligned">
+        <form action="#" id="nbm-newblockform">
+            <fieldset>
+                <div class="pure-control-group">
+                    <label>Nome</label>
+                    <input type="text" id="nbm-name">
+                </div>
+                <div class="pure-control-group">
+                    <label>Descrizione</label>
+                    <textarea id="nbm-description"></textarea>
+                </div>
+                <div class="pure-control-group">
+                    <label>Stile Blocco</label>
+                    <select id="nbm-style">
+                        {% for style in styles %}
+                            <option value="{{ style.classname }}">{{ style.description }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </fieldset>
+        </form>
+        <button type="button" id="nbm-addnew" class="pure-button pure-button-primary" style="float: right;">Aggiungi</button>
+    </div>
+    <div id="nbm-insertblockscreen" style="display: none;">
+        <form action="#" id="nbm-insertblockform">
+            <div style="max-height: 350px; overflow: scroll;">
+                <table class="pure-table pure-table-striped center">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Nome</th>
+                        <th>Stile</th>
+                    </tr>
+                    </thead>
+                    {% for block in blocks %}
+                    <tr>
+                        <td><input class="nbm-blockcheck" type="checkbox" value="{{ block.id }}"></td>
+                        <td>{{ block.name }}</td>
+                        <td>{{ block.blockStyleClassName }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <button type="button" id="nbm-addexist" class="pure-button pure-button-primary" style="float: right;">Aggiungi</button>
+        </form>
+
+    </div>
+</div>
+<!-- FINE CODICE DEFINIZIONE DIALOG NUOVO BLOCCO -->
+
+<!-- INIZIO CODICE DEFINIZIONE DIALOG PROPRIETA BLOCCO -->
+<div id="blockpropdialog" style="font-size: 0.9em;">
+    <form action="#" class="pure-form pure-form-aligned" id="bpd-form">
+        <fieldset>
+
+            <legend>Propriet&agrave; Blocco</legend>
+
+            <div class="pure-control-group">
+                <label>Nome</label>
+                <input type="text" id="bpd-blockname">
+            </div>
+
+            <div class="pure-control-group">
+                <label>Descrizione</label>
+                <textarea id="bpd-blockdescription"></textarea>
+            </div>
+
+            <div class="pure-control-group">
+                <label>Stile Blocco</label>
+                <select id="bpd-blockstyle">
+                    {% for style in styles %}
+                        <option value="{{ style.classname }}">{{ style.description }}</option>
+                    {% endfor %}
+                </select>
+            </div><br>
+
+            <legend>Sfondo Blocco</legend>
+
+            <div class="pure-control-group">
+                <label>URL Immagine</label>
+                <input type="text" id="bpd-txtbckurl">
+                <button type="button" class="pure-button openfileman">Sfoglia</button>
+            </div>
+
+            <div class="pure-control-group">
+                <label>Colore</label>
+                <input type="text" id="bpd-txtbckred" size="3" placeholder="Red">
+                <input type="text" id="bpd-txtbckgreen" size="3" placeholder="Green">
+                <input type="text" id="bpd-txtbckblue" size="3" placeholder="Blue">
+                <input type="text" id="bpd-txtbckopacity" size="3" placeholder="Opacity">
+            </div>
+
+            <div class="pure-control-group">
+                <label>Ripetizione Immagine</label>
+                <table class="pure-table pure-table-striped" style="display: inline-table;">
+                    <tr><td><input type="checkbox" id="bpd-chkbckrepeatx"></td><td>Orizzontale</td></tr>
+                    <tr><td><input type="checkbox" id="bpd-chkbckrepeaty"></td><td>Verticale </td></tr>
+                </table>
+            </div>
+
+            <div class="pure-control-group" style="clear: both;">
+                <label>Dimensioni</label>
+                <table class="pure-table pure-table-striped" style="display: inline-table;">
+                    <tr><td><input type="radio" id="bpd-bcksizecover" name="bpd-bcksize" value="cover"></td><td>Esteso 100%</td></tr>
+                    <tr><td><input type="radio" id="bpd-bcksizecontain" name="bpd-bcksize" value="contain"></td><td>Esteso in proporzione</td></tr>
+                    <tr><td><input type="radio" id="bpd-bcksizeinit" name="bpd-bcksize" value="" checked></td><td>Dimensioni reali</td></tr>
+                </table>
+            </div>
+        </fieldset>
+        <button type="button" class="pure-button pure-button-primary" id="bpd-btnsave" style="float: right;">Salva</button>
+    </form>
+</div>
+<!-- FINE CODICE DEFINIZIONE DIALOG PROPRIETA BLOCCO -->
+
+
+<div id="roxyCustomPanel" style="display: none;">
+    <iframe src="" style="width:100%;height:100%" frameborder="0"></iframe>
+</div>
+
+<script type="text/javascript" src="/static/admin/js/form.actions.js"></script>
+<script src="/static/admin/js/menu.js"></script>
+{#{% if page.id > 0 %}#}
+<script type="text/javascript">
+    editor_idx={{ (page.getPageBlocksArray() | length)+1 }};
+</script>
+{#{% endif %}#}
+
+    {% include "App\\Admin\\ErrorDialog.twig" %}
+
+{% endblock %}

@@ -28,7 +28,7 @@ class AdminControllerProvider implements ControllerProviderInterface {
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/', function () use ($app) {
-            return $app->redirect('Home');
+            return $app->redirect('home');
         });
 
         $controllerProviders = $this->retrieveModulesControllerProviders();
@@ -41,7 +41,7 @@ class AdminControllerProvider implements ControllerProviderInterface {
             if (class_exists($controllerProvider['controllerProviderName'])) {
                 //FIXME Check if controllerProvider implements ControllerProviderInterface
                 $controllerProviderObject = new $controllerProvider['controllerProviderName']();
-                $controllers->mount('/' . $controllerProvider['moduleName'],
+                $controllers->mount('/' . strtolower($controllerProvider['moduleName']),
                     $controllerProviderObject->connect($app));
             } else {
                 //TODO Log error cannot find class controllerProviderName
@@ -65,7 +65,7 @@ class AdminControllerProvider implements ControllerProviderInterface {
         $modules = scandir($directory);
         foreach ($modules as $module) {
             //Ignore . and .. dirs
-            if ($module != "." && $module != "..") {
+            if ($module != "." && $module != ".." && is_dir($directory.DIRECTORY_SEPARATOR.$module)) {
                 //Checks if there is a ControllerProvider in the module home directory
                 $moduleHomeFiles = scandir($directory.DIRECTORY_SEPARATOR.$module);
                 foreach ($moduleHomeFiles as $file) {

@@ -10,5 +10,9 @@
         "user": "root",
         "password": "mysql",
         "dbname": "framework_doc"
-    }
+    },
+    "BlockStyles": [
+        { "classname": "CenteredBlockStyle", "description": "Centrato" },
+        { "classname": "ExtendedBlockStyle", "description": "Esteso" }
+    ]
 }

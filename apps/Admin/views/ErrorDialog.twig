@@ -1,0 +1,23 @@
+<div id="error-dialog" style="display: none;">
+    <p>Si &egrave; verificato un errore, le seguenti informazioni possono essere utili all'amministratore del sistema.</p>
+    <p>Per riprendere il lavoro si consiglia di chiudere la pagina e tornare nell'area di amministrazione.</p>
+    <textarea id="erd-errdata" disabled>
+        {% if message is defined %}
+        ERROR => {{ message }}
+        {% endif %}
+        {% if stackTrace is defined %}
+        TRACE => {{ stackTrace }}
+        {% endif %}
+    </textarea>
+    <button type="button" class="pure-button pure-button-primary red-button" id="erd-ok" style="float: right;">Ok</button>
+</div>
+<script>
+    $("#error-dialog").dialog({
+        title: "Errore",
+        modal: true,
+        autoOpen: {% if message is defined or stackTrace is defined %} true {% else %} false {% endif %}
+    });
+    $("#erd-ok").click(function() {
+        $("#error-dialog").dialog("close");
+    });
+</script>

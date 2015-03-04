@@ -47,35 +47,13 @@ class Module {
      * @var string
      * @Column(type="string", nullable=false)
      */
-    protected $controllerClassName;
-
-    /**
-     * @var string
-     * @Column(type="string", nullable=false)
-     */
-    protected $renderingMethod;
+    protected $routeName;
 
     /**
      * @var ArrayCollection
      * @ManyToMany(targetEntity="App\Admin\Model\Role", inversedBy="modules")
      */
     protected $allowedRoles;
-
-    /**
-     * @return string
-     */
-    public function getControllerClassName()
-    {
-        return $this->controllerClassName;
-    }
-
-    /**
-     * @param string $controllerClassName
-     */
-    public function setControllerClassName($controllerClassName)
-    {
-        $this->controllerClassName = $controllerClassName;
-    }
 
     /**
      * @return string
@@ -136,19 +114,17 @@ class Module {
     /**
      * @return string
      */
-    public function getRenderingMethod()
+    public function getRouteName()
     {
-        return $this->renderingMethod;
+        return $this->routeName;
     }
 
     /**
-     * @param string $renderingMethod
+     * @param string $routeName
      */
-    public function setRenderingMethod($renderingMethod)
+    public function setRouteName($routeName)
     {
-        $this->renderingMethod = $renderingMethod;
+        $this->routeName = $routeName;
     }
-
-
 
 } 

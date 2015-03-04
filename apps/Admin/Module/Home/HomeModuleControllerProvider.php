@@ -22,7 +22,8 @@ class HomeModuleControllerProvider implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
 
-        $controllers->get('/', '\App\Admin\Module\Home\HomeController::render');
+        $controllers->get('/', '\App\Admin\Module\Home\HomeController::render')
+        ->bind("admin.home");
 
 
         return $controllers;
