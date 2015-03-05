@@ -28,10 +28,10 @@ class PagesModuleControllerProvider implements ControllerProviderInterface {
         $controllers->match('/', '\App\Admin\Module\Pages\PagesController::listPages')
             ->bind("admin.pages.listPages");
 
-        $controllers->match('/edit', '\App\Admin\Module\Pages\PageEditorController::renderEditor')
+        $controllers->match('/edit', '\App\Admin\Module\Pages\EditorController::renderEditor')
             ->bind("admin.pages.editNewPage");
 
-        $controllers->match('/{id}/edit', '\App\Admin\Module\Pages\PageEditorController::renderEditor')
+        $controllers->match('/{id}/edit', '\App\Admin\Module\Pages\EditorController::renderEditor')
             ->bind("admin.pages.editPage");
 
         $controllers->match('/{id}/delete', '\App\Admin\Module\Pages\PagesController::deletePage')
@@ -43,10 +43,10 @@ class PagesModuleControllerProvider implements ControllerProviderInterface {
         $controllers->match('/checkPageName', '\App\Admin\Module\Pages\PagesController::checkNameUnique')
             ->bind("admin.pages.checkNameUnique");
 
-        $controllers->match('/save', '\App\Admin\Module\Pages\PageEditorController::insertPage')
+        $controllers->match('/save', '\App\Admin\Module\Pages\EditorController::insertPage')
             ->bind("admin.pages.insertPage");
 
-        $controllers->match('/{id}/save', '\App\Admin\Module\Pages\PageEditorController::updatePage')
+        $controllers->match('/{id}/save', '\App\Admin\Module\Pages\EditorController::updatePage')
             ->bind("admin.pages.updatePage");
 
 

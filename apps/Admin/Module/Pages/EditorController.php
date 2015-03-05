@@ -12,8 +12,9 @@ use Model\Page;
 use Model\Url;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-class PageEditorController {
+class EditorController {
 
     /**
      * @param $em \Doctrine\ORM\EntityManager
@@ -132,13 +133,14 @@ class PageEditorController {
             $data = $request->request->all();
             $newid = $this->insertUpdateProcessing($app['em'], $data);
             $app['em']->commit();
-            $response['result'] = true;
         } catch (\Exception $e) {
             $app['em']->rollback();
-            $response['result'] = false;
-            $response['trace'] = $e->getTraceAsString();
-            $response['exception'] = $e->getMessage();
-            return var_export($response);
+            $app['monolog']->addError($e->getMessage());
+            return new Response(var_export(array(
+                'status' => false,
+                'exception' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            )), 500);
         }
         return $app->redirect(
             $app['url_generator']->generate('admin.pages.editPage', array(
@@ -156,20 +158,20 @@ class PageEditorController {
      */
     public function updatePage(Application $app, Request $request, $id)
     {
-        if (is_null($id)) return null;
 
         try {
             $app['em']->beginTransaction();
             $data = $request->request->all();
             $this->insertUpdateProcessing($app['em'], $data, $id);
             $app['em']->commit();
-            $response['result'] = true;
         } catch (\Exception $e) {
             $app['em']->rollback();
-            $response['result'] = false;
-            $response['trace'] = $e->getTraceAsString();
-            $response['exception'] = $e->getMessage();
-            return var_export($response);
+            $app['monolog']->addError($e->getMessage());
+            return new Response(var_export(array(
+                'status' => false,
+                'exception' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            )), 500);
         }
 
         return $app->redirect(
@@ -184,11 +186,21 @@ class PageEditorController {
         $exception = null;
         $page = null;
 
+        $languages = array();
+        $blocks = array();
+
         $success = ($request->get('s') == "true") ;
 
-        $languages = $app['em']->getRepository('Model\Language')->findAll();
-
-        $blocks = $app['em']->getRepository('Model\Block')->findAll();
+        try {
+            $languages = $app['em']->getRepository('Model\Language')->findAll();
+            $blocks = $app['em']->getRepository('Model\Block')->findAll();
+        } catch (\Exception $e) {
+            $app['monolog']->addError($e->getMessage());
+            $exception = array(
+                'message' => 'EXCEPTION >> '.$e->getMessage(),
+                'traceString' => $e->getTraceAsString()
+            );
+        }
 
         $styles = $app['config']->get('BlockStyles');
 
@@ -198,8 +210,11 @@ class PageEditorController {
             try {
                 $page = $app['em']->find('Model\Page', $id);
             } catch (\Exception $e) {
-                $exception['message'] = "EXCEPTION >> ".$e->getMessage();
-                $exception['traceString'] = $e->getTraceAsString();
+                $app['monolog']->addError($e->getMessage());
+                $exception = array(
+                    'message' => 'EXCEPTION >> '.$e->getMessage(),
+                    'traceString' => $e->getTraceAsString()
+                );
                 $page = new Page();
             }
         } else {

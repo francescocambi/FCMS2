@@ -253,35 +253,30 @@ $("#nbm-addexist").click(function() {
         cloned.find(".applyblock").hide();
         var blockid = $(element).val();
         cloned.children().first().children().filter('[name="block[id][]"]').val(blockid);
-        $.getJSON('/admin/blocks/'+blockid, function(data) {
-            cloned.find('[name="block[id][]"]').val(data.ID);
-            cloned.find('[name="block[name][]"]').val(data.NAME);
-            cloned.find('[name="block[description][]"]').val(data.DESCRIPTION);
-            cloned.find(".blockcontentdiv").html(data.CONTENT);
-            cloned.find('[name="block[style][]"]').val(data.BLOCK_STYLE_ID);
-            cloned.find('[name="block[bckurl][]"]').val(data.BG_URL);
-            cloned.find('[name="block[bckred][]"]').val(data.BG_RED);
-            cloned.find('[name="block[bckgreen][]"]').val(data.BG_GREEN);
-            cloned.find('[name="block[bckblue][]"]').val(data.BG_BLUE);
-            cloned.find('[name="block[bckopacity][]"]').val(data.BG_OPACITY);
-            cloned.find('[name="block[bckrepeatx][]"]').val(data.BG_REPEATX);
-            cloned.find('[name="block[bckrepeaty][]"]').val(data.BG_REPEATY);
-            cloned.find('[name="block[bcksize][]"]').val(data.BG_SIZE);
+        $.getJSON('/admin/blocks/'+blockid, function(response) {
+            if (response.status) {
+                var data = response.data;
+                cloned.find('[name="block[id][]"]').val(data.ID);
+                cloned.find('[name="block[name][]"]').val(data.NAME);
+                cloned.find('[name="block[description][]"]').val(data.DESCRIPTION);
+                cloned.find(".blockcontentdiv").html(data.CONTENT);
+                cloned.find('[name="block[style][]"]').val(data.BLOCK_STYLE_ID);
+                cloned.find('[name="block[bckurl][]"]').val(data.BG_URL);
+                cloned.find('[name="block[bckred][]"]').val(data.BG_RED);
+                cloned.find('[name="block[bckgreen][]"]').val(data.BG_GREEN);
+                cloned.find('[name="block[bckblue][]"]').val(data.BG_BLUE);
+                cloned.find('[name="block[bckopacity][]"]').val(data.BG_OPACITY);
+                cloned.find('[name="block[bckrepeatx][]"]').val(data.BG_REPEATX);
+                cloned.find('[name="block[bckrepeaty][]"]').val(data.BG_REPEATY);
+                cloned.find('[name="block[bcksize][]"]').val(data.BG_SIZE);
+            }
         });
 
     });
     $("#nbm-insertblockform")[0].reset();
     $("#newblockmodal").dialog("close");
 });
-//Handler errori ajax
-$(document).ajaxError(function (event, jqxhr, settings, thrownError) {
-	//var cloned = $("#error-dialog").clone(true);
-	var cloned = $("#error-dialog");
-	cloned.find("p").remove();
-	cloned.find("textarea").remove();
-	cloned.children().first().before($("<p>Errore: "+thrownError+"</p>"));
-	$(cloned).dialog("open");
-});
+
 //Azione pulsante modifica blocco
 $(".modblock").click(function(event) {
 	var block = $(event.target).parent().parent();
@@ -405,14 +400,8 @@ function checkBlockNameUnique(id, target, callback) {
         return false;
     }
     $.getJSON("/admin/blocks/checkBlockName?name="+txtvalue+"&blockid="+id, function(data) {
-        if (data.status == "error") {
-            //Show error dialog
-            $("#erd-errdata").val(data.errormessage);
-            $("#error-dialog").dialog("open");
-            return false;
-        }
-        if (data.status == "ok") {
-            if (data.result == "true") {
+        if (data.status) {
+            if (data.data.unique) {
                 $(target).css("border", "solid 2px rgb(28, 184, 65)");
                 callback(true);
             } else {
@@ -434,14 +423,8 @@ function checkPageNameUnique(id, target, callback) {
         return false;
     }
     $.getJSON("/admin/pages/checkPageName?name="+txtvalue+"&pageid="+id, function(data) {
-        if (data.status == "error") {
-            //Show error dialog
-            $("#erd-errdata").val(data.errormessage);
-            $("#error-dialog").dialog("open");
-            return false;
-        }
-        if (data.status == "ok") {
-            if (data.result) {
+        if (data.status) {
+            if (data.data.unique) {
                 $(target).css("border", "solid 2px rgb(28, 184, 65)");
                 callback(true);
             } else {
@@ -450,27 +433,6 @@ function checkPageNameUnique(id, target, callback) {
                 callback(false);
             }
         }
-    });
-
-}
-
-/**
- * Generates and open a new jquery ui dialog with title and message
- * passed as arguments to display errors for the user
- * @param title
- * @param message
- */
-function displayErrorDialog(title, message) {
-    var html = '<div class="message-error-dialog"><p>'+message+'</p>' +
-        '<button type="button" class="pure-button pure-button-primary red-button" style="float: right;">Ok</button>' +
-        '</div>';
-    var dialog = $(html).dialog({
-        title: title,
-        modal: true,
-        autoOpen: true
-    });
-    dialog.find("button").click(function() {
-        dialog.dialog("close");
     });
 }
 

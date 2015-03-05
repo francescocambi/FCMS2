@@ -1,6 +1,10 @@
 
 {% extends "App\\Admin\\Base.twig" %}
 
+{% block head %}
+    <script type="text/javascript" src="/static/admin/tinymce/tinymce.min.js"></script>
+{% endblock %}
+
 {% block title %}
 <title>Editor Blocchi</title>
 {% endblock %}
@@ -9,16 +13,21 @@
 <h1>Editor Blocchi</h1>
 {% endblock %}
 
-{% block head %}
-    <script type="text/javascript" src="/static/admin/tinymce/tinymce.min.js"></script>
-{% endblock %}
-
-</head>
 
 {% block content %}
 
+    {% import 'App\\Admin\\AlertMacro.twig' as alert %}
+
+    {% if success %}
+        {{ alert.alert('success', "Operazione Completata") }}
+    {% endif %}
+
+    {% if exception != null %}
+        {{ alert.exceptionAlert(exception.message, exception.traceString) }}
+    {% endif %}
+
     <form method="POST" class="pure-form" id="block-editor-form"
-          action="{% if block.id > 0 %}{{  }}{% else %}{{  }}{% endif %}">
+          action="{% if block.id > 0 %}{{ path('admin.blocks.updateBlock', {id: block.id}) }}{% else %}{{ path('admin.blocks.insertBlock') }}{% endif %}">
 
         <div class="pure-form-aligned">
             <!-- DIV CON INFORMAZIONI BASE BLOCCO -->
@@ -124,7 +133,6 @@
 
         <!-- INIZIO AREA EDITING BLOCCO -->
         <div class="blockeditor" style="padding: 20px;">
-            <?php if ($UPDATE_MODE) { ?>
             {% if block.id > 0 %}
             <div class="blockcontentdiv">
                 {{ block.content }}
@@ -158,8 +166,6 @@
 
     <script type="text/javascript">
         var UPDATE_MODE = {% if block.id > 0 %}true{% else %}false{% endif %};
-        if (!UPDATE_MODE) {
-            $(".modblock").click();
-        }
+        $(".modblock").click();
     </script>
 {% endblock %}

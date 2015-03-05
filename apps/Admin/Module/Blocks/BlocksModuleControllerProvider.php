@@ -21,8 +21,26 @@ class BlocksModuleControllerProvider implements ControllerProviderInterface {
          */
         $controllers = $app['controllers_factory'];
 
+        $controllers->match('/', '\App\Admin\Module\Blocks\BlocksController::listBlocks')
+            ->bind("admin.blocks.listBlocks");
+
+        $controllers->match('/edit', '\App\Admin\Module\Blocks\EditorController::renderEditor')
+            ->bind("admin.blocks.editNewBlock");
+
+        $controllers->match('/{id}/edit', '\App\Admin\Module\Blocks\EditorController::renderEditor')
+            ->bind("admin.blocks.editBlock");
+
+        $controllers->match('/{id}/delete', '\App\Admin\Module\Blocks\BlocksController::deleteBlock')
+            ->bind("admin.blocks.deleteBlock");
+
         $controllers->match('/checkBlockName', '\App\Admin\Module\Blocks\BlocksController::checkNameUnique')
             ->bind("admin.blocks.checkNameUnique");
+
+        $controllers->match('/save', '\App\Admin\Module\Blocks\EditorController::insertBlock')
+            ->bind("admin.blocks.insertBlock");
+
+        $controllers->match('/{id}/save', '\App\Admin\Module\Blocks\EditorController::updateBlock')
+            ->bind("admin.blocks.updateBlock");
 
         $controllers->match('/{id}', '\App\Admin\Module\Blocks\BlocksController::getBlock')
             ->bind("admin.blocks.getBlock");

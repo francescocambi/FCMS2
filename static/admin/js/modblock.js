@@ -64,11 +64,6 @@ function CustomRoxyFileBrowser(field_name) {
     return false;
 }
 
-//Handler errori ajax
-$(document).ajaxError(function (event, jqxhr, settings, thrownError) {
-    displayErrorDialog("Errore", "Errore: "+thrownError);
-});
-
 //Azione pulsante modifica blocco
 $(".modblock").click(function(event) {
     var block = $(event.target).parent().parent();
@@ -109,15 +104,9 @@ function checkBlockNameUnique(id, target, callback) {
         $(target).css("border", "solid 2px rgb(202, 60, 60)");
         return false;
     }
-    $.getJSON("blockws.php?action=checkname&name="+txtvalue+"&blockid="+id, function(data) {
-        if (data.status == "error") {
-            //Show error dialog
-            $("#erd-errdata").val(data.errormessage);
-            $("#error-dialog").dialog("open");
-            return false;
-        }
-        if (data.status == "ok") {
-            if (data.result == "true") {
+    $.getJSON("/admin/blocks/checkBlockName?name="+txtvalue+"&blockid="+id, function(data) {
+        if (data.status) {
+            if (data.data.unique) {
                 $(target).css("border", "solid 2px rgb(28, 184, 65)");
                 callback(true);
             } else {
@@ -125,27 +114,12 @@ function checkBlockNameUnique(id, target, callback) {
                 displayErrorDialog("Errore", "Impossibile usare lo stesso nome per pi&ugrave; blocchi. Usarne un altro.");
                 callback(false);
             }
+        } else {
+            //Show error dialog
+            $("#erd-errdata").val(data.exception);
+            $("#error-dialog").dialog("open");
+            return false;
         }
-    });
-}
-
-/**
- * Generates and open a new jquery ui dialog with title and message
- * passed as arguments to display errors for the user
- * @param title
- * @param message
- */
-function displayErrorDialog(title, message) {
-    var html = '<div class="message-error-dialog"><p>'+message+'</p>' +
-        '<button type="button" class="pure-button pure-button-primary red-button" style="float: right;">Ok</button>' +
-        '</div>';
-    var dialog = $(html).dialog({
-        title: title,
-        modal: true,
-        autoOpen: true
-    });
-    dialog.find("button").click(function() {
-        dialog.dialog("close");
     });
 }
 

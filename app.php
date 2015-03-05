@@ -45,6 +45,16 @@ $app->register(new \Silex\Provider\MonologServiceProvider(), array(
     'monolog.name' => 'application'
 ));
 
+$app['monolog'] = $app->share($app->extend('monolog', function($monolog, $app) {
+
+    /**
+     * @var Monolog\Logger $monolog
+     */
+    $monolog->pushProcessor(new \Monolog\Processor\IntrospectionProcessor(\Monolog\Logger::ERROR));
+
+    return $monolog;
+}));
+
 //Register Controller Service
 //Dynamically loads controllers for app->match
 $app->register(new \Silex\Provider\ServiceControllerServiceProvider());

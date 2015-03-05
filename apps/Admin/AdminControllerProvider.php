@@ -22,6 +22,10 @@ class AdminControllerProvider implements ControllerProviderInterface {
             return new Menu($app);
         });
 
+        $app['admin.message_composer'] = $app->share(function () use ($app) {
+            return new JSONMessageComposer();
+        });
+
         /**
          * @var ControllerCollection $controllers
          */

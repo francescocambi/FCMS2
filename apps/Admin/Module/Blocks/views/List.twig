@@ -20,21 +20,21 @@
         </tr>
         </thead>
 
-        <tbody style="">
+        <tbody>
         {% for block in blocks %}
         <tr>
             <td class="idcell">{{ block.id }}</td>
             <td>{{ block.name }}</td>
             <td>{{ block.description }}</td>
             <td>
-                <a href="{{  }}"><i class="fa fa-pencil-square fa-lg"></i></a>
+                <a href="{{ path('admin.blocks.editBlock', {id: block.id}) }}"><i class="fa fa-pencil-square fa-lg"></i></a>
                 <a class="delete"><i class="fa fa-minus-square fa-lg"></i></a>
             </td>
         </tr>
         {% endfor %}
         <tr>
-            <td colspan="5" style="text-align: center;">
-                <a href="{{  }}">
+            <td colspan="4" style="text-align: center;">
+                <a href="{{ path('admin.blocks.editNewBlock') }}">
                     <i class="fa fa-plus-square fa-2x"></i>
                 </a>
             </td>
@@ -56,25 +56,14 @@
             $("#dcd-objid").val(id);
             $("#delete-confirm-dialog").dialog('open');
         });
-        $(document).ajaxError(function (event, jqxhr, settings, thrownError) {
-            //var cloned = $("#error-dialog").clone(true);
-            var cloned = $("#error-dialog");
-            cloned.find("p").remove();
-            cloned.find("textarea").remove();
-            cloned.children().first().before($("<p>Errore: "+thrownError+"</p>"));
-            $(cloned).dialog("open");
-        });
         $("#dcd-ok").click(function(event) {
             var id = $("#dcd-objid").val();
             $("#delete-confirm-dialog").dialog("close");
-            $.get(id+'/delete', function (response) {
-                if (response == "OK") {
+            $.getJSON(id+'/delete', function (response) {
+                if (response.status) {
                     $(".idcell").each(function(index, element) {
                         if ($(element).text() == id) $(element).parent().remove();
                     });
-                } else {
-                    $("#error-dialog").find("#erd-errdata").val(response);
-                    $("#error-dialog").dialog("open");
                 }
             });
         });

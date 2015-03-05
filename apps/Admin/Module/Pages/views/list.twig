@@ -89,47 +89,30 @@
         $.post(id+'/duplicate', infos, function (response) {
             //Response is OK/ERROR and new page id separated by a space
             //So i can split on " " to obtain two arguments
-            if (response.result = true ) {
+            if (response.status) {
                 var row_clone;
                 //Search for row of page duplicated and clones it for
                 $(".idcell").each(function(index, element) {
                     if ($(element).text() == id) row_clone = $(element).parent().clone(true);
                 }).after(function() {
                     //appending cloned row to the page list table
-                    row_clone.find(".idcell").text(response.id);
-                    row_clone.find(".idcell").next().text(response.name);
-                    row_clone.find(".editpage").attr('href', response.id+'/edit');
+                    row_clone.find(".idcell").text(response.data.id);
+                    row_clone.find(".idcell").next().text(response.data.name);
+                    row_clone.find(".editpage").attr('href', response.data.id+'/edit');
                     $("#content-table tbody").children().last().before(row_clone);
                 });
-            }
-            else {
-                //If things goes wrong
-                var errorDetailString = response.exception+"\n\n"+response.trace;
-                $("#error-dialog").find("#erd-errdata").val(errorDetailString);
-                $("#error-dialog").dialog("open");
             }
         }, 'json');
     });
 
-    $(document).ajaxError(function (event, jqxhr, settings, thrownError) {
-        //var cloned = $("#error-dialog").clone(true);
-        var cloned = $("#error-dialog");
-        cloned.find("p").remove();
-        cloned.find("textarea").remove();
-        cloned.children().first().before($("<p>Errore: "+thrownError+"</p>"));
-        $(cloned).dialog("open");
-    });
     $("#dcd-ok").click(function(event) {
         var id = $("#dcd-objid").val();
         $("#delete-confirm-dialog").dialog("close");
-        $.get(id+'/delete', function (response) {
-            if (response == "OK") {
-                $(".idcell").each(function(index, element) {
+        $.getJSON(id+'/delete', function (response) {
+            if (response.status) {
+                $(".idcell").each(function (index, element) {
                     if ($(element).text() == id) $(element).parent().remove();
                 });
-            } else {
-                $("#error-dialog").find("#erd-errdata").val(response);
-                $("#error-dialog").dialog("open");
             }
         });
     });
