@@ -1,0 +1,75 @@
+
+{% extends "App\\Admin\\Base.twig" %}
+
+{% block title %}
+<title>Gestione Lingue</title>
+{% endblock %}
+
+{% block toolbar %}
+<h1>Gestione Lingue</h1>
+{% endblock %}
+
+{% block content %}
+    <table class="pure-table pure-table-striped center" id="content-table" style="margin-top: 3em;">
+        <thead>
+        <tr style="font-size: 1.1em;">
+            <th>ID</th>
+            <th>Codice</th>
+            <th>Icona</th>
+            <th>Descrizione</th>
+            <th></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for language in languages %}
+        <tr>
+            <td class="idcell">{{ language.id }}</td>
+            <td>{{ language.code }}</td>
+            <td>
+                <img src="{{ language.flagImageURL }}">
+            </td>
+            <td>{{ language.description }}</td>
+            <td>
+                <a href="{{ path('admin.languages.edit', {id: language.id}) }}"><i class="fa fa-pencil-square fa-lg"></i></a>
+                <a class="delete"><i class="fa fa-minus-square fa-lg"></i></a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="5" style="text-align: center;">
+                <a href="{{ path('admin.languages.editNew') }}"><i class="fa fa-plus-square fa-2x"></i></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block tail %}
+
+{% include "App\\Admin\\DeleteConfirmationDialog.twig" %}
+{% include "App\\Admin\\ErrorDialog.twig" %}
+
+<script>
+    $(".delete").click(function(event) {
+        var id = $(event.target).parent().parent().parent().find("*:nth-child(1)").text();
+        var name = $(event.target).parent().parent().parent().find("*:nth-child(2)").text();
+        $("#dcd-objname").text(name);
+        $("#dcd-objid").val(id);
+        $("#delete-confirm-dialog").dialog('open');
+    });
+    $("#dcd-ok").click(function(event) {
+        var id = $("#dcd-objid").val();
+        $("#delete-confirm-dialog").dialog("close");
+        $.getJSON(id+'/delete', function (response) {
+            if (response.status) {
+                $(".idcell").each(function(index, element) {
+                    if ($(element).text() == id) $(element).parent().remove();
+                });
+            }
+        });
+    });
+</script>
+
+{% endblock %}
+

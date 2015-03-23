@@ -1,0 +1,86 @@
+
+{% extends 'App\\Admin\\Base.twig' %}
+
+{% block title %}
+<title>Gestione Menu</title>
+{% endblock %}
+
+{% block toolbar %}
+<h1>Gestione Menu</h1>
+{% endblock %}
+
+
+{% block content %}
+    <table class="pure-table pure-table-striped center" id="content-table" style="margin-top: 3em;">
+        <thead>
+        <tr style="font-size: 1.1em;">
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Descrizione</th>
+            <th>Usato da</th>
+            <th></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for menu in menus %}
+            <tr>
+                <td class="idcell">{{ menu.id }}</td>
+                <td>{{ menu.name }}</td>
+                <td>{{ menu.description }}</td>
+                <td>
+                    {% for language in menu.languages.toArray() %}
+                        <img src="{{ language.flagImageURL }}" alt="{{ language.code }}">&nbsp;&nbsp;
+                    {% endfor %}
+                </td>
+                <td>
+                    <a href="{{ path('admin.menu.edit', {id: menu.id}) }}"><i class="fa fa-pencil-square fa-lg"></i></a>
+                    <a class="delete"><i class="fa fa-minus-square fa-lg"></i></a>
+                </td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="5" style="text-align: center;">
+                <a href="{{ path('admin.menu.editNew') }}"><i class="fa fa-plus-square fa-2x"></i></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block tail %}
+
+{% include 'App\\Admin\\DeleteConfirmationDialog.twig' %}
+{% include 'App\\Admin\\ErrorDialog.twig' %}
+
+<script>
+
+    $(".delete").click(function(event) {
+        var id = $(event.target).parent().parent().parent().find("*:nth-child(1)").text();
+        var name = $(event.target).parent().parent().parent().find("*:nth-child(2)").text();
+        //If menu is being used by one or more languages, prevent deletion
+        var numOfLang = $(event.target).parent().parent().parent().find(".language-flags").children().size();
+        if (numOfLang > 0) {
+            displayErrorDialog("Errore", "Impossibile eliminare un menu finch&egrave; &egrave; in uso da una lingua.");
+            return;
+        }
+        $("#dcd-objname").text(name);
+        $("#dcd-objid").val(id);
+        $("#delete-confirm-dialog").dialog('open');
+    });
+
+    $("#dcd-ok").click(function(event) {
+        var id = $("#dcd-objid").val();
+        $("#delete-confirm-dialog").dialog("close");
+        $.getJSON(id+'/delete', function (response) {
+            if (response.status) {
+                $(".idcell").each(function(index, element) {
+                    if ($(element).text() == id) $(element).parent().remove();
+                });
+            }
+        });
+    });
+</script>
+
+{% endblock %}
+

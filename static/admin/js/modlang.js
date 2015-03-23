@@ -7,7 +7,7 @@
  */
 
 function CustomRoxyFileBrowser(field_name) {
-    var roxyFileman = 'fileman/index.php';
+    var roxyFileman = '/admin/filemanager/';
     if (roxyFileman.indexOf("?") < 0) {
         roxyFileman += "?input=" + field_name;
     }
@@ -28,11 +28,6 @@ function CustomRoxyFileBrowser(field_name) {
     return false;
 }
 
-//Handler errori ajax
-$(document).ajaxError(function (event, jqxhr, settings, thrownError) {
-    displayErrorDialog("Errore", "Errore: "+thrownError);
-});
-
 //Azione pulsante apertura file manager sul server
 $('.openfileman').click(function(event) {
     CustomRoxyFileBrowser($(event.target).prev().attr('id'));
@@ -46,15 +41,9 @@ function checkLangCodeUnique(id, target, callback) {
         $(target).css("border", "solid 2px rgb(202, 60, 60)");
         return false;
     }
-    $.getJSON("langws.php?action=checkcode&code="+txtvalue+"&langid="+id, function(data) {
-        if (data.status == "error") {
-            //Show error dialog
-            $("#erd-errdata").val(data.errormessage);
-            $("#error-dialog").dialog("open");
-            return false;
-        }
-        if (data.status == "ok") {
-            if (data.result == "true") {
+    $.post("/admin/languages/checkCode", {code: txtvalue, id: id} , function(data) {
+        if (data.status) {
+            if (data.data.unique) {
                 $(target).css("border", "solid 2px rgb(28, 184, 65)");
                 callback(true);
             } else {
@@ -63,27 +52,7 @@ function checkLangCodeUnique(id, target, callback) {
                 callback(false);
             }
         }
-    });
-}
-
-/**
- * Generates and open a new jquery ui dialog with title and message
- * passed as arguments to display errors for the user
- * @param title
- * @param message
- */
-function displayErrorDialog(title, message) {
-    var html = '<div class="message-error-dialog"><p>'+message+'</p>' +
-        '<button type="button" class="pure-button pure-button-primary red-button" style="float: right;">Ok</button>' +
-        '</div>';
-    var dialog = $(html).dialog({
-        title: title,
-        modal: true,
-        autoOpen: true
-    });
-    dialog.find("button").click(function() {
-        dialog.dialog("close");
-    });
+    }, 'json');
 }
 
 /* Submit form action */

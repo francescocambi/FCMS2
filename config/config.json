@@ -14,5 +14,6 @@
     "BlockStyles": [
         { "classname": "CenteredBlockStyle", "description": "Centrato" },
         { "classname": "ExtendedBlockStyle", "description": "Esteso" }
-    ]
+    ],
+    "MaintenanceMode": true
 }

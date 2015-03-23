@@ -1,0 +1,80 @@
+
+{% extends "App\\Admin\\Base.twig" %}
+
+{% block title %}
+<title>Gestione Lingue</title>
+{% endblock %}
+
+{% block toolbar %}
+<h1>Gestione Lingue</h1>
+{% endblock %}
+
+{% block content %}
+
+    {% import 'App\\Admin\\AlertMacro.twig' as alert %}
+
+    {% if success %}
+        {{ alert.alert('success', "Operazione Completata") }}
+    {% endif %}
+
+    {% if exception != null %}
+        {{ alert.exceptionAlert(exception.message, exception.traceString) }}
+    {% endif %}
+
+    <form method="POST" id="language-editor-form" class="pure-form pure-form-aligned"
+            action="{% if language.id>0 %}{{ path('admin.languages.update', {id: language.id}) }}{% else %}{{ path('admin.languages.insert') }}{% endif %}">
+
+        <legend style="margin-left: 10px;">Informazioni</legend>
+
+        {% if language.id > 0 %}
+        <div class="pure-control-group">
+            <label>Id</label>
+            <input type="text" value="{{ language.id }}" id="id" disabled>
+        </div>
+        {% endif %}
+
+        <div class="pure-control-group">
+            <label>Codice</label>
+            <input type="text" name="code" maxlength="2" value="{{ language.code }}">
+        </div>
+        <div class="pure-control-group">
+            <label>Descrizione</label>
+            <input type="text" name="description" value="{{ language.description }}">
+        </div>
+        <div class="pure-control-group">
+            <label>Icona Bandierina</label>
+            <input type="text" name="flagimageurl" id="flagimageurl" value="{{ language.flagImageURL }}">
+            <button type="button" class="pure-button pure-button-primary openfileman">Sfoglia</button>
+        </div>
+        <div class="pure-control-group">
+            <label>Menu in lingua</label>
+            <select size="1" name="menuid">
+
+                {% for menu in menus %}
+                <option value="{{ menu.id }}" {% if language.menu is not empty and menu.id == language.menu.id %}selected{% endif %}>
+                    {{ menu.name }}
+                </option>
+                {% endfor %}
+
+            </select>
+        </div>
+        <div class="pure-control-group">
+            <label>  </label>
+            <button type="button" class="pure-button pure-button-primary" id="save-all" style="width: 200px;">Salva Tutto</button>
+        </div>
+
+    </form>
+
+{% endblock %}
+
+{% block tail %}
+
+    {% include "App\\Admin\\ErrorDialog.twig" %}
+
+    <script type="text/javascript" src="/static/admin/js/modlang.js"></script>
+
+    <div id="roxyCustomPanel" style="display: none;">
+        <iframe src="" style="width:100%;height:100%" frameborder="0"></iframe>
+    </div>
+
+{% endblock %}

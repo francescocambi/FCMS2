@@ -14,6 +14,8 @@ use Silex\Application;
 
 $app = new Silex\Application();
 
+$app['rootFolderPath'] = __DIR__;
+
 //Register Configuration Files Service
 //Loads repository of configuration parameters from specified files
 $app->register(new \Yosymfony\Silex\ConfigServiceProvider\ConfigServiceProvider(array(
@@ -91,12 +93,18 @@ $app->register(new \Silex\Provider\TwigServiceProvider(), array(
 /** @var Twig_Environment $twig */
 $twig = $app['twig'];
 
+if ($app['config']->get('MaintenanceMode')) {
+    $pattern = '^/(?:(?!login))';
+} else {
+    $pattern = '^/admin|api';
+}
+
 //Register Security Service
 $app->register(new Silex\Provider\SecurityServiceProvider(), array(
     'security.encoder.digest' => new \Symfony\Component\Security\Core\Encoder\PlaintextPasswordEncoder(),
     'security.firewalls' => array(
         'admin' => array(
-            'pattern' => '^/admin|api',
+            'pattern' => $pattern,
 //            'http' => true,
             'form' => array('login_path' => '/login', 'check_path' => '/admin/login_check'),
             'logout' => array('logout_path' => '/admin/logout'),
@@ -147,5 +155,10 @@ $app->mount('/api', new \App\Api\ApiControllerProvider());
 //
 //    return new Response($message);
 //});
+
+//Setting FileManager working directory
+$app['admin.FileManager.folderPath'] = __DIR__.DIRECTORY_SEPARATOR.'resources'.DIRECTORY_SEPARATOR.'uploads';
+//$app['admin.FileManager.folderPath'] = __DIR__;
+$app['admin.FileManager.folderURL'] = '/resources/uploads/';
 
 return $app;

@@ -1,0 +1,96 @@
+
+{% extends "App\\Admin\\Base.twig" %}
+
+{% block title %}
+<title>CSS Editor</title>
+{% endblock %}
+
+{% block toolbar %}
+<h1>CSS Editor</h1>
+{% endblock %}
+
+{% block head %}
+    <script src="/static/admin/ace-builds-master/src-noconflict/ace.js"></script>
+{% endblock %}
+
+{% block content %}
+<div id="form" class="pure-form" style="padding: 10px; padding-left: 50px;">
+    <label>File da editare</label>
+    &nbsp;&nbsp;&nbsp;
+    <select id="file-selector">
+        <option value="" selected></option>
+        {% for file in files %}
+        <option value="{{ file }}">{{ file }}</option>
+        {% endfor %}
+    </select>
+    &nbsp;&nbsp;&nbsp;
+    <button type="button" id="open-file" class="pure-button">Apri</button>
+    &nbsp;&nbsp;&nbsp;
+    <button type="button" id="save-file" class="pure-button pure-button-primary" style="margin-right: 100px;">Salva</button>
+    &nbsp;&nbsp;&nbsp;
+    <span id="success-message" style="display: none;">
+        <i class="fa fa-check fa-2x" style="color: forestgreen;"></i>Operazione Completata
+    </span>
+    <span id="wait-message" style="display: none;">
+        <i class="fa fa-spinner fa-spin fa-2x"></i>Operazione in corso
+    </span>
+</div>
+<div id="editor" style="position: relative; margin: 0; top:0; left:0; right:0; bottom: 0;">
+    Seleziona un file e clicca Apri per iniziare.
+</div>
+{% endblock %}
+
+{% block tail %}
+    <script src="/static/admin/ace-builds-master/src-noconflict/ace.js"></script>
+    <script src="/static/admin/ace-builds-master/src-noconflict/ext-language_tools.js"></script>
+    <script>
+        ace.require("ace/ext/language_tools");
+        var editor = ace.edit("editor");
+        editor.session.setMode("ace/mode/css");
+        editor.setTheme("ace/theme/tomorrow");
+        //enable autocompletions and snippets
+        editor.setOptions({
+            enableBasicAutocompletion: true,
+            enableSnippets: false,
+            enableLiveAutocompletion: true
+        });
+    </script>
+    <script>
+
+        var currentEditingFile = "";
+
+        $('#editor').height($('#menu').height()-113);
+
+        $('#open-file').click(function(event) {
+            var filename = $('#file-selector').val();
+            if (filename.length == 0) return; //No file selected
+            //Displays op in progress message
+            $('#success-message').hide();
+            $('#wait-message').show();
+            $.getJSON('{{ path('admin.csseditor.getFileContent') }}', {fileName: filename}, function(data) {
+                if (data.status) {
+                    //Do something with data.data.fileContent
+                    editor.setValue(data.data.fileContent);
+                    currentEditingFile = filename;
+                    $('#wait-message').hide();
+                }
+            });
+        });
+
+        $('#save-file').click(function(event) {
+            if (currentEditingFile == "" && editor != undefined) return;
+            $('#success-message').hide();
+            $('#wait-message').show();
+            var info = {
+                fileName: currentEditingFile,
+                fileContent: editor.getValue()
+            }
+            $.post('{{ path('admin.csseditor.saveFile') }}', info, function(data) {
+                if (data.status) {
+                    $('#wait-message').hide();
+                    $('#success-message').show();
+                }
+            }, 'json');
+        })
+    </script>
+{% endblock %}

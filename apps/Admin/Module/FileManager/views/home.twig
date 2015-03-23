@@ -1,0 +1,152 @@
+<!DOCTYPE HTML>
+<html lang="it">
+<head>
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/admin/favicon.gif" type="image/gif">
+
+    <title>File Manager</title>
+
+
+    <link rel="stylesheet" href="/static/admin/css/pure-min.css">
+    <link rel="stylesheet" href="/static/admin/css/tables-min.css">
+    <link rel="stylesheet" href="/static/admin/jquery-ui/jquery-ui.css">
+    <link rel="stylesheet" href="/static/newfm/dropzone-4.0.1/dist/dropzone.css">
+    <link rel="stylesheet" href="/static/newfm/dropzone-4.0.1/dist/basic.css">
+    <link rel="stylesheet" href="/static/admin/css/font-awesome-4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/newfm/style.css">
+    {#<link rel="stylesheet" href="/static/admin/css/site.home.css">#}
+
+    <script src="/static/admin/js/jquery-2.1.1.min.js"></script>
+    <script src="/static/admin/jquery-ui/jquery-ui.js"></script>
+    {#<script src="/static/admin/js/admin.common.js"></script>#}
+    <script src="/static/newfm/dropzone-4.0.1/dist/dropzone.js"></script>
+
+</head>
+
+
+<body>
+<div id="navigator-view">
+
+    <div class="top-toolbar-fixer" style="width: 29.8%;">
+        <div class="top-toolbar">
+            {#Top toolbar#}
+            <button id="btn-create-folder" class="fa fa-plus"> Create</button>
+            <button id="btn-rename-folder" class="fa fa-pencil-square-o"> Rename</button>
+            <button id="btn-delete-folder" class="fa fa-trash-o"> Delete</button>
+        </div>
+    </div>
+
+    <ul id="folders-tree-list" class="folder-list">
+
+    </ul>
+
+</div>
+
+<div id="file-view">
+
+    <div class="top-toolbar-fixer">
+        {#Right file list#}
+        <div class="top-toolbar">
+            {#First line top toolbar#}
+            <button id="btn-add-file" class="fa fa-upload"> Add File</button>
+            <button id="btn-preview-file" class="fa fa-desktop"> Preview</button>
+            <button id="btn-rename-file" class="fa fa-pencil-square-o"> Rename</button>
+            <button id="btn-download-file" class="fa fa-download"> Download</button>
+            <button id="btn-delete-file" class="fa fa-trash"> Delete</button>
+            <button id="btn-export-file" class="fa fa-check-square-o"> Select</button>
+        </div>
+        <div class="top-toolbar pure-form">
+            {#Second line top toolbar#}
+            <label style="margin-right: 5px;">Order By: </label>
+            <select id="sel-order" size="1">
+                <option value="name-asc" selected>&uparrow; Nome</option>
+                <option value="name-desc">&downarrow; Nome</option>
+                <option value="size-asc">&uparrow; Dimensione</option>
+                <option value="size-desc">&downarrow; Dimensione</option>
+                <option value="lastupdate-asc">&uparrow; Ultima Modifica</option>
+                <option value="lastupdate-desc">&downarrow; Ultima Modifica</option>
+            </select>
+            {#<button type="button"><i class="fa fa-search"></i> Primo</button>#}
+            {#<button type="button"><i class="fa fa-save"></i> Secondo</button>#}
+            <input id="txt-search" type="text" class="pure-input-rounded search-input" placeholder="&nbsp;&#xf002; Search" style="margin-left: 10%;">
+        </div>
+    </div>
+
+    <div id="messages">
+        <span id="success-message" style="display: none;">
+            <i class="fa fa-check fa-2x" style="color: forestgreen;"></i>
+        </span>
+        <span id="wait-message" style="display: none;">
+            <i class="fa fa-circle-o-notch fa-spin fa-2x"></i>
+        </span>
+        <span id="error-message" style="display: none;">
+            <i class="fa fa-exclamation-circle fa-2x" style="color: firebrick;"></i>
+        </span>
+    </div>
+
+    <table id="file-list-table" class="pure-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th class="file-name">Nome File</th>
+                <th class="file-size">Dimensione</th>
+                <th class="file-lastupdate">Ultima Modifica</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+</div>
+
+<div id="upload-modal" style="width: 800px; height: 600px;">
+    <div id="um-head">
+        <button id="overall-start"><i class="fa fa-play" style="color: #0066ff;"></i> Begin Upload</button>
+        <button id="overall-cancel" class="red-button"><i class="fa fa-times" style="color: darkred;"></i> Cancel</button>
+    </div>
+    <div id="um-body">
+        <div class="files" id="previews">
+            <div id="template" class="file-row">
+                <div class="col thumbnail-cell">
+                    <img data-dz-thumbnail />
+                </div>
+                <div class="col name-cell">
+                    <span class="name" data-dz-name></span>&nbsp;&nbsp;(<span data-dz-size></span>)
+                    <strong class="error text-danger" data-dz-errormessage></strong>
+                </div>
+                <div class="col command-cell">
+                    <div class="progress-bar blue stripes">
+                        <span style="width: 0%;" data-dz-uploadprogress></span>
+                    </div>
+                    <button data-dz-remove>
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="preview-dialog" style="display: none;">
+    <iframe style="width: 98%; height: 98%; border: none;"></iframe>
+</div>
+
+<script>
+    var listContentServiceUrl = "{{ path('admin.filemanager.listContent') }}";
+    var getDirectoryTreeServiceUrl = "{{ path('admin.filemanager.getDirectoryTree') }}";
+    var uploadFileServiceUrl = "{{ path('admin.filemanager.uploadFile') }}";
+    var moveFileServiceUrl = "{{ path('admin.filemanager.moveFile') }}";
+    var deleteFileServiceUrl = "{{ path('admin.filemanager.deleteFile') }}";
+    var downloadFileServiceUrl = "{{ path('admin.filemanager.downloadFile') }}";
+    var moveDirectoryServiceUrl = "{{ path('admin.filemanager.moveDirectory') }}";
+    var deleteDirectoryServiceUrl = "{{ path('admin.filemanager.deleteDirectory') }}";
+    var rootFolderUrl = "{{ app['admin.FileManager.folderURL'] }}";
+</script>
+
+<script src="/static/newfm/fm.js"></script>
+
+</body>
+</html>
+

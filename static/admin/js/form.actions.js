@@ -19,7 +19,8 @@ tinymce.init({
 });
 
 function RoxyFileBrowser(field_name, url, type, win) {
-  var roxyFileman = 'fileman/index.php';
+  //var roxyFileman = '/static/admin/fileman/index.html';
+    var roxyFileman = '/admin/filemanager/';
   if (roxyFileman.indexOf("?") < 0) {     
     roxyFileman += "?type=" + type;   
   }
@@ -42,7 +43,8 @@ function RoxyFileBrowser(field_name, url, type, win) {
 }
 
 function CustomRoxyFileBrowser(field_name) {
-  var roxyFileman = 'fileman/index.php';
+  //var roxyFileman = '/static/admin/fileman/index.html';
+    var roxyFileman = '/admin/filemanager/';
   if (roxyFileman.indexOf("?") < 0) {     
     roxyFileman += "?input=" + field_name;   
   }

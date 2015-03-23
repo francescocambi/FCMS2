@@ -2,13 +2,15 @@
     <img src="/static/admin/login-head.png" style="border: none; width: 200px; height: 58px; margin-bottom: -5px;">
     <p style="width: 200px; margin: 0px; color: white; text-align: center; margin-top: 3px; margin-bottom: 3px;">Operatore:&nbsp;&nbsp;&nbsp;&nbsp;{{ userDisplayName }}</p>
     <p style="width: 200px; margin: 0px; color: white; text-align: center; margin-top: 3px; margin-bottom: 3px; font-size: 0.3em;">Version v1.0.2</p>
-    <ul>
+    <ul class="pure-menu-list">
         {% for module in modules %}
             {% if module.name == activeModuleName %}
-                <li class="menu-item-divided pure-menu-selected"><a href="{{ path(module.routeName) }}">{{ module.description }}</a></li>
+                <li class="pure-menu-item menu-item-divided pure-menu-selected"><a class="pure-menu-link" href="{{ path(module.routeName) }}">{{ module.description }}</a></li>
             {% else %}
-                <li><a href="{{ path(module.routeName) }}">{{ module.description }}</a></li>
+                <li class="pure-menu-item"><a class="pure-menu-link" href="{{ path(module.routeName) }}">{{ module.description }}</a></li>
             {% endif %}
         {% endfor %}
+        <li class="pure-menu-item"><a class="pure-menu-link" href="{{ path('site.root') }}">Visualizza Sito</a></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="/admin/logout">Logout</a></li>
     </ul>
 </div>

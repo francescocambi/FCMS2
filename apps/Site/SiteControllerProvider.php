@@ -20,6 +20,8 @@ class SiteControllerProvider implements ControllerProviderInterface {
          */
         $controllers = $app['controllers_factory'];
 
+        $controllers->match('/', 'page.controller:renderPage')->bind('site.root');
+
         $controllers->match('/{lang}/', 'page.controller:renderPage')
             ->assert('lang', '[a-z]{2}')
             ->bind('languageOnly');
