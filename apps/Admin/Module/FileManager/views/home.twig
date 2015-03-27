@@ -142,7 +142,7 @@
     var downloadFileServiceUrl = "{{ path('admin.filemanager.downloadFile') }}";
     var moveDirectoryServiceUrl = "{{ path('admin.filemanager.moveDirectory') }}";
     var deleteDirectoryServiceUrl = "{{ path('admin.filemanager.deleteDirectory') }}";
-    var rootFolderUrl = "{{ app['admin.FileManager.folderURL'] }}";
+    var rootFolderUrl = "{{ app.config.get('admin.FileManager.folderURL') }}";
 </script>
 
 <script src="/static/newfm/fm.js"></script>

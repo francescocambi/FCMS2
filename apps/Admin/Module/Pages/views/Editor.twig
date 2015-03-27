@@ -133,7 +133,7 @@
                 <input type="hidden" name="block[bcksize][]" value="{{ pageblock.block.bgsize }}">
             </fieldset>
             <div class="blockcontentdiv">
-                {{ pageblock.block.getHtml(app)|raw }}
+                {{ pageblock.block.content|raw }}
             </div>
             <textarea id="tmceeditor{{ loop.index }}" class="blockcontent" name="block[content][]" style="display: none;"></textarea>
             <div class="blockbuttons" style="margin-top: 5px; clear: both;">

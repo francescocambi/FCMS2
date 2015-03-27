@@ -9,10 +9,8 @@ namespace App\Admin\Module\FileManager;
 
 
 use Silex\Application;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class FileManagerController {
@@ -23,7 +21,7 @@ class FileManagerController {
 
     public function getDirectoryTree(Application $app) {
 
-        $basePath = $app['admin.FileManager.folderPath'];
+        $basePath = $app['config']->get('admin.FileManager.folderPath');
 
         if (substr($basePath, -1) != DIRECTORY_SEPARATOR) {
             $basePath .= DIRECTORY_SEPARATOR;
@@ -76,7 +74,7 @@ class FileManagerController {
     public function listContent(Application $app, Request $request) {
         $relativePath = $request->get('folderPath');
 
-        $basePath = $app['admin.FileManager.folderPath'];
+        $basePath = $app['config']->get('admin.FileManager.folderPath');
 
         if (strlen($relativePath) == 0)
             return $app->json(array(
@@ -137,7 +135,7 @@ class FileManagerController {
 
         $filename = $file->getClientOriginalName();
 
-        $path = $app['admin.FileManager.folderPath'].$folder;
+        $path = $app['config']->get('admin.FileManager.folderPath').$folder;
 
         try {
             $file->move($path, $filename);
@@ -156,7 +154,7 @@ class FileManagerController {
     public function deleteFile(Application $app, Request $request) {
         $fileRelativePath = $request->get('filePath');
 
-        $absPath = $app['admin.FileManager.folderPath'].$fileRelativePath;
+        $absPath = $app['config']->get('admin.FileManager.folderPath').$fileRelativePath;
 
         try {
             $result = unlink($absPath);
@@ -181,8 +179,8 @@ class FileManagerController {
         $sourceRelativePath = $request->get('sourceFilePath');
         $destinationRelativePath = $request->get('destinationFilePath');
 
-        $sourceAbsPath = $app['admin.FileManager.folderPath'].$sourceRelativePath;
-        $destinationAbsPath = $app['admin.FileManager.folderPath'].$destinationRelativePath;
+        $sourceAbsPath = $app['config']->get('admin.FileManager.folderPath').$sourceRelativePath;
+        $destinationAbsPath = $app['config']->get('admin.FileManager.folderPath').$destinationRelativePath;
 
         try {
             $result = copy($sourceAbsPath, $destinationAbsPath);
@@ -206,8 +204,8 @@ class FileManagerController {
         $sourceRelativePath = $request->get('sourceFilePath');
         $destinationRelativePath = $request->get('destinationFilePath');
 
-        $sourceAbsPath = $app['admin.FileManager.folderPath'].$sourceRelativePath;
-        $destinationAbsPath = $app['admin.FileManager.folderPath'].$destinationRelativePath;
+        $sourceAbsPath = $app['config']->get('admin.FileManager.folderPath').$sourceRelativePath;
+        $destinationAbsPath = $app['config']->get('admin.FileManager.folderPath').$destinationRelativePath;
 
         try {
             $result = rename($sourceAbsPath, $destinationAbsPath);
@@ -232,8 +230,8 @@ class FileManagerController {
         $sourceRelativePath = $request->get('sourcePath');
         $destinationRelativePath = $request->get('destinationPath');
 
-        $sourceAbsPath = $app['admin.FileManager.folderPath'].$sourceRelativePath;
-        $destinationAbsPath = $app['admin.FileManager.folderPath'].$destinationRelativePath;
+        $sourceAbsPath = $app['config']->get('admin.FileManager.folderPath').$sourceRelativePath;
+        $destinationAbsPath = $app['config']->get('admin.FileManager.folderPath').$destinationRelativePath;
 
         //Checks if sourcePath exists, if not, directory is new
         if (!file_exists($sourceAbsPath)) {
@@ -277,7 +275,7 @@ class FileManagerController {
 
     public function downloadFile(Application $app, Request $request) {
         $relativeFilePath = $request->get('filePath');
-        $absFilePath = $app['admin.FileManager.folderPath'].$relativeFilePath;
+        $absFilePath = $app['config']->get('admin.FileManager.folderPath').$relativeFilePath;
 
         return $app->sendFile($absFilePath)
             ->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, basename($absFilePath));
@@ -287,7 +285,7 @@ class FileManagerController {
 
         $directoryRelativePath = $request->get('directoryPath');
 
-        $absPath = $app['admin.FileManager.folderPath'].$directoryRelativePath;
+        $absPath = $app['config']->get('admin.FileManager.folderPath').$directoryRelativePath;
 
         try {
             $result = $this->removeDirectory($absPath);

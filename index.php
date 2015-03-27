@@ -5,7 +5,7 @@
  * Time: 18:11
  */
 
-$app = require_once "app.php";
+$app = require_once "core/app.php";
 
 /** @var Silex\Application $app */
 $app->run();

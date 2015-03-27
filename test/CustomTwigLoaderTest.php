@@ -7,7 +7,7 @@
 
 namespace Test;
 
-require dirname(__DIR__).'/CustomTwigLoader.php';
+require dirname(__DIR__) . '/CustomTwigLoader.php';
 
 class CustomTwigLoaderTest extends \PHPUnit_Framework_TestCase {
 

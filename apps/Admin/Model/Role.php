@@ -40,6 +40,7 @@ class Role {
     /**
      * @var ArrayCollection
      * @ManyToMany(targetEntity="App\Admin\Model\Module", mappedBy="allowedRoles")
+     * @JoinTable(name="admin_module_role")
      */
     protected $modules;
 

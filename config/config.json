@@ -15,5 +15,20 @@
         { "classname": "CenteredBlockStyle", "description": "Centrato" },
         { "classname": "ExtendedBlockStyle", "description": "Esteso" }
     ],
-    "MaintenanceMode": true
+    "MaintenanceMode": true,
+    "admin.FileManager.folderPath": "/Users/Francesco/PhpStormProjects/FCMS2/resources/uploads",
+    "admin.FileManager.folderURL": "/resources/uploads/",
+    "Site.defaultLanguageCode": "it",
+    "Site.homePageNamePrefix": "home_",
+    "Log": {
+        "filename": "app.log",
+        "maxfiles": 10,
+        "level": "DEBUG",
+        "name": "application"
+    },
+    "EntityFolders": [
+        "/Model/",
+        "/plugins/ContactMe/Model/",
+        "/apps/Admin/Model/"
+    ]
 }

@@ -52,6 +52,7 @@ class Module {
     /**
      * @var ArrayCollection
      * @ManyToMany(targetEntity="App\Admin\Model\Role", inversedBy="modules")
+     * @JoinTable(name="admin_module_role")
      */
     protected $allowedRoles;
 
