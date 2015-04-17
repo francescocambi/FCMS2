@@ -15,7 +15,7 @@
         { "classname": "CenteredBlockStyle", "description": "Centrato" },
         { "classname": "ExtendedBlockStyle", "description": "Esteso" }
     ],
-    "MaintenanceMode": true,
+    "MaintenanceMode": false,
     "admin.FileManager.folderPath": "/Users/Francesco/PhpStormProjects/FCMS2/resources/uploads",
     "admin.FileManager.folderURL": "/resources/uploads/",
     "Site.defaultLanguageCode": "it",

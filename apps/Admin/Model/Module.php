@@ -51,7 +51,7 @@ class Module {
 
     /**
      * @var ArrayCollection
-     * @ManyToMany(targetEntity="App\Admin\Model\Role", inversedBy="modules")
+     * @ManyToMany(targetEntity="App\Admin\Model\Role", inversedBy="modules", fetch="EAGER")
      * @JoinTable(name="admin_module_role")
      */
     protected $allowedRoles;
@@ -126,6 +126,13 @@ class Module {
     public function setRouteName($routeName)
     {
         $this->routeName = $routeName;
+    }
+
+    /**
+     * @return Role[]
+     */
+    public function getAllowedRoles() {
+        return $this->allowedRoles->toArray();
     }
 
 } 

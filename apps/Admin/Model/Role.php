@@ -9,13 +9,14 @@ namespace App\Admin\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping;
+use Symfony\Component\Security\Core\Role\RoleInterface;
 
 /**
  * Class Role
  * @Entity
  * @Table(name="admin_role")
  */
-class Role {
+class Role implements RoleInterface {
 
     /**
      * @var int
@@ -84,6 +85,20 @@ class Role {
         $this->name = $name;
     }
 
+    /**
+     * Returns the role.
+     *
+     * This method returns a string representation whenever possible.
+     *
+     * When the role cannot be represented with sufficient precision by a
+     * string, it should return null.
+     *
+     * @return string|null A string representation of the role, or null
+     */
+    public function getRole()
+    {
+        return $this->name;
+    }
 
 
 } 

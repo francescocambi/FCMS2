@@ -1,0 +1,229 @@
+
+{% extends "App\\Admin\\Base.twig" %}
+
+{% block title %}
+    <title>Gestione Utenti</title>
+{% endblock %}
+
+{% block toolbar %}
+    <h1>Gestione Utenti</h1>
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="/static/admin/datetimepicker-master/jquery.datetimepicker.css">
+    <link rel="stylesheet" href="/static/admin/css/grids-responsive.css">
+    <script type="text/javascript" src="/static/admin/datetimepicker-master/jquery.datetimepicker.js"></script>
+    <script type="text/javascript" src="/static/admin/jquery.complexify.js-master/jquery.complexify.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+    {% import 'App\\Admin\\AlertMacro.twig' as alert %}
+
+    {% if success %}
+        {{ alert.alert('success', "Operazione Completata") }}
+    {% endif %}
+
+    {% if exception != null %}
+        {{ alert.exceptionAlert(exception.message, exception.traceString) }}
+    {% endif %}
+
+    <style>
+        .expiration-alert {
+            font-size: 35px;
+            vertical-align: middle;
+        }
+
+        .progress {
+            height: 20px;
+            /*margin-bottom: 20px;*/
+            overflow: hidden;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+        }
+
+        .progress-bar {
+            float: left;
+            width: 0;
+            height: 100%;
+            font-size: 12px;
+            line-height: 20px;
+            color: #fff;
+            text-align: center;
+            background-color: #337ab7;
+            box-shadow: inset 0 -1px 0 rgba(0,0,0,.15);
+            transition: width .6s ease;
+        }
+
+        .progress-bar-danger {
+            background-color: #d9534f;
+        }
+
+        .progress-bar-success {
+            background-color: #5cb85c;
+        }
+
+    </style>
+
+    <form method="POST" class="pure-form pure-form-aligned"
+          action="{% if user.id>0 %}{{ path('admin.users.update', {id: user.id}) }}{% else %}{{ path('admin.users.insert') }}{% endif %}">
+            {#action="/print_post.php">#}
+
+        <div class="pure-u-1 pure-u-lg-1-2" style="float: right;">
+            <legend>&nbsp;&nbsp;Informazioni Login</legend>
+
+            {% if user.id > 0 %}
+                <div class="pure-control-group">
+                    <label>Id</label>
+                    <input type="text" value="{{ user.id }}" id="id" disabled>
+                </div>
+            {% endif %}
+
+            <div class="pure-control-group">
+                <label>Username</label>
+                <input type="text" name="username" value="{{ user.username }}">
+            </div>
+
+            <div class="pure-control-group">
+                <label>Nuova Password</label>
+                <input type="password" name="password">
+            </div>
+
+            <div class="pure-control-group">
+                <label>Ripeti Password</label>
+                <input type="password" name="repeatpassword">
+            </div>
+
+            <div class="pure-control-group">
+                <label>&nbsp; </label>
+                <div id="complexity-progress" class="progress" style="display: inline-block;">
+                    <div id="complexity-bar" class="progress-bar progress-bar-danger" role="progressbar"></div>
+                </div>
+            </div>
+
+            <div class="pure-control-group">
+                <label>Scadenza Utente</label>
+                <input type="text" readonly class="datetimepicker expirationField" name="accountExpiration" value="{{ user.accountExpiration|date("Y/m/d H:i") }}">
+                <i class="fa fa-exclamation fa-lg expiration-alert" style="color:#e83529;"></i>
+            </div>
+
+            <div class="pure-control-group">
+                <label>Scadenza Credenziali</label>
+                <input type="text" readonly class="datetimepicker expirationField" name="credentialsExpiration" value="{{ user.credentialsExpiration|date("Y/m/d H:i") }}">
+                <i class="fa fa-exclamation fa-lg expiration-alert" style="color: #e83529;"></i>
+            </div>
+
+            <div class="pure-control-group">
+                <label>Utente abilitato</label>
+                <input type="checkbox" name="enabled" value="1"
+                       {% if user.isEnabled() %}checked{% endif %}>
+                <span id="enabled-caption" style="margin-left: 10px;"></span>
+            </div>
+
+        </div>
+
+
+        <div class="pure-u-1 pure-u-lg-1-2" id="user-data-div" style="min-width: 400px;">
+            <style>
+                #user-data-div input {
+                    width: 15em;
+                }
+                #user-data-div label {
+                    width: 8em;
+                }
+            </style>
+
+            <legend>&nbsp;&nbsp;Dati Utente</legend>
+
+            <div class="pure-control-group">
+                <label>Nome</label>
+                <input type="text" name="name" value="{{ user.name }}">
+            </div>
+
+            <div class="pure-control-group">
+                <label>Cognome</label>
+                <input type="text" name="surname" value="{{ user.surname }}">
+            </div>
+
+            <div class="pure-control-group">
+                <label>E-Mail</label>
+                <input type="text" name="email" value="{{ user.email }}">
+            </div>
+
+            <div class="pure-control-group">
+                <label>Telefono</label>
+                <input type="text" name="phone" value="{{ user.phone }}">
+            </div>
+
+            <div class="pure-control-group">
+                <label>Indirizzo</label>
+                <input type="text" name="address" value="{{ user.address }}">
+            </div>
+
+            <div class="pure-control-group">
+                <label>Citt&agrave;</label>
+                <input type="text" name="cap" placeholder="Cap"
+                       value="{{ user.cap }}" style="width: 4em;">
+                <input type="text" name="city" placeholder="Citt&agrave;"
+                       value="{{ user.city }}" style="width: 11em;">
+            </div>
+
+            <div class="pure-control-group">
+                <label>Provincia</label>
+                <input type="text" name="province" value="{{ user.province }}">
+            </div>
+
+            <div class="pure-control-group">
+                <label>Nazione</label>
+                <input type="text" name="country" value="{{ user.country }}">
+            </div>
+
+            <div class="pure-control-group">
+                <label>  </label>
+                <button type="button" class="pure-button pure-button-primary" id="save-all" style="width: 185px;">Salva Tutto</button>
+            </div>
+        </div>
+
+        <div class="pure-u-23-24" style="padding: 15px;">
+
+            <legend>Ruoli Utente</legend>
+
+            <table class="pure-table pure-table-striped" style="width: 90%; margin: auto;">
+
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Descrizione</th>
+                    <th>Ruolo</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for role in roles %}
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="roles[{{ role.name }}]" value="1"
+                                    {% if role.name in user.getRoles() %}checked{% endif %}>
+                        </td>
+                        <td>{{ role.description }}</td>
+                        <td>{{ role.name }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </form>
+
+{% endblock %}
+
+{% block tail %}
+
+    {% include "App\\Admin\\ErrorDialog.twig" %}
+
+    <script type="text/javascript" src="/static/admin/js/users_editor.js"></script>
+
+{% endblock %}

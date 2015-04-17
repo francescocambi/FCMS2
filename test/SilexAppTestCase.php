@@ -7,26 +7,28 @@
 
 namespace Test;
 
-$dir = explode(DIRECTORY_SEPARATOR, __DIR__);
-array_pop($dir);
-$dir = join(DIRECTORY_SEPARATOR, $dir);
-require_once $dir."/bootstrap.php";
-define("DIR", $dir);
+use Core\EntityManagerFactory;
+
+require_once(dirname(__DIR__).'/vendor/autoload.php');
 
 class SilexAppTestCase extends \PHPUnit_Extensions_Database_TestCase {
 
     /**
-     * @var Doctrine\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 
     /**
-     * @var Silex\Application
+     * @var \Silex\Application
      */
     protected $app;
 
     protected function getConnection() {
-        $this->em = initializeTestEntityManager(DIR."/");
+
+        if (is_null($this->app))
+            $this->app = $this->getApplication();
+
+        $this->em = EntityManagerFactory::initializeTestEntityManager($this->app);
 
         $pdo = $this->em->getConnection()->getWrappedConnection();
 
@@ -42,7 +44,7 @@ class SilexAppTestCase extends \PHPUnit_Extensions_Database_TestCase {
     }
 
     protected function getDataSet() {
-        return $this->createMySQLXMLDataSet(DIR.'/test/seed.xml');
+        return $this->createMySQLXMLDataSet(dirname(__DIR__).'/test/seed.xml');
     }
 
 //    public function getMockApplicationObject() {
@@ -60,14 +62,14 @@ class SilexAppTestCase extends \PHPUnit_Extensions_Database_TestCase {
 //        return $app;
 //    }
 
+    private function getApplication() {
+        return require(dirname(__DIR__)."/core/app.php");
+    }
+
     protected function setUp() {
         parent::setUp();
-        $this->app = require(DIR.'/app.php');
-        if (is_null($this->em)) {
-            $this->em = initializeTestEntityManager(DIR."/");
-        }
-        $this->app['em'] = $this->em;
-
+        if (is_null($this->app))
+            $this->app = $this->getApplication();
     }
 
 } 

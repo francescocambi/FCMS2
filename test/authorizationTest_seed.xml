@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <database name="framework_doc">
+        <table_data name="admin_module">
+            <row>
+                <field name="id">1</field>
+                <field name="name">Test</field>
+                <field name="description">Module accessible for all</field>
+                <field name="pluginName"></field>
+                <field name="routeName">admin.test.modulehome</field>
+            </row>
+            <row>
+                <field name="id">2</field>
+                <field name="name">Second</field>
+                <field name="description">Module accessible only for Admin</field>
+                <field name="pluginName"></field>
+                <field name="routeName">admin.second.modulehome</field>
+            </row>
+        </table_data>
+        <table_data name="admin_role">
+            <row>
+                <field name="id">1</field>
+                <field name="name">ROLE_ADMIN</field>
+                <field name="description">Admin</field>
+            </row>
+            <row>
+                <field name="id">2</field>
+                <field name="name">ROLE_USER</field>
+                <field name="description">User</field>
+            </row>
+        </table_data>
+        <table_data name="admin_module_role">
+            <row>
+                <field name="module_id">1</field>
+                <field name="role_id">1</field>
+            </row>
+            <row>
+                <field name="module_id">1</field>
+                <field name="role_id">2</field>
+            </row>
+            <row>
+                <field name="module_id">2</field>
+                <field name="role_id">1</field>
+            </row>
+        </table_data>
+    </database>
+</mysqldump>

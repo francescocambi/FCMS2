@@ -8,7 +8,9 @@
 
 namespace App\Admin;
 
+use App\Admin\Controller\ForbiddenResponseController;
 use App\Admin\Menu\Menu;
+use App\Admin\Service\ModuleAuthorizationServiceProvider;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
@@ -26,6 +28,11 @@ class AdminControllerProvider implements ControllerProviderInterface {
             return new JSONMessageComposer();
         });
 
+        $app->register(new ModuleAuthorizationServiceProvider(), array(
+            'moduleAuthorization.authorizer' => new ModuleAuthorization($app),
+            'moduleAuthorization.forbiddenResponseController' => new ForbiddenResponseController()
+        ));
+
         /**
          * @var ControllerCollection $controllers
          */
@@ -42,11 +49,15 @@ class AdminControllerProvider implements ControllerProviderInterface {
          */
 
         foreach ($controllerProviders as $controllerProvider) {
+
             if (class_exists($controllerProvider['controllerProviderName'])) {
+
                 //FIXME Check if controllerProvider implements ControllerProviderInterface
                 $controllerProviderObject = new $controllerProvider['controllerProviderName']();
+
                 $controllers->mount('/' . strtolower($controllerProvider['moduleName']),
                     $controllerProviderObject->connect($app));
+
             } else {
                 //TODO Log error cannot find class controllerProviderName
             }

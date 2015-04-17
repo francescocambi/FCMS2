@@ -5,7 +5,7 @@
  * Time: 17:04
  */
 
-require_once "vendor/autoload.php";
+require_once dirname(__DIR__)."/vendor/autoload.php";
 
 use \Symfony\Component\HttpFoundation\Request;
 use Silex\Application;
@@ -94,9 +94,15 @@ if ($app['config']->get('MaintenanceMode')) {
     $pattern = '^/admin|api';
 }
 
+//Set password encoder
+$app['password_encoder'] = $app->share(function () {
+    return new \Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder();
+});
+
 //Register Security Service
 $app->register(new Silex\Provider\SecurityServiceProvider(), array(
-    'security.encoder.digest' => new \Symfony\Component\Security\Core\Encoder\PlaintextPasswordEncoder(),
+//    'security.encoder.digest' => new \Symfony\Component\Security\Core\Encoder\PlaintextPasswordEncoder(),
+    'security.encoder.digest' => $app['password_encoder'],
     'security.firewalls' => array(
         'admin' => array(
             'pattern' => $pattern,
@@ -113,29 +119,23 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), array(
 //Register Session Service
 $app->register(new \Silex\Provider\SessionServiceProvider());
 
-
-
-//Define pages front controller
-$app['page.controller'] = $app->share(function () use ($app) {
-    return new \App\Site\Controller\SiteController();
-});
-
 //Routes definition
 
 $app->get('/login', function (Request $request) use ($app) {
-    return $app['twig']->render('App\Admin\Login.twig', array(
+    return $app['twig']->render('\App\Admin\Login.twig', array(
         'error' => $app['security.last_error']($request),
         'last_username' => $app['session']->get('_security.last_username'),
     ));
-});
-
-$app->mount('/admin', new \App\Admin\AdminControllerProvider());
+})->bind('login');
 
 $app->match('/admin', function () use ($app) {
     return $app->redirect('/admin/');
 });
 
 $app->mount('/', new \App\Site\SiteControllerProvider());
+
+$app->mount('/admin', new \App\Admin\AdminControllerProvider());
+
 
 //$app->error(function (\Exception $e, $code) use ($app) {
 //    switch ($code) {

@@ -1,0 +1,28 @@
+{% extends 'App\\Admin\\Base.twig' %}
+
+{% block title %}
+    <title>Accesso Vietato</title>
+{% endblock %}
+
+{% block toolbar %}
+    <h1>Accesso Vietato</h1>
+{% endblock %}
+
+{% block content %}
+    <style>
+        h2 {
+            text-align: center;
+            margin-top: 40px;
+            font-weight: lighter;
+        }
+    </style>
+    <h2>
+        <i class="fa fa-minus-circle fa-4x" style="color: red;"></i>
+    </h2>
+    <h2>
+        {#{{ message|escape }}#}
+        Non hai il permesso di accedere a questa funzionalit&agrave;.
+        <br><br>
+        Contatta un amministratore per maggiori informazioni.
+    </h2>
+{% endblock %}

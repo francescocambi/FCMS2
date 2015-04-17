@@ -32,6 +32,7 @@ class PagesController {
         $pageid = $id;
 
         try {
+            /** @var \Model\Page $page */
             $page = $em->find('Model\Page', $pageid);
         } catch (\Exception $e) {
             $app['monolog']->addError($e->getMessage());
@@ -46,8 +47,6 @@ class PagesController {
             $em->beginTransaction();
             foreach ($page->getPageBlocks() as $pageblock)
                 $em->remove($pageblock);
-            foreach ($page->getAccessGroups() as $accessgroup)
-                $em->remove($accessgroup);
             $em->remove($page);
             $em->flush();
             $em->commit();
@@ -67,6 +66,7 @@ class PagesController {
         $response = array();
 
         try {
+            /** @var \Model\Page $page */
             $page = $em->find('Model\Page', $id);
         } catch (\Exception $e) {
             $app['monolog']->addError($e->getMessage());

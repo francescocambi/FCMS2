@@ -323,6 +323,7 @@ class User implements AdvancedUserInterface, EquatableInterface {
      */
     public function getRoles()
     {
+        //FIXME Wrong return type!
         return explode(',', $this->roles);
     }
 
@@ -331,7 +332,10 @@ class User implements AdvancedUserInterface, EquatableInterface {
      */
     public function setRoles($roles)
     {
-        $this->roles = join(',', $roles);
+        $this->roles = "";
+        foreach ($roles as $role)
+            $this->roles .= $role->getRole().",";
+        $this->roles = substr($this->roles, 0, strlen($this->roles)-1);
     }
 
     /**
@@ -422,6 +426,16 @@ class User implements AdvancedUserInterface, EquatableInterface {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Returns true if this user has $roleName Role
+     * false otherwise
+     * @param string $roleName
+     * @return boolean
+     */
+    public function hasRole($roleName) {
+        return (strpos($this->roles, $roleName) > -1);
     }
 }
 

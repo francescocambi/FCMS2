@@ -9,6 +9,7 @@ namespace App\Site;
 
 
 use Silex\Application;
+use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
 
 class SiteControllerProvider implements ControllerProviderInterface {
@@ -20,18 +21,18 @@ class SiteControllerProvider implements ControllerProviderInterface {
          */
         $controllers = $app['controllers_factory'];
 
-        $controllers->match('/', 'page.controller:renderPage')->bind('site.root');
+        $controllers->match('/', '\App\Site\Controller\SiteController::renderPage')->bind('site.root');
 
-        $controllers->match('/{lang}/', 'page.controller:renderPage')
+        $controllers->match('/{lang}/', '\App\Site\Controller\SiteController::renderPage')
             ->assert('lang', '[a-z]{2}')
             ->bind('languageOnly');
 
-        $controllers->match('/{url}', 'page.controller:renderPage')
+        $controllers->match('/{url}', '\App\Site\Controller\SiteController::renderPage')
             ->assert('url', '[a-z\-]{3}[a-z\-]+')
             ->value('url', 'home_it')
             ->bind('urlOnly');
 
-        $controllers->match('/{lang}/{url}', 'page.controller:renderPage')
+        $controllers->match('/{lang}/{url}', '\App\Site\Controller\SiteController::renderPage')
             ->assert('lang','[a-z]{2}')
             ->bind('languageAndUrl');
 

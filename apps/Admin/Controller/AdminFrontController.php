@@ -19,7 +19,7 @@ class AdminFrontController {
      * @return string
      */
     public function render(Application $app, $requestedUrl) {
-
+        //FIXME Not reachable, can be removed??
         $menuController = new Menu($app);
         $menuBlock = $menuController->renderMenu($requestedUrl);
 
