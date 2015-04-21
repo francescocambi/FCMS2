@@ -8,6 +8,7 @@
 namespace test;
 
 
+use Core\CenteredBlockStyle;
 use Model\ContentBlock;
 use Model\AccessGroup;
 use Model\Page;
@@ -37,7 +38,7 @@ class PageTest extends \PHPUnit_Framework_TestCase {
         $block = new ContentBlock();
         $block->setName("testblock");
         $block->setContent("<h1>This is a block</h1>");
-        $block->setBlockStyle(new \CenteredBlockStyle());
+        $block->setBlockStyle(new CenteredBlockStyle());
         $pageBlock = new PageBlock();
         $pageBlock->setBlock($block);
         $pageBlock->setBlockOrder(1);

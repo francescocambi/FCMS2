@@ -45,6 +45,10 @@ class Role implements RoleInterface {
      */
     protected $modules;
 
+    public function __construct() {
+        $this->modules = new ArrayCollection();
+    }
+
     /**
      * @return string
      */
@@ -83,6 +87,32 @@ class Role implements RoleInterface {
     public function setName($name)
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getModules()
+    {
+        return $this->modules;
+    }
+
+    /**
+     * @param ArrayCollection $modules
+     */
+    public function setModules($modules)
+    {
+        $this->modules = $modules;
+    }
+
+    /**
+     * Grant access to $module for this role
+     *
+     * @param Module $module
+     */
+    public function addModule($module) {
+        $this->modules->add($module);
+        $module->getAllowedRoles()->add($this);
     }
 
     /**

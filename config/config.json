@@ -1,6 +1,7 @@
 {
     "Application.Debug": true,
     "Application.Development": true,
+    "MaintenanceMode": false,
     "LanguageBar.View": "App\\Site\\FlagLanguageBar.twig",
     "LanguageBar.RouteName": "languageOnly",
     "Menu.View": "App\\Site\\ListMenu.twig",
@@ -15,7 +16,6 @@
         { "classname": "CenteredBlockStyle", "description": "Centrato" },
         { "classname": "ExtendedBlockStyle", "description": "Esteso" }
     ],
-    "MaintenanceMode": false,
     "admin.FileManager.folderPath": "/Users/Francesco/PhpStormProjects/FCMS2/resources/uploads",
     "admin.FileManager.folderURL": "/resources/uploads/",
     "Site.defaultLanguageCode": "it",

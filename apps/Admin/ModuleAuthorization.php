@@ -38,7 +38,7 @@ class ModuleAuthorization {
             'name' => $moduleName
         ));
         $result = false;
-        foreach ($module->getAllowedRoles() as $role) {
+        foreach ($module->getAllowedRoles()->toArray() as $role) {
             $result = $this->app['security']->isGranted($role->getName()) or $result;
         }
         //Result is ok - access granted

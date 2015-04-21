@@ -8,7 +8,6 @@
 namespace Test;
 
 
-use App\Admin\ModuleAuthorization;
 use App\Admin\Service\ModuleAuthorizationServiceProvider;
 use Silex\Application;
 
@@ -41,8 +40,13 @@ class ModuleAuthorizationServiceProviderTest extends \PHPUnit_Framework_TestCase
             ModuleAuthorizationServiceProvider::CONTROLLER_KEY => $controller
         ));
 
-        //It should not throw any exception
-        $app->boot();
+        try {
+            $app->boot();
+        } catch (Exception $e) {
+            $this->assertTrue(false, "Unexpected exception >> ".$e->getMessage());
+        }
+
+        $this->assertTrue(true);
     }
 
     /**

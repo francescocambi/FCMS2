@@ -5,12 +5,27 @@
     <ul class="pure-menu-list">
         {% for module in modules %}
             {% if module.name == activeModuleName %}
-                <li class="pure-menu-item menu-item-divided pure-menu-selected"><a class="pure-menu-link" href="{{ path(module.routeName) }}">{{ module.description }}</a></li>
+                <li class="pure-menu-item menu-item-divided pure-menu-selected">
             {% else %}
-                <li class="pure-menu-item"><a class="pure-menu-link" href="{{ path(module.routeName) }}">{{ module.description }}</a></li>
+                <li class="pure-menu-item">
             {% endif %}
+                    <a class="pure-menu-link" href="{{ path(module.routeName) }}">
+                        <i class="fa fa-lg">{{ module.menuIconCharacter }}</i>
+                        {{ module.description }}
+                    </a>
+                </li>
         {% endfor %}
-        <li class="pure-menu-item"><a class="pure-menu-link" href="{{ path('site.root') }}">Visualizza Sito</a></li>
-        <li class="pure-menu-item"><a class="pure-menu-link" href="/admin/logout">Logout</a></li>
+        <li class="pure-menu-item">
+            <a class="pure-menu-link" href="{{ path('site.root') }}">
+                <i class="fa fa-eye fa-lg"></i>
+                Visualizza Sito
+            </a>
+        </li>
+        <li class="pure-menu-item">
+            <a class="pure-menu-link" href="/admin/logout">
+                <i class="fa fa-sign-out fa-lg"></i>
+                Logout
+            </a>
+        </li>
     </ul>
 </div>

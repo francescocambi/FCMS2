@@ -30,7 +30,7 @@ class AdminControllerProvider implements ControllerProviderInterface {
 
         $app->register(new ModuleAuthorizationServiceProvider(), array(
             'moduleAuthorization.authorizer' => new ModuleAuthorization($app),
-            'moduleAuthorization.forbiddenResponseController' => new ForbiddenResponseController()
+            'moduleAuthroization.forbiddenResponseController' => new ForbiddenResponseController()
         ));
 
         /**

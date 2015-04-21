@@ -18,12 +18,14 @@
 namespace test;
 
 
+use Core\CenteredBlockStyle;
+
 class CenteredBlockStyleTest extends \PHPUnit_Framework_TestCase {
 
     public function testStylizeHTML() {
         $html = "<h1>This is a test</h1>";
         $localcss = "some css: code;";
-        $blockstyle = new \CenteredBlockStyle();
+        $blockstyle = new CenteredBlockStyle();
 
         $stylized = $blockstyle->stylizeHTML($html, $localcss);
         $this->assertTrue(strpos($stylized, $html) && strpos($stylized, $localcss));

@@ -1,0 +1,96 @@
+
+{% extends "App\\Admin\\Base.twig" %}
+
+{% block title %}
+    <title>Gestione Ruoli</title>
+{% endblock %}
+
+{% block toolbar %}
+    <h1>Gestione Ruoli</h1>
+{% endblock %}
+
+{% block content %}
+
+    {% import 'App\\Admin\\AlertMacro.twig' as alert %}
+
+    {% if success %}
+        {{ alert.alert('success', "Operazione Completata") }}
+    {% endif %}
+
+    {% if exception != null %}
+        {{ alert.exceptionAlert(exception.message, exception.traceString) }}
+    {% endif %}
+
+    <form method="POST" class="pure-form pure-form-aligned"
+          action="{% if role.id>0 %}{{ path('admin.roles.update', {id: role.id}) }}{% else %}{{ path('admin.roles.insert') }}{% endif %}">
+        {#action="/print_post.php">#}
+
+
+        <div class="pure-u-1">
+
+            <legend>Informazioni Ruolo</legend>
+
+            {% if role.id > 0 %}
+                <div class="pure-control-group">
+                    <label>Id</label>
+                    <input type="text" value="{{ role.id }}" id="id" disabled>
+                </div>
+            {% endif %}
+
+            <div class="pure-control-group">
+                <label>Nome</label>
+                <input type="text" value="{{ role.name }}" name="name">
+            </div>
+
+            <div class="pure-control-group">
+                <label>Descrizione</label>
+                <input type="text" value="{{ role.description }}" name="description">
+            </div>
+
+            <div class="pure-control-group">
+                <label>  </label>
+                <button type="submit" class="pure-button pure-button-primary" id="save-all" style="width: 185px;">Salva Tutto</button>
+            </div>
+
+        </div>
+
+        <div class="pure-u-23-24" style="padding: 15px;">
+
+            <legend>Permessi Ruolo</legend>
+
+            <table class="pure-table pure-table-striped" style="width: 90%; margin: auto;">
+
+                <thead>
+                <tr>
+                    <th>Modulo</th>
+                    <th>Descrizione</th>
+                    <th>Autorizzazione</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for module in modules %}
+                    <tr>
+                        <td>{{ module.name }}</td>
+                        <td>{{ module.description }}</td>
+                        <td>
+                            <input type="checkbox" name="modules[{{ module.id }}]" value="1"
+                                   {% if role in module.getAllowedRoles() %}checked{% endif %}>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </form>
+
+{% endblock %}
+
+{% block tail %}
+
+    {% include "App\\Admin\\ErrorDialog.twig" %}
+
+{% endblock %}

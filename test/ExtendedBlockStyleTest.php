@@ -18,12 +18,14 @@
 namespace test;
 
 
+use Core\ExtendedBlockStyle;
+
 class ExtendedBlockStyleTest extends \PHPUnit_Framework_TestCase {
 
     public function testStylizeHTML() {
         $html = "<h1>This is a test</h1>";
         $localcss = "some css: code;";
-        $blockstyle = new \ExtendedBlockStyle();
+        $blockstyle = new ExtendedBlockStyle();
 
         $stylized = $blockstyle->stylizeHTML($html, $localcss);
         $this->assertTrue(strpos($stylized, $html) && strpos($stylized, $localcss));

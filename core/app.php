@@ -119,6 +119,22 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), array(
 //Register Session Service
 $app->register(new \Silex\Provider\SessionServiceProvider());
 
+//$app['session.db_options'] = array(
+//    'db_table' => 'Session',
+//    'db_id_col' => 'id',
+//    'db_data_col' => 'value',
+//    'db_lifetime_col' => 'lifetime',
+//    'db_time_col' => 'time'
+//);
+//
+//$app['session.storage.handler'] = $app->share(function () use ($app) {
+//    return new \Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler(
+//        $app['em']->getConnection()->getWrappedConnection(),
+//        $app['session.db_options'],
+//        $app['session.storage.options']
+//    );
+//});
+
 //Routes definition
 
 $app->get('/login', function (Request $request) use ($app) {

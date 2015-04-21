@@ -8,9 +8,8 @@ $baseDir = dirname($vendorDir);
 return array(
     $vendorDir . '/phpunit/php-text-template',
     $vendorDir . '/phpunit/php-timer',
-    $vendorDir . '/phpunit/php-file-iterator',
-    $vendorDir . '/phpunit/dbunit',
-    $vendorDir . '/symfony/yaml',
     $vendorDir . '/phpunit/phpunit-story',
     $vendorDir . '/phpunit/php-invoker',
+    $vendorDir . '/phpunit/dbunit',
+    $vendorDir . '/symfony/yaml',
 );

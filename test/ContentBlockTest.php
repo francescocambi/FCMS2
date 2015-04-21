@@ -59,7 +59,7 @@ class ContentBlockTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testGetHTML() {
-        $this->contentblockinst->setBlockStyle(new CenteredBlockStyle());
+        $this->contentblockinst->setBlockStyle(new \Core\CenteredBlockStyle());
         $this->assertTrue(strpos($this->contentblockinst->getHTML(null), $this->htmlcontent) >= 0);
     }
 

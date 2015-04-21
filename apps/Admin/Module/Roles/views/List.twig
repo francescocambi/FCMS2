@@ -2,11 +2,11 @@
 {% extends "App\\Admin\\Base.twig" %}
 
 {% block title %}
-    <title>Gestione Utenti</title>
+    <title>Gestione Ruoli</title>
 {% endblock %}
 
 {% block toolbar %}
-    <h1>Gestione Utenti</h1>
+    <h1>Gestione Ruoli</h1>
 {% endblock %}
 
 {% block content %}
@@ -14,45 +14,29 @@
         <thead>
         <tr style="font-size: 1.1em;">
             <th>ID</th>
-            <th>Username</th>
-            <th>Nome e Cognome</th>
-            <th>Abilitato</th>
-            <th>Valido (Scadenza)</th>
-            <th>Valido (Scadenza Credenziali)</th>
+            <th>Nome</th>
+            <th>Descrizione</th>
             <th></th>
         </tr>
         </thead>
 
         <tbody>
 
-        {% macro presentBooleanValue(val) %}
-            {% if val %}
-            <i class="fa fa-check"></i>
-            {% else %}
-            <i class="fa fa-times"></i>
-            {% endif %}
-        {% endmacro %}
-
-        {% import _self as listView %}
-
-        {% for user in users %}
+        {% for role in roles %}
             <tr>
-                <td class="idcell">{{ user.id }}</td>
-                <td>{{ user.username|escape }}</td>
-                <td>{{ user.name|escape }} {{ user.surname|escape }}</td>
-                <td style="text-align:center;">{{ listView.presentBooleanValue(user.isEnabled()) }}</td>
-                <td style="text-align:center;">{{ listView.presentBooleanValue(user.isAccountNonExpired()) }}</td>
-                <td style="text-align:center;">{{ listView.presentBooleanValue(user.isCredentialsNonExpired()) }}</td>
+                <td class="idcell">{{ role.id }}</td>
+                <td>{{ role.name|escape }}</td>
+                <td>{{ role.description|escape }}</td>
                 <td>
-                    <a href="{{ path('admin.users.edit', {id: user.id}) }}"><i class="fa fa-pencil-square fa-lg"></i></a>
-                    <a class="deluser delete"><i class="fa fa-minus-square fa-lg"></i></a>
+                    <a href="{{ path('admin.roles.edit', {id: role.id}) }}"><i class="fa fa-pencil-square fa-lg"></i></a>
+                    <a class="delete"><i class="fa fa-minus-square fa-lg"></i></a>
                 </td>
             </tr>
         {% endfor %}
 
         <tr>
-            <td colspan="7" style="text-align: center;">
-                <a href="{{ path('admin.users.editNew') }}"><i class="fa fa-plus-square fa-2x"></i></a>
+            <td colspan="4" style="text-align: center;">
+                <a href="{{ path('admin.roles.editNew') }}"><i class="fa fa-plus-square fa-2x"></i></a>
             </td>
         </tr>
 
@@ -65,7 +49,7 @@
     {% include "App\\Admin\\ErrorDialog.twig" %}
 
     <script>
-        $(".deluser").click(function(event) {
+        $(".delete").click(function(event) {
             var id = $(event.target).parent().parent().parent().find("*:nth-child(1)").text();
             var name = $(event.target).parent().parent().parent().find("*:nth-child(2)").text();
             $("#dcd-objname").text(name);

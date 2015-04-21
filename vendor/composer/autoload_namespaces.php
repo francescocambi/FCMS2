@@ -21,6 +21,7 @@ return array(
     'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),
     'Symfony\\Component\\Config\\' => array($vendorDir . '/symfony/config'),
     'Symfony\\Bridge\\Twig\\' => array($vendorDir . '/symfony/twig-bridge'),
+    'Sunra\\PhpSimple\\HtmlDomParser' => array($vendorDir . '/sunra/php-simple-html-dom-parser/Src'),
     'Silex' => array($vendorDir . '/silex/silex/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log'),
     'Prophecy\\' => array($vendorDir . '/phpspec/prophecy/src'),

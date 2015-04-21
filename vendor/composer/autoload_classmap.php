@@ -6,9 +6,9 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'File_Iterator' => $vendorDir . '/phpunit/php-file-iterator/File/Iterator.php',
-    'File_Iterator_Facade' => $vendorDir . '/phpunit/php-file-iterator/File/Iterator/Facade.php',
-    'File_Iterator_Factory' => $vendorDir . '/phpunit/php-file-iterator/File/Iterator/Factory.php',
+    'File_Iterator' => $vendorDir . '/phpunit/php-file-iterator/src/Iterator.php',
+    'File_Iterator_Facade' => $vendorDir . '/phpunit/php-file-iterator/src/Facade.php',
+    'File_Iterator_Factory' => $vendorDir . '/phpunit/php-file-iterator/src/Factory.php',
     'PHPUnit_Exception' => $vendorDir . '/phpunit/phpunit/src/Exception.php',
     'PHPUnit_Extensions_Database_AbstractTester' => $vendorDir . '/phpunit/dbunit/PHPUnit/Extensions/Database/AbstractTester.php',
     'PHPUnit_Extensions_Database_Constraint_DataSetIsEqual' => $vendorDir . '/phpunit/dbunit/PHPUnit/Extensions/Database/Constraint/DataSetIsEqual.php',
@@ -36,6 +36,7 @@ return array(
     'PHPUnit_Extensions_Database_DataSet_AbstractTable' => $vendorDir . '/phpunit/dbunit/PHPUnit/Extensions/Database/DataSet/AbstractTable.php',
     'PHPUnit_Extensions_Database_DataSet_AbstractTableMetaData' => $vendorDir . '/phpunit/dbunit/PHPUnit/Extensions/Database/DataSet/AbstractTableMetaData.php',
     'PHPUnit_Extensions_Database_DataSet_AbstractXmlDataSet' => $vendorDir . '/phpunit/dbunit/PHPUnit/Extensions/Database/DataSet/AbstractXmlDataSet.php',
+    'PHPUnit_Extensions_Database_DataSet_ArrayDataSet' => $vendorDir . '/phpunit/dbunit/PHPUnit/Extensions/Database/DataSet/ArrayDataSet.php',
     'PHPUnit_Extensions_Database_DataSet_CompositeDataSet' => $vendorDir . '/phpunit/dbunit/PHPUnit/Extensions/Database/DataSet/CompositeDataSet.php',
     'PHPUnit_Extensions_Database_DataSet_CsvDataSet' => $vendorDir . '/phpunit/dbunit/PHPUnit/Extensions/Database/DataSet/CsvDataSet.php',
     'PHPUnit_Extensions_Database_DataSet_DataSetFilter' => $vendorDir . '/phpunit/dbunit/PHPUnit/Extensions/Database/DataSet/DataSetFilter.php',
@@ -396,6 +397,7 @@ return array(
     'PHP_Token_HALT_COMPILER' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_IF' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_IMPLEMENTS' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
+    'PHP_Token_IN' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_INC' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_INCLUDE' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_INCLUDE_ONCE' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
@@ -412,6 +414,7 @@ return array(
     'PHP_Token_IS_NOT_IDENTICAL' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_IS_SMALLER_OR_EQUAL' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_Includes' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
+    'PHP_Token_JOIN' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_LAMBDA_ARROW' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_LAMBDA_CP' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_LAMBDA_OP' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',

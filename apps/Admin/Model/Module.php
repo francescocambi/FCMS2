@@ -50,11 +50,27 @@ class Module {
     protected $routeName;
 
     /**
+     * @var int
+     * @Column(type="integer", nullable=true)
+     */
+    protected $menuOrder;
+
+    /**
+     * @var string
+     * @Column(type="string", nullable=true)
+     */
+    protected $menuIconCharacter;
+
+    /**
      * @var ArrayCollection
      * @ManyToMany(targetEntity="App\Admin\Model\Role", inversedBy="modules", fetch="EAGER")
      * @JoinTable(name="admin_module_role")
      */
     protected $allowedRoles;
+
+    public function __construct() {
+        $this->allowedRoles = new ArrayCollection();
+    }
 
     /**
      * @return string
@@ -129,10 +145,62 @@ class Module {
     }
 
     /**
-     * @return Role[]
+     * @return ArrayCollection
      */
     public function getAllowedRoles() {
-        return $this->allowedRoles->toArray();
+        return $this->allowedRoles;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMenuIconCharacter()
+    {
+        return $this->menuIconCharacter;
+    }
+
+    /**
+     * @param string $menuIconCharacter
+     */
+    public function setMenuIconCharacter($menuIconCharacter)
+    {
+        $this->menuIconCharacter = $menuIconCharacter;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMenuOrder()
+    {
+        return $this->menuOrder;
+    }
+
+    /**
+     * @param mixed $menuOrder
+     */
+    public function setMenuOrder($menuOrder)
+    {
+        $this->menuOrder = $menuOrder;
+    }
+
+    /**
+     * Allow $role access to this module
+     *
+     * @param Role $role
+     */
+    public function addAllowedRole(Role $role) {
+        $this->allowedRoles->add($role);
+        $role->getModules()->add($this);
+    }
+
+    /**
+     * Remove $role access to this module
+     *
+     * @param Role $role
+     */
+    public function removeAllowedRole(Role $role) {
+        $this->allowedRoles->removeElement($role);
+        $role->getModules()->removeElement($this);
     }
 
 } 

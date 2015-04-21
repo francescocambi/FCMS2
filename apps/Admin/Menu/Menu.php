@@ -53,7 +53,7 @@ class Menu {
             ->innerJoin('mod.allowedRoles', 'role')
             ->where(
                 $qb->expr()->in('role.name', $userRolesString)
-            )->getQuery();
+            )->orderBy($qb->expr()->asc('mod.menuOrder'))->getQuery();
 
         /** @var Module[] $modules */
         $modules = $query->execute();
