@@ -23,13 +23,16 @@ class CssEditorControllerProvider implements ControllerProviderInterface
 
 
         $controllers->match('/', '\App\Admin\Module\CssEditor\CssEditorController::render')
-            ->bind("admin.csseditor");
+            ->bind("admin.csseditor")
+            ->before($app['moduleAuthorization.check']('CssEditor', 'appAccess'));
 
         $controllers->match('/fileContent', '\App\Admin\Module\CssEditor\CssEditorController::getFileContent')
-            ->bind("admin.csseditor.getFileContent");
+            ->bind("admin.csseditor.getFileContent")
+            ->before($app['moduleAuthorization.check']('CssEditor', 'getFileContent'));
 
         $controllers->post('/saveFile', '\App\Admin\Module\CssEditor\CssEditorController::saveFile')
-            ->bind("admin.csseditor.saveFile");
+            ->bind("admin.csseditor.saveFile")
+            ->before($app['moduleAuthorization.check']('CssEditor', 'saveFile'));
 
 
         return $controllers;

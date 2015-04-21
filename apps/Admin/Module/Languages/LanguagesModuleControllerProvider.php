@@ -22,28 +22,32 @@ class LanguagesModuleControllerProvider implements ControllerProviderInterface {
         $controllers = $app['controllers_factory'];
 
         $controllers->match('/', '\App\Admin\Module\Languages\LanguagesController::listLanguages')
-            ->bind("admin.languages.list");
+            ->bind("admin.languages.list")
+            ->before($app['moduleAuthorization.check']('Languages', 'listLanguages'));
 
         $controllers->match('/edit', '\App\Admin\Module\Languages\EditorController::renderEditor')
-            ->bind("admin.languages.editNew");
+            ->bind("admin.languages.editNew")
+            ->before($app['moduleAuthorization.check']('Languages', 'editNewLanguage'));
 
         $controllers->match('/{id}/edit', '\App\Admin\Module\Languages\EditorController::renderEditor')
-            ->bind("admin.languages.edit");
+            ->bind("admin.languages.edit")
+            ->before($app['moduleAuthorization.check']('Languages', 'editLanguage'));
 
         $controllers->match('/{id}/delete', '\App\Admin\Module\Languages\LanguagesController::deleteLanguage')
-            ->bind("admin.languages.delete");
+            ->bind("admin.languages.delete")
+            ->before($app['moduleAuthorization.check']('Languages', 'deleteLanguage'));
 
         $controllers->match('/checkCode', '\App\Admin\Module\Languages\LanguagesController::checkCodeUnique')
-            ->bind("admin.languages.checkCode");
+            ->bind("admin.languages.checkCode")
+            ->before($app['moduleAuthorization.check']('Languages', 'checkCode'));
 
         $controllers->match('/save', '\App\Admin\Module\Languages\EditorController::saveLanguage')
-            ->bind("admin.languages.insert");
+            ->bind("admin.languages.insert")
+            ->before($app['moduleAuthorization.check']('Languages', 'insertLanguage'));
 
         $controllers->match('/{id}/save', '\App\Admin\Module\Languages\EditorController::saveLanguage')
-            ->bind("admin.languages.update");
-
-//        $controllers->match('/{id}', '\App\Admin\Module\Blocks\BlocksController::getBlock')
-//            ->bind("admin.language.getBlock");
+            ->bind("admin.languages.update")
+            ->before($app['moduleAuthorization.check']('Languages', 'updateLanguage'));
 
         return $controllers;
 

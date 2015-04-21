@@ -26,22 +26,28 @@ class MenuModuleControllerProvider implements ControllerProviderInterface {
 
 
         $controllers->match('/', '\App\Admin\Module\Menu\MenuController::listMenu')
-            ->bind("admin.menu.listMenu");
+            ->bind("admin.menu.listMenu")
+            ->before($app['moduleAuthorization.check']('Menu', 'listMenu'));
 
         $controllers->match('/edit', '\App\Admin\Module\Menu\EditorController::renderEditor')
-            ->bind("admin.menu.editNew");
+            ->bind("admin.menu.editNew")
+            ->before($app['moduleAuthorization.check']('Menu', 'editNewMenu'));
 
         $controllers->match('/{id}/edit', '\App\Admin\Module\Menu\EditorController::renderEditor')
-            ->bind("admin.menu.edit");
+            ->bind("admin.menu.edit")
+            ->before($app['moduleAuthorization.check']('Menu', 'editMenu'));
 
         $controllers->match('/{id}/delete', '\App\Admin\Module\Menu\MenuController::deleteMenu')
-            ->bind("admin.menu.deleteMenu");
+            ->bind("admin.menu.deleteMenu")
+            ->before($app['moduleAuthorization.check']('Menu', 'deleteMenu'));
 
         $controllers->match('/save', '\App\Admin\Module\Menu\EditorController::insertMenu')
-            ->bind("admin.menu.insertMenu");
+            ->bind("admin.menu.insertMenu")
+            ->before($app['moduleAuthorization.check']('Menu', 'insertMenu'));
 
         $controllers->match('/{id}/save', '\App\Admin\Module\Menu\EditorController::updateMenu')
-            ->bind("admin.menu.updateMenu");
+            ->bind("admin.menu.updateMenu")
+            ->before($app['moduleAuthorization.check']('Menu', 'updateMenu'));
 
 
         return $controllers;

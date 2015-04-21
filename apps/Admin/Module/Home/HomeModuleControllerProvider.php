@@ -23,7 +23,8 @@ class HomeModuleControllerProvider implements ControllerProviderInterface
 
 
         $controllers->get('/', '\App\Admin\Module\Home\HomeController::render')
-        ->bind("admin.home");
+            ->bind("admin.home")
+            ->before($app['moduleAuthorization.check']('Home', 'home'));
 
 
         return $controllers;

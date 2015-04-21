@@ -2319,13 +2319,13 @@
             "version": "1.0.2",
             "source": {
                 "type": "git",
-                "url": "git@github.com:sebastianbergmann/phpunit-story.git",
-                "reference": "092d49c13ecb3becf89717988916c53db92d096e"
+                "url": "https://github.com/phpunit/phpunit-story.git",
+                "reference": "b8579ada6ede4fd2f4b49e8549a8a176606cae68"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-story/zipball/092d49c13ecb3becf89717988916c53db92d096e",
-                "reference": "092d49c13ecb3becf89717988916c53db92d096e",
+                "url": "https://api.github.com/repos/phpunit/phpunit-story/zipball/b8579ada6ede4fd2f4b49e8549a8a176606cae68",
+                "reference": "b8579ada6ede4fd2f4b49e8549a8a176606cae68",
                 "shasum": ""
             },
             "require": {
