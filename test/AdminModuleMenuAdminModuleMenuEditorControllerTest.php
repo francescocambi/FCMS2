@@ -10,7 +10,7 @@ namespace  ;
 
 use App\Admin\Module\Menu\EditorController;
 
-class EditorControllerTest extends \PHPUnit_Framework_TestCase {
+class AdminModuleMenuEditorControllerTest extends \PHPUnit_Framework_TestCase {
 
     public function testProcessMenu() {
 
