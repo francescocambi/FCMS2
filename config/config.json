@@ -10,13 +10,13 @@
         "driver": "pdo_mysql",
         "user": "root",
         "password": "mysql",
-        "dbname": "framework_doc"
+        "dbname": ""
     },
     "BlockStyles": [
         { "classname": "CenteredBlockStyle", "description": "Centrato" },
         { "classname": "ExtendedBlockStyle", "description": "Esteso" }
     ],
-    "admin.FileManager.folderPath": "/Users/Francesco/PhpStormProjects/FCMS2/resources/uploads",
+    "admin.FileManager.folderPath": "/resources/uploads",
     "admin.FileManager.folderURL": "/resources/uploads/",
     "Site.defaultLanguageCode": "it",
     "Site.homePageNamePrefix": "home_",

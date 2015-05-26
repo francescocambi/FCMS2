@@ -54,8 +54,8 @@ function CustomRoxyFileBrowser(field_name) {
   roxyFileman += '&integration=custom&dialogid=roxyCustomPanel';
   console.log(roxyFileman);
   
-  $('#roxyCustomPanel').children().first().attr("src",roxyFileman);
-  $('#roxyCustomPanel').dialog({
+  $('#fileManagerDialog').children().first().attr("src",roxyFileman);
+  $('#fileManagerDialog').dialog({
   	modal:true,
   	width:875,
   	height:600,
@@ -88,39 +88,6 @@ $(document).ready(function() {
 
 });
 
-//Azione pulsante "Nuovo Url"
-$("#newurl").click(function () {
-	$("#urlrowtpl").clone(true).insertBefore($("#newurlrow")).attr("id","").show().addClass("urlitem");
-});
-
-//Azione pulsante Modifica Url
-$(".modurl").click(function (event) {
-	var datafield = $(event.target).parent().prev();
-	var datainput = $(event.target).parent().next();
-	if (datafield.attr("mode") == 1) {
-		//In corso di modifica
-		datafield.attr("mode", 0);
-		var url = datafield.children().get(0).value;
-		datafield.children().remove();
-		datafield.text(url);
-		datainput.val(url);
-		$(event.target).parent().children().css('color', 'black');
-		
-	} else {
-		//Vuole avviare modifica
-		datafield.attr("mode", 1);
-		var url = datafield.text();
-		datafield.text(""); //toglie l'url
-		$("<input type=\"text\" value=\""+url+"\">").appendTo(datafield); //mette casella testo con url
-		$(event.target).parent().children().css('color', '#0078e7'); //button diventa primary
-	}
-	
-});
-
-//Azione pulsante elimina url
-$(".delurl").click(function (event) {
-	$(event.target).parent().parent().remove();
-});
 
 //Azione pulsante rimuovi blocco
 $(".delblock").click(function delblock(event) {

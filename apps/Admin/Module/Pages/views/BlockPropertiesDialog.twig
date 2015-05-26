@@ -1,0 +1,61 @@
+<div id="blockpropdialog" style="font-size: 0.9em;">
+    <form action="#" class="pure-form pure-form-aligned" id="bpd-form">
+        <fieldset>
+
+            <legend>Propriet&agrave; Blocco</legend>
+
+            <div class="pure-control-group">
+                <label>Nome</label>
+                <input type="text" id="bpd-blockname">
+            </div>
+
+            <div class="pure-control-group">
+                <label>Descrizione</label>
+                <textarea id="bpd-blockdescription"></textarea>
+            </div>
+
+            <div class="pure-control-group">
+                <label>Stile Blocco</label>
+                <select id="bpd-blockstyle">
+                    {% for style in styles %}
+                        <option value="{{ style.classname }}">{{ style.description }}</option>
+                    {% endfor %}
+                </select>
+            </div><br>
+
+            <legend>Sfondo Blocco</legend>
+
+            <div class="pure-control-group">
+                <label>URL Immagine</label>
+                <input type="text" id="bpd-txtbckurl">
+                <button type="button" class="pure-button openfileman">Sfoglia</button>
+            </div>
+
+            <div class="pure-control-group">
+                <label>Colore</label>
+                <input type="text" id="bpd-txtbckred" size="3" placeholder="Red">
+                <input type="text" id="bpd-txtbckgreen" size="3" placeholder="Green">
+                <input type="text" id="bpd-txtbckblue" size="3" placeholder="Blue">
+                <input type="text" id="bpd-txtbckopacity" size="3" placeholder="Opacity">
+            </div>
+
+            <div class="pure-control-group">
+                <label>Ripetizione Immagine</label>
+                <table class="pure-table pure-table-striped" style="display: inline-table;">
+                    <tr><td><input type="checkbox" id="bpd-chkbckrepeatx"></td><td>Orizzontale</td></tr>
+                    <tr><td><input type="checkbox" id="bpd-chkbckrepeaty"></td><td>Verticale </td></tr>
+                </table>
+            </div>
+
+            <div class="pure-control-group" style="clear: both;">
+                <label>Dimensioni</label>
+                <table class="pure-table pure-table-striped" style="display: inline-table;">
+                    <tr><td><input type="radio" id="bpd-bcksizecover" name="bpd-bcksize" value="cover"></td><td>Esteso 100%</td></tr>
+                    <tr><td><input type="radio" id="bpd-bcksizecontain" name="bpd-bcksize" value="contain"></td><td>Esteso in proporzione</td></tr>
+                    <tr><td><input type="radio" id="bpd-bcksizeinit" name="bpd-bcksize" value="" checked></td><td>Dimensioni reali</td></tr>
+                </table>
+            </div>
+        </fieldset>
+        <button type="button" class="pure-button pure-button-primary" id="bpd-btnsave" style="float: right;">Salva</button>
+    </form>
+</div>

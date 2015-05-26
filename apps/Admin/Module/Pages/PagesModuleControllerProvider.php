@@ -65,6 +65,17 @@ class PagesModuleControllerProvider implements ControllerProviderInterface {
             ->bind("admin.pages.updatePage")
             ->before($app['moduleAuthorization.check']('Pages', 'updatePage'));
 
+        $controllers->match('/linkRefactoringPreview', '\App\Admin\Module\Pages\LinkAssistantController::linkRefactoringPreview')
+            ->bind("admin.pages.linkRefactoringPreview")
+            ->before($app['moduleAuthorization.check']('Pages', 'linkRefactoring'));
+
+        $controllers->match('/linkRefactoring', '\App\Admin\Module\Pages\LinkAssistantController::linkRefactoring')
+            ->bind("admin.pages.linkRefactoring")
+            ->before($app['moduleAuthorization.check']('Pages', 'linkRefactoring'));
+
+        $controllers->match('/checkUrlUnique', '\App\Admin\Module\Pages\PagesController::checkUrlUnique')
+            ->bind("admin.pages.checkUrlUnique")
+            ->before($app['moduleAuthorization.check']('Pages', 'checkUrlUnique'));
 
         return $controllers;
     }

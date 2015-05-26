@@ -157,10 +157,29 @@ class PagesController {
         }
 
         return $app['admin.message_composer']->dataMessage(array(
-            'unique' => (is_null($page) || $page->getId() == $id)
+            'unique' => (is_null($page) or $page->getId() == $id)
         ));
     }
 
+    public function checkUrlUnique(Application $app, Request $request) {
+        $url_string = $request->get('url');
+
+        if (strlen($url_string) == 0) {
+            return new Response($app['admin.message_composer']->failureMessage("Url argument not provided."), 400);
+        }
+
+        $id = $request->get('pageid') or -1;
+        try {
+            $url = $app['em']->getRepository('\Model\Url')->findOneBy(array("url" => $url_string));
+        } catch (\Exception $e) {
+            $app['monolog']->addError($e->getMessage());
+            return new Response($app['admin.message_composer']->exceptionMessage($e), 500);
+        }
+
+        return $app['admin.message_composer']->dataMessage(array(
+            'unique' => (is_null($url) or $url->getPage()->getId() == $id)
+        ));
+    }
     
 
 } 

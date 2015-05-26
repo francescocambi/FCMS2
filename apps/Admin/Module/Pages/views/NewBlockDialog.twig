@@ -1,0 +1,54 @@
+<div id="newblockmodal" style="height: 400px; width: 600px; font-size: 0.9em;">
+    <fieldset class="pure-form" style="text-align: center; margin-bottom: 10px;" id="nbm-tabcontrol">
+        <button type="button" id="nbm-new" class="pure-button pure-button-primary" onclick="nbmtabcontrol(this)">Nuovo Blocco</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" id="nbm-exist" class="pure-button" onclick="nbmtabcontrol(this)">Blocco Esistente</button>
+    </fieldset>
+    <div id="nbm-newblockscreen" class="pure-form pure-form-aligned">
+        <form action="#" id="nbm-newblockform">
+            <fieldset>
+                <div class="pure-control-group">
+                    <label>Nome</label>
+                    <input type="text" id="nbm-name">
+                </div>
+                <div class="pure-control-group">
+                    <label>Descrizione</label>
+                    <textarea id="nbm-description"></textarea>
+                </div>
+                <div class="pure-control-group">
+                    <label>Stile Blocco</label>
+                    <select id="nbm-style">
+                        {% for style in styles %}
+                            <option value="{{ style.classname }}">{{ style.description }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </fieldset>
+        </form>
+        <button type="button" id="nbm-addnew" class="pure-button pure-button-primary" style="float: right;">Aggiungi</button>
+    </div>
+    <div id="nbm-insertblockscreen" style="display: none;">
+        <form action="#" id="nbm-insertblockform">
+            <div style="max-height: 350px; overflow: scroll;">
+                <table class="pure-table pure-table-striped center">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Nome</th>
+                        <th>Stile</th>
+                    </tr>
+                    </thead>
+                    {% for block in blocks %}
+                        <tr>
+                            <td><input class="nbm-blockcheck" type="checkbox" value="{{ block.id }}"></td>
+                            <td>{{ block.name }}</td>
+                            <td>{{ block.blockStyleClassName }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <button type="button" id="nbm-addexist" class="pure-button pure-button-primary" style="float: right;">Aggiungi</button>
+        </form>
+
+    </div>
+</div>

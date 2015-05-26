@@ -92,7 +92,7 @@ class EntityManagerFactory
 
         $em = EntityManager::create(array(
             'driver' => 'pdo_sqlite',
-            'path' => 'framework_doc.sqlite'
+            'path' => '/Users/Francesco/PhpStormProjects/FCMS2/framework_doc.sqlite'
         ), $config);
 
         return $em;

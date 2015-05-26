@@ -34,8 +34,8 @@ if ($app['config']->get('Application.Development')) {
 
 // Initializing Entity Manager Doctrine ORM
 $app['em'] = $app->share(function () use ($app, $applicationMode) {
-//    return initializeEntityManager("./", $app['config']->get('Database'), $applicationMode);
-    return \Core\EntityManagerFactory::initializeDevelopmentEntityManager($app);
+    return \Core\EntityManagerFactory::initializeEntityManager($app, $app['config']->get('Database'), $applicationMode);
+//    return \Core\EntityManagerFactory::initializeDevelopmentEntityManager($app);
 });
 
 $monologConf = $app['config']->get('Log');
