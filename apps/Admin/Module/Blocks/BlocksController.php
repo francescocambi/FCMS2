@@ -57,7 +57,20 @@ class BlocksController {
     public function getBlock(Application $app, $id) {
 
         try {
+            //Try to find block as contentblock
             $requestedBlock = $app['em']->find('Model\ContentBlock', $id);
+            //If can't find it search it as a general block
+            if (is_null($requestedBlock)) {
+                $requestedBlock = $app['em']->find('Model\Block', $id);
+                //That isn't editable
+                $editable = false;
+                $content = $requestedBlock->getHTML($app);
+            } else {
+                //Content blocks are editable
+                $editable = true;
+                $content = $requestedBlock->getContent();
+            }
+
         } catch (\Exception $e) {
             $app['monolog']->addError($e->getMessage());
             return new Response($app['admin.message_composer']->exceptionMessage($e), 500);
@@ -67,7 +80,6 @@ class BlocksController {
             return new Response($app['admin.message_composer']->failureMessage("Block not found."), 404);
         }
 
-//        $mapping = array(
          $data = array(
             "ID" => $requestedBlock->getId(),
             "NAME" => $requestedBlock->getName(),
@@ -81,20 +93,9 @@ class BlocksController {
             "BG_REPEATX" => $requestedBlock->getBgrepeatx(),
             "BG_REPEATY" => $requestedBlock->getBgrepeaty(),
             "BG_SIZE" => $requestedBlock->getBgsize(),
-            "CONTENT" => $requestedBlock->getContent()
+            "CONTENT" => $content,
+             "EDITABLE" => $editable
         );
-
-        //Encode object to JSON and print
-
-//        $result_string = "{";
-//
-//        foreach ($mapping as $key => $value) {
-//            $result_string .= "\t".json_encode($key).": ".json_encode($value).",\n";
-//        }
-//        $result_string = substr($result_string, 0, strlen($result_string)-2);
-//        $result_string .= "\n}";
-
-//        return $result_string;
 
         return $app['admin.message_composer']->dataMessage($data);
     }

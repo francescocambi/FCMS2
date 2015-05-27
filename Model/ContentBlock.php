@@ -40,6 +40,10 @@ class ContentBlock extends Block {
 		return $this->getBlockStyle()->stylizeHTML($this->content, $this->getBackgroundCSS());
 		
 	}
+
+    public function isEditable() {
+        return true;
+    }
 	
 }
 

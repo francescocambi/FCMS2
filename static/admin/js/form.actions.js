@@ -107,18 +107,26 @@ $("#newblock").click(function () {
 //Funzione aggiunta blocco
 //Il paramentro indica se sul nuovo blocco deve essere
 //attivato tinymce oppure no
-function newblock(editor_ready) {
+function newblock(editable, editor_ready) {
 	var cloned = $('#editormodel').clone(true).appendTo("#blocks").attr("id","");
 	cloned.show();
-	var textarea = cloned.children().filter(".blockcontent");
-	textarea.attr('id','tmceeditor'+editor_idx++);
-	if (editor_ready) {
-		textarea.show();
-		tinymce.execCommand('mceAddEditor', false, textarea.attr("id"));
-	} else {
-		var contentdiv = $('<div class="blockcontentdiv"></div>');
-		cloned.children().first().after(contentdiv);
-	} 
+    if (editable) {
+        //Prepare textarea
+        var textarea = cloned.children().filter(".blockcontent");
+        textarea.attr('id', 'tmceeditor' + editor_idx++);
+    } else {
+        //Not editable block
+        //so removes edit and save buttons
+        cloned.find('.editable-buttons').remove();
+    }
+
+    if (editable && editor_ready) {
+        textarea.show();
+        tinymce.execCommand('mceAddEditor', false, textarea.attr("id"));
+    } else {
+        var contentdiv = $('<div class="blockcontentdiv"></div>');
+        cloned.children().first().after(contentdiv);
+    }
 	
 	return cloned;
 }
@@ -198,7 +206,7 @@ $("#nbm-addnew").click(function() {
             return;
         }
 
-        var cloned = newblock(true);
+        var cloned = newblock(true, true);
         cloned.find(".modblock").hide();
         cloned.children().first().children().filter("input").each(function(index, element) {
             if ($(element).attr("name") == "block[name][]") {
@@ -218,13 +226,17 @@ $("#nbm-addnew").click(function() {
 //Azione pulsante aggiunta blocco esistente
 $("#nbm-addexist").click(function() {
     $(".nbm-blockcheck:checked").each(function (index, element) {
-        var cloned = newblock(false);
-        cloned.find(".applyblock").hide();
         var blockid = $(element).val();
-        cloned.children().first().children().filter('[name="block[id][]"]').val(blockid);
         $.getJSON('/admin/blocks/'+blockid, function(response) {
             if (response.status) {
                 var data = response.data;
+                //Creates block element
+                var cloned = newblock(data.EDITABLE, false);
+                if (data.EDITABLE)
+                    cloned.find(".applyblock").hide();
+                //Sets block id
+                cloned.find('input[name="block[id][]"]').val(blockid);
+                //Sets other block data
                 cloned.find('[name="block[id][]"]').val(data.ID);
                 cloned.find('[name="block[name][]"]').val(data.NAME);
                 cloned.find('[name="block[description][]"]').val(data.DESCRIPTION);
@@ -240,37 +252,37 @@ $("#nbm-addexist").click(function() {
                 cloned.find('[name="block[bcksize][]"]').val(data.BG_SIZE);
             }
         });
-
     });
+    // Reset add block form and dialog
     $("#nbm-insertblockform")[0].reset();
     $("#newblockmodal").dialog("close");
 });
 
 //Azione pulsante modifica blocco
 $(".modblock").click(function(event) {
-	var block = $(event.target).parent().parent();
-	var contentdiv = $(event.target).parent().siblings().filter(".blockcontentdiv");
-	var textarea = block.children().filter(".blockcontent");
+	var block = $(event.target).parents('.blockeditor').first();
+	var contentdiv = block.children(".blockcontentdiv");
+	var textarea = block.children(".blockcontent");
 	textarea.val(contentdiv.html());
 	contentdiv.remove();
 	textarea.show();
 	tinyMCE.execCommand('mceAddEditor', false, textarea.attr("id"));
 	//Nasconde pulsanti
-	block.children().filter(".blockbuttons").children().filter(".modblock").hide();
-	block.children().filter(".blockbuttons").children().filter(".applyblock").show();
+    block.find(".modblock").hide();
+    block.find(".applyblock").show();
 });
 
 //Azione pulsante salva blocco
 $(".applyblock").click(function(event) {
-	var block = $(event.target).parent().parent();
-	var contentinput = $(event.target).parent().siblings().filter(".blockcontent");
+    var block = $(event.target).parents('.blockeditor').first();
+    var contentinput = block.children('.blockcontent');
 	tinyMCE.execCommand('mceRemoveEditor', false, contentinput.attr("id"));
 	var contentdiv = $('<div class="blockcontentdiv"></div>');
 	contentdiv.html(contentinput.val());
 	contentinput.hide().after(contentdiv);
 	//Nasconde pulsanti
-	block.children().filter(".blockbuttons").children().filter(".modblock").show();
-	block.children().filter(".blockbuttons").children().filter(".applyblock").hide();
+    block.find('.modblock').show();
+    block.find('.applyblock').hide();
 });
 
 //Azione pulsante apertura file manager sul server

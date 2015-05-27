@@ -338,6 +338,13 @@ abstract class Block {
 		return $stringcss;
 	}
 
+    /**
+     * Return true if block can be edited with the interactive editor.
+     * False otherwise.
+     * @return boolean
+     */
+    abstract public function isEditable();
+
 }
 
 ?>

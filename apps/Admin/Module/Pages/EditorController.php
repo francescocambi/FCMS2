@@ -70,15 +70,27 @@ class EditorController {
         for ($i=0;$i<count($data['block']['id']);$i++) {
             $blockid = $data['block']['id'][$i];
 
-            //If block is new and content is empty, skip this block
+            //If block is new and content is empty, skip the block
+            //Iterates over remaining blocks
             if ( !($blockid == 0 && strlen($data['block']['content'][$i]) == 0) ) {
+
+                $isContentBlock = isset($data['block']['content'][$i]) && strlen($data['block']['content'][$i]) > 0;
 
                 if ($blockid == 0) {
                     //Insert new block
                     $block = new \Model\ContentBlock();
                 } else {
                     //Update existing block
-                    $block = $em->find('Model\ContentBlock', $blockid);
+                    if ($isContentBlock)
+                        $block = $em->find('Model\ContentBlock', $blockid);
+                    else
+                        $block = $em->find('Model\Block', $blockid);
+                }
+
+                if (is_null($block)) {
+                    print("IS CONTENT BLOCK ->" . $isContentBlock . "\n");
+                    print($data['block']['content'][$i]);
+                    print("BLOCK ID -> " . $blockid);
                 }
 
                 //Sets block properties
@@ -94,7 +106,9 @@ class EditorController {
                 $block->setBgrepeaty($data['block']['bckrepeaty'][$i]);
                 $block->setBgsize($data['block']['bcksize'][$i]);
 
-                if (!is_null($data['block']['content'][$i]) && $data['block']['content'][$i] != "")
+                // If is set content field, this block is a content block
+                // If content is not set, I can work directly with block object
+                if ($isContentBlock)
                     $block->setContent($data['block']['content'][$i]);
 
                 if ($blockid == 0)

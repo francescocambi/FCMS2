@@ -33,5 +33,9 @@ class FunctionalityBlock extends Block {
         return $this->getBlockStyle()->stylizeHTML($content, $this->getBackgroundCSS());
 
 	}
+
+    public function isEditable() {
+        return false;
+    }
 	
 }

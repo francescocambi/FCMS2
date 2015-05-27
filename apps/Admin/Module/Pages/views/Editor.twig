@@ -118,6 +118,8 @@
         {% for pageblock in page.getPageBlocksArray() %}
         <div class="blockeditor">
             <fieldset class="blockdata">
+                {#<input type="hidden" name="block[type][]" value="{{ pageblock.block. }}"#}
+
                 <input type="hidden" name="block[id][]" value="{{ pageblock.block.id }}">
                 <input type="hidden" name="block[name][]" value="{{ pageblock.block.name }}">
                 <input type="hidden" name="block[description][]" value="{{ pageblock.block.description }}">
@@ -133,16 +135,22 @@
                 <input type="hidden" name="block[bcksize][]" value="{{ pageblock.block.bgsize }}">
             </fieldset>
             <div class="blockcontentdiv">
-                {{ pageblock.block.content|raw }}
+                {% if pageblock.block.isEditable %}
+                    {{ pageblock.block.content|raw }}
+                {% else %}
+                    {{ pageblock.block.getHTML(app)|raw }}
+                {% endif %}
             </div>
             <textarea id="tmceeditor{{ loop.index }}" class="blockcontent" name="block[content][]" style="display: none;"></textarea>
             <div class="blockbuttons" style="margin-top: 5px; clear: both;">
                 <button type="button" class="pure-button pure-button-primary upbutton">Su</button>
                 <button type="button" class="pure-button pure-button-primary downbutton">Giu</button>
                 <button type="button" class="pure-button pure-button-primary delblock">Elimina</button>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <button type="button" class="pure-button pure-button-primary applyblock" style="display: none;">Applica Modifiche</button>
-                <button type="button" class="pure-button pure-button-primary modblock">Modifica</button>
+                {% if pageblock.block.isEditable %}
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <button type="button" class="pure-button pure-button-primary applyblock" style="display: none;">Applica Modifiche</button>
+                    <button type="button" class="pure-button pure-button-primary modblock">Modifica</button>
+                {% endif %}
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <button type="button" class="pure-button pure-button-primary blockproperties">Propriet&agrave; Blocco</button>
             </div>
@@ -173,9 +181,11 @@
         <button type="button" class="pure-button pure-button-primary upbutton">Su</button>
         <button type="button" class="pure-button pure-button-primary downbutton">Giu</button>
         <button type="button" class="pure-button pure-button-primary delblock">Elimina</button>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <button type="button" class="pure-button pure-button-primary applyblock">Applica Modifiche</button>
-        <button type="button" class="pure-button pure-button-primary modblock">Modifica</button>
+        <span class="editable-buttons">
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" class="pure-button pure-button-primary applyblock">Applica Modifiche</button>
+            <button type="button" class="pure-button pure-button-primary modblock">Modifica</button>
+        </span>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <button type="button" class="pure-button pure-button-primary blockproperties">Propriet&agrave; Blocco</button>
     </div>
