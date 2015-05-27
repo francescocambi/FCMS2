@@ -90,7 +90,7 @@ class ContactFormController {
         $subject = $conf->subject;
         $email = $data['message'];
 
-        return mail($to, $subject, $email, impode("\r\n", $headers));
+        return mail($to, $subject, $email, implode("\r\n", $headers));
 
     }
 
