@@ -31,5 +31,11 @@
         "/Model/",
         "/plugins/ContactMe/Model/",
         "/apps/Admin/Model/"
-    ]
+    ],
+    "ContactMe.recaptcha_sitekey": "",
+    "ContactMe.recaptcha_secretkey": "",
+    "ContactMe": {
+        "site_mail": "",
+        "send_to": ""
+    }
 }
