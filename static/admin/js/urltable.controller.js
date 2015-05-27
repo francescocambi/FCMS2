@@ -6,7 +6,7 @@ var newUrlDialog = $('#newUrlDialog').dialog({
     height: 170,
     modal: true,
     buttons: {
-        "Aggiungi": newUrl,
+        "Aggiungi": insertUrl,
         Cancel: function () {
             $(this).dialog('close');
         }
@@ -20,7 +20,7 @@ var nud_urlField = newUrlDialog.find('#nud-url');
 
 newUrlDialog.find('form').on("submit", function (event) {
     event.preventDefault();
-    newUrl();
+    insertUrl();
 });
 
 //Setting up updateUrlDialog
@@ -84,34 +84,87 @@ $('.modurl').click(function (event) {
     updateUrlDialog.dialog('open');
 });
 
-function newUrl() {
-    var row = $("#urlrowtpl").clone(true)
-        .attr("id", "")
-        .addClass("urlRow")
-        .show()
-        .insertBefore($('#newurlrow'));
-    row.find('td:first').text(nud_urlField.val());
-    newUrlDialog.dialog('close');
+function insertUrl() {
+    var newUrl = nud_urlField.val();
+
+    //Check unique
+    checkUniqueUrl(newUrl, function (unique) {
+        if (!unique) {
+            alert("L'url inserito è già in uso. Inserirne un altro.");
+        } else {
+            var row = $("#urlrowtpl").clone(true)
+                .attr("id", "")
+                .addClass("urlRow")
+                .show()
+                .insertBefore($('#newurlrow'));
+            row.find('td:first').text(newUrl);
+            row.find('input[type="hidden"]').val(newUrl);
+            newUrlDialog.dialog('close');
+        }
+    });
 }
 
 function updateUrl() {
+
     var updatingRow = $('#updatingRow');
     oldUrl = updatingRow.children('td:first').text();
     newUrl = uud_urlField.val();
     var refactor = uud_refactorCheck.prop('checked');
 
-    if (refactor) {
-        //Get links list from server
-        $.getJSON('/admin/pages/linkRefactoringPreview', {oldUrl: oldUrl}, function (data) {
-            if (data.status) {
-                showLinkRefactoringDialog(data.data);
+    //Check unique
+    checkUniqueUrl(newUrl, function (unique) {
+        //New url isn't unique
+        if (!unique) {
+            alert("L'url inserito è già in uso. Inserirne un altro.");
+        } else {
+            if (refactor) {
+                //Get links list from server
+                $.getJSON('/admin/pages/linkRefactoringPreview', {oldUrl: oldUrl}, function (data) {
+                    if (data.status) {
+                        if (data.data.length == 0) {
+                            updateUrlRow(updatingRow, newUrl);
+                            updateUrlDialog.dialog('close');
+                        }
+                        else
+                            showLinkRefactoringDialog(data.data);
+                    }
+                })
+            } else {
+                //Update url in table
+                updateUrlRow(updatingRow, newUrl);
+                updateUrlDialog.dialog('close');
             }
-        })
-    } else {
-        //Update url in table
-        updatingRow.attr('id', '').children('td:first').text(newUrl);
-        updateUrlDialog.dialog('close');
+        }
+    });
+}
+
+function checkUniqueUrl(url, callback) {
+    //Checks that url isn't in url table
+    var uniquecheck = true;
+    $('.urlRow').children('input[type="hidden"]').each(function(index, element) {
+        if (url == element.value) {
+            uniquecheck = false;
+        }
+    });
+
+    if (!uniquecheck) {
+        callback(false);
+        return;
     }
+
+    $.getJSON('/admin/pages/checkUrlUnique', {
+        url: url
+    }, function (data) {
+        if (data.status) {
+            callback(data.data.unique);
+        }
+    });
+}
+
+function updateUrlRow(updatingRow, newUrl) {
+    //Update url in table
+    updatingRow.attr('id', '').children('td:first').text(newUrl);
+    updatingRow.find('input[type="hidden"]').val(newUrl);
 }
 
 function showLinkRefactoringDialog(links) {
@@ -142,60 +195,18 @@ function showLinkRefactoringDialog(links) {
 function refactorLinks() {
     var updatingRow = $('#updatingRow');
     var data = urlRefactoringPreviewDialog.find('form').serialize();
-    data += '&oldUrl='+oldUrl+'&newUrl='+newUrl;
+    data += '&oldUrl=' + oldUrl + '&newUrl=' + newUrl;
     //console.log(data);
     $.getJSON('/admin/pages/linkRefactoring', data, function (data) {
         if (data.status) {
-            alert('Operazione completata!');
-            updatingRow.children('td:first').text(newUrl);
+            //alert('Operazione completata!');
+            updateUrlRow(updatingRow, newUrl);
         }
     });
     urlRefactoringPreviewDialog.dialog('close');
 }
 
-//Azione pulsante Modifica Url
-$(".modifica_old").click(function (event) {
-    var datafield = $(event.target).parent().prev();
-    var datainput = $(event.target).parent().next();
-    if (datafield.attr("mode") == 1) {
-        //In corso di modifica
-        datafield.attr("mode", 0);
-        var url = datafield.children().get(0).value;
-        datafield.children().remove();
-        datafield.text(url);
-        datainput.val(url);
-        $(event.target).parent().children().css('color', 'black');
-
-    } else {
-        //Vuole avviare modifica
-        datafield.attr("mode", 1);
-        var url = datafield.text();
-        datafield.text(""); //toglie l'url
-        $("<input type=\"text\" value=\""+url+"\">").appendTo(datafield); //mette casella testo con url
-        $(event.target).parent().children().css('color', '#0078e7'); //button diventa primary
-    }
-
-});
-
 //Azione pulsante elimina url
 $(".delurl").click(function (event) {
     $(event.target).parent().parent().remove();
 });
-
-function checkUrlUnique(url, pageid, callback) {
-    var params = {
-        url: url,
-        pageid: pageid
-    };
-    $.getJSON('/admin/pages/checkUrlUnique', params, function (data) {
-        if (data.status) {
-            if (data.data.unique) {
-                callback(true);
-            } else {
-                displayErrorDialog("Errore", "Impossibile usare lo stesso nome per pi&ugrave; pagine. Usarne un altro.");
-                callback(false);
-            }
-        }
-    });
-
-}

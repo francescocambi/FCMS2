@@ -8,15 +8,16 @@
     "Menu.RouteName": "",
     "Database": {
         "driver": "pdo_mysql",
-        "user": "root",
-        "password": "mysql",
+        "host": "",
+        "user": "",
+        "password": "",
         "dbname": ""
     },
     "BlockStyles": [
         { "classname": "CenteredBlockStyle", "description": "Centrato" },
         { "classname": "ExtendedBlockStyle", "description": "Esteso" }
     ],
-    "admin.FileManager.folderPath": "/resources/uploads",
+    "admin.FileManager.folderPath": "/resources/uploads/",
     "admin.FileManager.folderURL": "/resources/uploads/",
     "Site.defaultLanguageCode": "it",
     "Site.homePageNamePrefix": "home_",

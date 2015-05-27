@@ -54,8 +54,21 @@ class LinkAssistantController {
     public function linkRefactoring(Application $app, Request $request) {
 
         $data = $request->get('refactoringBlocks');
-        $oldUrl = new Url();
-        $oldUrl->setUrl($request->get('oldUrl'));
+
+        try {
+            /** @var \Model\Url $oldUrl */
+            $oldUrl = $app['em']->find('\Model\Url', $request->get('oldUrl'));
+        } catch (Expcetion $e) {
+            $app['monolog']->addError($e->getMessage());
+            return new Response($app['admin.message_composer']->exceptionMessage($e), 500);
+        }
+
+        if (!isset($oldUrl) || is_null($oldUrl)) {
+            return new Response($app['admin.message_composer']->failureMessage(
+                "Url to be refactored does not exist"
+            ), 400);
+        }
+
         $newUrl = new Url();
         $newUrl->setUrl($request->get('newUrl'));
 
@@ -75,6 +88,12 @@ class LinkAssistantController {
             $app['em']->beginTransaction();
             foreach ($updatedBlocks as $block)
                 $app['em']->merge($block);
+
+            //Update url row with new url refactored
+
+            $oldUrl->setUrl($newUrl->getUrl());
+            $app['em']->merge($oldUrl);
+
             $app['em']->flush();
             $app['em']->commit();
 

@@ -37,12 +37,12 @@ class ModuleAuthorization {
         $module = $this->app['em']->getRepository('\App\Admin\Model\Module')->findOneBy(array(
             'name' => $moduleName
         ));
-        $result = false;
+        $result = 0;
         foreach ($module->getAllowedRoles()->toArray() as $role) {
-            $result = $this->app['security']->isGranted($role->getName()) or $result;
+            $result = $this->app['security']->isGranted($role->getName()) + $result;
         }
         //Result is ok - access granted
-        if ($result) return null;
+        if ($result > 0) return null;
 
         //User cannot access requested module. Reply with 403.
         $response = $forbiddenController->render($this->app);
