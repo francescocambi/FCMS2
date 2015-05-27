@@ -1,8 +1,37 @@
+<script src='https://www.google.com/recaptcha/api.js'></script>
+
 <form method="POST">
     <table>
-        <tr><td>Referente</td><td><input type="text" name="referrer"></td></tr>
-        <tr><td>Email</td><td><input type="email" name="email"></td></tr>
-        <tr><td>Testo</td><td><textarea name="content" rows="8" cols="30"></textarea></td></tr>
-        <tr><td colspan="2" style="text-align: center;"><input type="submit" id="contactme-submit-btn" value="Invia"></td></tr>
+        {% if failure_message is defined %}
+        <tr>
+            <td>
+                <p style="color: #e83529;">{{ failure_message }}</p>
+            </td>
+        </tr>
+        {% endif %}
+        <tr>
+            <td>Nome</td>
+            <td><input type="text" name="ref_name" {% if data.ref_name is defined %}value="{{ data.ref_name }}"{% endif %}></td>
+        </tr>
+        <tr>
+            <td>Cognome</td>
+            <td><input type="text" name="ref_surname" {% if data.ref_surname is defined %}value="{{ data.ref_surname }}"{% endif %}></td>
+        </tr>
+        <tr>
+            <td>E-Mail</td>
+            <td><input type="email" name="email" {% if data.email is defined %}value="{{ data.email }}"{% endif %}></td>
+        </tr>
+        <tr>
+            <td>Messaggio</td>
+            <td><textarea name="message" rows="4" cols="60">{% if data.message is defined %}{{ data.message|escape }}{% endif %}</textarea></td>
+        </tr>
+        <tr>
+            <td>Verifica</td>
+            <td><div class="g-recaptcha" data-sitekey="{{ recaptcha_sitekey }}"></div></td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <input type="submit" id="contactme-submit-btn" value="Invia"></td>
+        </tr>
     </table>
 </form>
