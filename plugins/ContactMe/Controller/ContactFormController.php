@@ -82,15 +82,15 @@ class ContactFormController {
         $headers = array();
         $headers[] = "MIME-Version: 1.0";
         $headers[] = "Content-type: text/plain; charset=iso-8859-1";
-        $headers[] = "From: ".$conf->site_mail;
+        $headers[] = "From: ".$conf['site_mail'];
         $headers[] = "Reply-To: ".$data['ref_name']." ".$data['ref_surname']." <".$data['email'].">";
         $headers[] = "X-Mailer: PHP/".phpversion();
 
-        $to = $conf->send_to;
-        $subject = $conf->subject;
+        $to = $conf['send_to'];
+        $subject = $conf['subject'];
         $email = $data['message'];
 
-        return mail($to, $subject, $email, impode("\r\n", $headers));
+        return mail($to, $subject, $email, implode("\r\n", $headers));
 
     }
 
