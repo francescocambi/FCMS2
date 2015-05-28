@@ -32,9 +32,7 @@ class EntityManagerFactory
 
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl($cache);
-        //TODO Load this paths from a config file.
-        //This file will be fed from manifest files of varius plugins
-        //during plugin setup phase
+        //Load this paths from config file.
         $driverImpl = $config->newDefaultAnnotationDriver(EntityManagerFactory::prepareEntityFoldersPaths($app));
         $config->setMetadataDriverImpl($driverImpl);
         $config->setQueryCacheImpl($cache);
@@ -59,13 +57,11 @@ class EntityManagerFactory
 
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl($cache);
-        //TODO Load this paths from a config file.
-        //This file will be fed from manifest files of varius plugins
-        //during plugin setup phase
+        //Load this paths from config file
         $driverImpl = $config->newDefaultAnnotationDriver(EntityManagerFactory::prepareEntityFoldersPaths($app));
         $config->setMetadataDriverImpl($driverImpl);
         $config->setQueryCacheImpl($cache);
-        $config->setProxyDir($app['rootFolderPath'] . "temp/");
+        $config->setProxyDir(rtrim($app['rootFolderPath']).DIRECTORY_SEPARATOR."temp".DIRECTORY_SEPARATOR);
         $config->setProxyNamespace('FCMS2\DoctrineProxy');
 
         $config->setAutoGenerateProxyClasses(true);
@@ -73,31 +69,6 @@ class EntityManagerFactory
         $em = EntityManager::create(array(
             'driver' => 'pdo_sqlite',
             'memory' => 'true'
-        ), $config);
-
-        return $em;
-    }
-
-    static function initializeDevelopmentEntityManager($app, $applicationMode = "development")
-    {
-        $cache = new \Doctrine\Common\Cache\ArrayCache();
-
-        $config = new \Doctrine\ORM\Configuration();
-        $config->setMetadataCacheImpl($cache);
-        //TODO Load this paths from a config file.
-        //This file will be fed from manifest files of varius plugins
-        //during plugin setup phase
-        $driverImpl = $config->newDefaultAnnotationDriver(EntityManagerFactory::prepareEntityFoldersPaths($app));
-        $config->setMetadataDriverImpl($driverImpl);
-        $config->setQueryCacheImpl($cache);
-        $config->setProxyDir($app['rootFolderPath'] . "temp/");
-        $config->setProxyNamespace('FCMS2\DoctrineProxy');
-
-        $config->setAutoGenerateProxyClasses(true);
-
-        $em = EntityManager::create(array(
-            'driver' => 'pdo_sqlite',
-            'path' => '/Users/Francesco/PhpStormProjects/FCMS2/framework_doc.sqlite'
         ), $config);
 
         return $em;
