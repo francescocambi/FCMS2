@@ -19,10 +19,15 @@ class EntityManagerFactory
 
     static function initializeEntityManager($app, $dbParams, $applicationMode = "production")
     {
-        if ($applicationMode == "development") {
-            $cache = new \Doctrine\Common\Cache\ArrayCache;
-        } else {
-            $cache = new \Doctrine\Common\Cache\XcacheCache();
+        $caching = $app['config']->get('Doctrine.caching');
+
+        if ($applicationMode != "development") {
+            if ($caching == "xcache")
+                $cache = new \Doctrine\Common\Cache\XcacheCache();
+        }
+
+        if (!isset($cache)) {
+            $cache = new \Doctrine\Common\Cache\ArrayCache();
         }
 
         $config = new \Doctrine\ORM\Configuration();
