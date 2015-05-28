@@ -1,6 +1,12 @@
 <script src='https://www.google.com/recaptcha/api.js'></script>
 
-<form method="POST">
+<form method="POST" class="contactme-form">
+    <legend>
+        Compili il modulo seguente per contattare direttamente i nostri uffici.
+        <br>
+        Le risponderemo il prima possibile all'indirizzo email fornitoci.
+    </legend>
+    <br>
     <table>
         {% if failure_message is defined %}
         <tr>
@@ -10,28 +16,40 @@
         </tr>
         {% endif %}
         <tr>
-            <td>Nome</td>
+            <td><label>Nome</label></td>
             <td><input type="text" name="ref_name" {% if data.ref_name is defined %}value="{{ data.ref_name }}"{% endif %}></td>
         </tr>
         <tr>
-            <td>Cognome</td>
+            <td><label>Cognome</label></td>
             <td><input type="text" name="ref_surname" {% if data.ref_surname is defined %}value="{{ data.ref_surname }}"{% endif %}></td>
         </tr>
         <tr>
-            <td>E-Mail</td>
+            <td><label>E-Mail</label></td>
             <td><input type="email" name="email" {% if data.email is defined %}value="{{ data.email }}"{% endif %}></td>
         </tr>
         <tr>
-            <td>Messaggio</td>
+            <td><label>Messaggio</label></td>
             <td><textarea name="message" rows="4" cols="60">{% if data.message is defined %}{{ data.message|escape }}{% endif %}</textarea></td>
         </tr>
         <tr>
-            <td>Verifica</td>
+            <td><label>Verifica</label></td>
             <td><div class="g-recaptcha" data-sitekey="{{ recaptcha_sitekey }}"></div></td>
         </tr>
         <tr>
+            <td><label>Privacy</label></td>
+            <td>
+                <textarea readonly>Informativa privacy ai sensi dell’art. 13 D.Lgs 196/2003
+I dati da Lei inseriti, quali i dati identificativi, indirizzi, numeri di telefono e indirizzo email, saranno trattati dall’impresa titolare del sito internet , con modalit&agrave; elettroniche e in qualit&agrave; di Titolare del trattamento, al solo fine di dare risposta alle Sue richieste e non verranno messi a disposizione di nessuno, n&eacute; diffusi. Il trattamento di tali dati &egrave; necessario perch&eacute; il titolare del sito internet possa evadere le Sue richieste. In qualit&agrave; di interessato del trattamento, Le &egrave; garantito l’esercizio dei diritti di cui all'art. 7 del D.Lgs. 196/03, tra i quali il diritto di ottenere dal Titolare del trattamento la conferma dell'esistenza dei Suoi dati personali e la loro comunicazione in forma intelligibile, di conoscere le modalit&agrave; e le logiche del trattamento, di richiedere l'aggiornamento e l'integrazione dei dati stessi, la loro cancellazione o trasformazione in forma anonima, in caso di violazione di legge, nonch&eacute;, di opporsi al loro trattamento. Tali diritti potranno essere esercitati rivolgendosi in qualsiasi momento per iscritto al Titolare del trattamento, presso la sua sede indicata nel sito internet medesimo.</textarea>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><input type="checkbox" name="privacy">
+            <label>Ho letto l’informativa e autorizzo il trattamento dei miei dati personali per le finalit&agrave; ivi indicate.</label></td>
+        </tr>
+        <tr>
             <td colspan="2" style="text-align: center;">
-                <input type="submit" id="contactme-submit-btn" value="Invia"></td>
+                <button type="submit" id="contactme-submit-btn">Invia</button>
+            </td>
         </tr>
     </table>
 </form>
