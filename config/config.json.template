@@ -1,6 +1,7 @@
 {
     "Application.Debug": true,
     "Application.Development": true,
+    "Doctrine.caching": "",
     "MaintenanceMode": false,
     "LanguageBar.View": "App\\Site\\FlagLanguageBar.twig",
     "LanguageBar.RouteName": "languageOnly",

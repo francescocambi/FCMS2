@@ -19,10 +19,15 @@ class EntityManagerFactory
 
     static function initializeEntityManager($app, $dbParams, $applicationMode = "production")
     {
-        if ($applicationMode == "development") {
-            $cache = new \Doctrine\Common\Cache\ArrayCache;
-        } else {
-            $cache = new \Doctrine\Common\Cache\XcacheCache();
+        $caching = $app['config']->get('Doctrine.caching');
+
+        if ($applicationMode != "development") {
+            if ($caching == "xcache")
+                $cache = new \Doctrine\Common\Cache\XcacheCache();
+        }
+
+        if (!isset($cache)) {
+            $cache = new \Doctrine\Common\Cache\ArrayCache();
         }
 
         $config = new \Doctrine\ORM\Configuration();
@@ -33,7 +38,7 @@ class EntityManagerFactory
         $driverImpl = $config->newDefaultAnnotationDriver(EntityManagerFactory::prepareEntityFoldersPaths($app));
         $config->setMetadataDriverImpl($driverImpl);
         $config->setQueryCacheImpl($cache);
-        $config->setProxyDir($app['rootFolderPath'] . "temp/");
+        $config->setProxyDir(rtrim($app['rootFolderPath']).DIRECTORY_SEPARATOR."temp".DIRECTORY_SEPARATOR);
         $config->setProxyNamespace('FCMS2\DoctrineProxy');
 
         if ($applicationMode == "development") {
