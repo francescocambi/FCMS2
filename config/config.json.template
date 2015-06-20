@@ -20,6 +20,7 @@
     ],
     "admin.FileManager.folderPath": "/resources/uploads/",
     "admin.FileManager.folderURL": "/resources/uploads/",
+    "Site.PageView": "App\\Site\\Page.twig",
     "Site.defaultLanguageCode": "it",
     "Site.homePageNamePrefix": "home_",
     "Log": {

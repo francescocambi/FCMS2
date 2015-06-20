@@ -16,32 +16,35 @@ class SiteController {
 
     function renderPage($lang='', $url='', Application $app)
     {
+        $page = null;
+        $language = null;
 
-        //Detect and retrieve requested language
-        if (strlen($lang) == 0)
-            $lang = $app['config']->get('Site.defaultLanguageCode');
-        $language = $app['em']->getRepository('\Model\Language')->findOneBy(array("code" => $lang));
-        if (is_null($language)) {
-            //Retrieve default language
-            $language = $app['em']->getRepository('\Model\Language')->findOneBy(array(
-                "code" => $app['config']->get('Site.defaultLanguageCode')
-            ));
-        }
-
-        //Detect and retrieve requested page
+        //Search page for requested url
         $urlEntry = null;
         if (strlen($url) > 0)
             $urlEntry = $app['em']->find('Model\Url', $url);
-
         if (is_null($urlEntry) === FALSE) {
-            //Valid url, page retrieved
+            //Retrieve Page for this url
             $page = $urlEntry->getPage();
-        } else {
-            //Not valid url, retrieve home page for detected language
+        }
+        if (is_null($page)) {
+            //Retrieve home page
+            if (strlen($lang) > 0) {
+                //for selected language
+                $language = $app['em']->getRepository('\Model\Language')->findOneBy(array("code" => $lang));
+            } else {
+                //or for default language
+                $language = $app['em']->getRepository('\Model\Language')->findOneBy(array(
+                    "code" => $app['config']->get('Site.defaultLanguageCode')
+                ));
+            }
+            //Retrieve home page
             $homePageName = $app['config']->get('Site.homePageNamePrefix').$language->getCode();
             $page = $app['em']->getRepository('\Model\Page')->findOneBy(array(
                 'name' => $homePageName
             ));
+        } else {
+            $language = $page->getLanguage();
         }
 
         $menu = $language->getMenu();
@@ -55,7 +58,9 @@ class SiteController {
 
         $titleSuffix = $app['em']->getRepository('\Model\Setting')->findOneBy(array("settingKey" => "TITLE_DESC"))->getSettingValue();
 
-        return $app['twig']->render('App\\Site\\Page.twig', array(
+        $pageView = $app['config']->get('Site.PageView');
+
+        return $app['twig']->render($pageView, array(
             "title" => $page->getTitle(),
             "titleSuffix" => $titleSuffix,
             "pageDescription" => $page->getDescription(),
