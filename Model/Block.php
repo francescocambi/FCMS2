@@ -320,7 +320,7 @@ abstract class Block {
             if ($this->bgrepeatx == 0 && $this->bgrepeaty == 0) $stringcss .= " no-repeat";
         }
 
-		if ( !is_null($this->bgred) && !is_null($this->bggreen) && !is_null($this->bgblue) ) {
+		if ( !is_null($this->bgred) && !is_null($this->bggreen) && !is_null($this->bgblue) && $this->bgopacity != 0 ) {
 			$opacity = 1;
 			if (!is_null($this->bgopacity) && $this->bgopacity <= 1)
 				$opacity = $this->bgopacity;
