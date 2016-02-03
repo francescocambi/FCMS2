@@ -68,6 +68,7 @@ class EditorController {
 
         //Processing Blocks
         for ($i=0;$i<count($data['block']['id']);$i++) {
+
             $blockid = $data['block']['id'][$i];
 
             //If block is new and content is empty, skip the block
@@ -98,12 +99,14 @@ class EditorController {
                 $block->setDescription($data['block']['description'][$i]);
                 $block->setBlockStyleClassName($data['block']['style'][$i]);
                 $block->setBgurl($data['block']['bckurl'][$i]);
-                $block->setBgred($data['block']['bckred'][$i]);
-                $block->setBggreen($data['block']['bckgreen'][$i]);
-                $block->setBgblue($data['block']['bckblue'][$i]);
-                $block->setBgopacity($data['block']['bckopacity'][$i]);
-                $block->setBgrepeatx($data['block']['bckrepeatx'][$i]);
-                $block->setBgrepeaty($data['block']['bckrepeaty'][$i]);
+                $block->setBgred(intval($data['block']['bckred'][$i]));
+                $block->setBggreen(intval($data['block']['bckgreen'][$i]));
+                $block->setBgblue(intval($data['block']['bckblue'][$i]));
+                $block->setBgopacity(floatval($data['block']['bckopacity'][$i]));
+                $bgrepeatx = !(strlen($data['block']['bckrepeatx'][$i]) <= 0 || $data['block']['bckrepeatx'][$i] == 'false');
+                $bgrepeaty = !(strlen($data['block']['bckrepeaty'][$i]) <= 0 || $data['block']['bckrepeaty'][$i] == 'false');
+                $block->setBgrepeatx($bgrepeatx);
+                $block->setBgrepeaty($bgrepeaty);
                 $block->setBgsize($data['block']['bcksize'][$i]);
 
                 // If is set content field, this block is a content block

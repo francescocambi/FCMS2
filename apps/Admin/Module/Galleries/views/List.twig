@@ -1,0 +1,80 @@
+
+{% extends "App\\Admin\\Base.twig" %}
+
+{% block title %}
+<title>Gestione Gallerie</title>
+{% endblock %}
+
+{% block toolbar %}
+<h1>Gestione Gallerie</h1>
+{% endblock %}
+
+{% block content %}
+<style>
+    .gallery-thumb {
+        width: 30px;
+        height: 30px;
+    }
+</style>
+<table class="pure-table pure-table-striped list-table" id="content-table">
+    <thead>
+    <tr style="font-size: 1.1em;">
+        <th></th>
+        <th>Id</th>
+        <th>Nome</th>
+        <th># foto</th>
+        <th class="actions-col"></th>
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for gallery in galleries %}
+    <tr>
+        <td><img src="{{ gallery.thumbImage }}" class="gallery-thumb"></td>
+        <td class="idcell">{{ gallery.id }}</td>
+        <td class="namecell">{{ gallery.name }}</td>
+        <td>{{ gallery.photos.count }}</td>
+        <td>
+            <a href="{{ path('admin.galleries.edit', {id: gallery.id}) }}"><i class="fa fa-pencil-square fa-lg"></i></a>
+            <a class="delete"><i class="fa fa-minus-square fa-lg"></i></a>
+        </td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="5" style="text-align: center;">
+            <a href="{{ path('admin.galleries.editNew') }}">
+                <i class="fa fa-plus-square fa-2x"></i>
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+{% endblock %}
+
+{% block tail %}
+
+{% include "App\\Admin\\DeleteConfirmationDialog.twig" %}
+{% include "App\\Admin\\ErrorDialog.twig" %}
+
+<script>
+    $(".delete").click(function(event) {
+        var id = $(event.target).parents('tr').find('td.idcell').text();
+        var name = $(event.target).parents('tr').find('td.namecell').text();
+        $("#dcd-objname").text(name);
+        $("#dcd-objid").val(id);
+        $("#delete-confirm-dialog").dialog('open');
+    });
+    $("#dcd-ok").click(function(event) {
+        var id = $("#dcd-objid").val();
+        $("#delete-confirm-dialog").dialog("close");
+        $.getJSON(id+'/delete', function (response) {
+            if (response.status) {
+                $(".idcell").each(function(index, element) {
+                    if ($(element).text() == id) $(element).parent().remove();
+                });
+            }
+        });
+    });
+</script>
+
+{% endblock %}

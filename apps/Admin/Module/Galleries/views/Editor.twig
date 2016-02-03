@@ -1,0 +1,169 @@
+
+{% extends "App\\Admin\\Base.twig" %}
+
+{% block title %}
+    <title>Editor Galleria</title>
+{% endblock %}
+
+{% block toolbar %}
+    <h1>Editor Galleria</h1>
+{% endblock %}
+
+
+{% block content %}
+
+    {% import 'App\\Admin\\AlertMacro.twig' as alert %}
+
+    {% if success %}
+        {{ alert.alert('success', "Operazione Completata") }}
+    {% endif %}
+
+    {% if exception != null %}
+        {{ alert.exceptionAlert(exception.message, exception.traceString) }}
+    {% endif %}
+
+    <style>
+        .photo-thumb {
+            width: 60px;
+            height: 60px;
+        }
+        .order-cell {
+            text-align: center;
+        }
+        .photo-url {
+            width: 80%;
+        }
+        #photo-table {
+            width: 97%;
+            margin: 0px;
+        }
+        #photo-table td {
+            padding: 2px;
+        }
+    </style>
+
+    <form method="POST" class="pure-form" id="gallery-editor-form"
+          action="{% if gallery.id > 0 %}{{ path('admin.galleries.update', {id: gallery.id}) }}{% else %}{{ path('admin.galleries.insert') }}{% endif %}">
+
+        <div class="pure-form-aligned">
+            <legend>Info base</legend>
+
+
+            <div class="pure-u-1-2" style="min-width: 400px; float: left;">
+                {% if gallery.id > 0 %}
+                    <div class="pure-control-group">
+                        <label>Id</label>
+                        <input type="text" id="id" value="{{ gallery.id }}" disabled>
+                    </div>
+                {% endif %}
+
+                <div class="pure-control-group">
+                    <label>Nome</label>
+                    <input type="text" id="gallery-name" name="name" value="{{ gallery.name }}">
+                </div>
+
+                <div class="pure-control-group">
+                    <label>Nome Univoco (data-gallery)</label>
+                    <input type="text" name="dataGallery" value="{{ gallery.dataGallery }}">
+                </div>
+
+                <div class="pure-control-group">
+                    <label>Descrizione</label>
+                    <textarea type="text" name="description">{{ gallery.description }}</textarea>
+                </div>
+
+                <div class="pure-control-group">
+                    <label> </label>
+                    <button type="button" id="save-all" class="pure-button pure-button-primary" style="width: 200px;">Salva</button>
+                </div>
+            </div>
+
+            <div class="pure-u-1-2" style="min-width: 400px; float:right;text-align: center;">
+
+                <div class="pure-control-group">
+                    <label>Immagine Copertina</label>
+                    <input type="text" id="thumb-image-txt" name="thumbImage" value="{{ gallery.thumbImage }}">
+                    <button type="button" class="pure-button openfileman"
+                            onclick="CustomRoxyFileBrowser('thumbImage')">Sfoglia</button>
+                </div>
+
+                <img id="thumb-image-img" src="{{ gallery.thumbImage }}" style="width: 300px;height:300px;">
+
+            </div>
+
+        </div>
+
+        <legend>Foto nella Galleria</legend>
+        <div style="padding-left: 10px; padding-bottom: 20px; text-align: center;">
+
+            <!-- TABELLA CON ELENCO FOTO INTERATTIVO -->
+            <table class="pure-table pure-table-striped" id="photo-table">
+                <thead>
+                <tr>
+                    <th style="width: 4%;">Ordine</th>
+                    <th style="width: 4%;"></th>
+                    <th style="width: 80%;">Url Immagine</th>
+                    <th style="width: 16%;"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for photo in gallery.photos %}
+                    <tr>
+                        <input type="hidden" name="photos[order][]" value="{{ photo.photoOrder }}">
+                        <td class="order-cell">{{ photo.photoOrder }}</td>
+                        <td><img src="{{ photo.imageUrl }}" class="photo-thumb"></td>
+                        <td>
+                            <input type="text" class="photo-url" name="photos[imageUrl][]" id="photo_{{ loop.index-1 }}" value="{{ photo.imageUrl }}">
+                            <button type="button" class="pure-button openfileman">Sfoglia</button>
+                        </td>
+                        <td>
+                            <a class="up-tr"><i class="fa fa-arrow-up fa-lg"></i></a>
+                            <a class="down-tr"><i class="fa fa-arrow-down fa-lg"></i></a>
+                            <a class="remove-tr"><i class="fa fa-minus-square fa-lg"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: 10px;">
+                        <button type="button" class="pure-button" id="new-photo">Aggiungi Foto</button>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+    </form>
+
+{% endblock %}
+
+{% block tail %}
+    <div id="roxyCustomPanel" style="display: none;">
+        <iframe src="" style="width:100%;height:100%" frameborder="0"></iframe>
+    </div>
+
+    <style>
+        legend {
+            margin-left: 10px;
+        }
+    </style>
+
+    <script type="text/javascript">
+        var UPDATE_MODE = {% if gallery.id > 0 %}true{% else %}false{% endif %};
+        var NEXT_PHOTO_ID = {{ gallery.photos|length }};
+
+        var PHOTO_ROW_TEMPLATE = '<tr>' +
+                '<input type="hidden" name="photos[order][]">' +
+                '<td class="order-cell"></td>' +
+                '<td><img src="" class="photo-thumb"></td>' +
+                '<td> <input type="text" class="photo-url" name="photos[imageUrl][]" id="photo">' +
+                '<button type="button" class="pure-button openfileman">Sfoglia</button> </td>' +
+                '<td> <a class="up-tr"><i class="fa fa-arrow-up fa-lg"></i></a> ' +
+                '<a class="down-tr"><i class="fa fa-arrow-down fa-lg"></i></a> ' +
+                '<a class="remove-tr"><i class="fa fa-minus-square fa-lg"></i></a> </td> </tr>';
+    </script>
+
+    <script type="text/javascript" src="/static/admin/js/gallery_editor.js"></script>
+
+
+{% endblock %}

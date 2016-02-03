@@ -109,12 +109,14 @@ class EditorController {
         $block->setDescription($data['description']);
         $block->setBlockStyleClassName($_POST['blockStyleClassName']);
         $block->setBgurl($data['bgurl']);
-        $block->setBgred($data['bgred']);
-        $block->setBggreen($data['bggreen']);
-        $block->setBgblue($data['bgblue']);
-        $block->setBgopacity($data['bgopacity']);
-        $block->setBgrepeatx(isset($data['bgrepeatx']));
-        $block->setBgrepeaty(isset($data['bgrepeaty']));
+        $block->setBgred(intval($data['bgred']));
+        $block->setBggreen(intval($data['bggreen']));
+        $block->setBgblue(intval($data['bgblue']));
+        $block->setBgopacity(floatval($data['bgopacity']));
+        $bgrepeatx = isset($data['bckrepeatx']) && !(strlen($data['bckrepeatx']) <= 0 || $data['bckrepeatx'] == 'false');
+        $bgrepeaty = isset($data['bckrepeaty']) && !(strlen($data['bckrepeaty']) <= 0 || $data['bckrepeaty'] == 'false');
+        $block->setBgrepeatx($bgrepeatx);
+        $block->setBgrepeaty($bgrepeaty);
         $block->setBgsize($data['bgsize']);
         if (strlen($data['content']) > 0)
             $block->setContent($data['content']);

@@ -1,0 +1,18 @@
+{% for gallery in galleries %}
+<div style="width: {{ 99/(galleries|length) }}%; text-align: center; display: inline-block;">
+    <a title="{{ gallery.name }}"
+       href="{{ gallery.thumbImage }}"
+       data-gallery="#{{ gallery.dataGallery }}">
+        <img src="{{ gallery.thumbImage }}" style="width: 200px; height: 140px;">
+    </a>
+    {% for photo in gallery.photos %}
+    <a title="{{ gallery.name }}"
+       href="{{ photo.imageUrl }}"
+       data-gallery="#{{ gallery.dataGallery }}"
+       style="display: none;">
+        <img src="{{ photo.imageUrl }}">
+    </a>
+    {% endfor %}
+    <h3>{{ gallery.name }}</h3>
+</div>
+{% endfor %}
